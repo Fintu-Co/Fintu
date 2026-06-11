@@ -1,15 +1,24 @@
+/**
+ * CreditSmart PE — API
+ *
+ * Arquitectura DDD pragmática por módulos:
+ *   src/modules/<dominio>/{domain, application, infrastructure, interfaces}
+ *   src/shared/            → base de datos y middleware transversales
+ *
+ * Cada módulo expone sus rutas desde interfaces/, donde también
+ * se cablean sus dependencias (composition root por módulo).
+ */
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const db = require('./config/database');
+require('./shared/infrastructure/database'); // inicializa el pool y prueba conexión
 
-// Importar rutas
-const authRoutes = require('./routes/authRoutes');
-const cardRoutes = require('./routes/cardRoutes');
-const movementRoutes = require('./routes/movementRoutes');
-const analyticsRoutes = require('./routes/analyticsRoutes');
+// Rutas por módulo
+const authRoutes = require('./modules/auth/interfaces/authRoutes');
+const cardRoutes = require('./modules/cards/interfaces/cardRoutes');
+const movementRoutes = require('./modules/movements/interfaces/movementRoutes');
+const analyticsRoutes = require('./modules/analytics/interfaces/analyticsRoutes');
 const goalRoutes = require('./modules/goals/interfaces/goalRoutes');
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,21 +32,17 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-// Rutas
+// Healthcheck
 app.get('/', (req, res) => {
   res.json({ message: 'CreditSmart PE API funcionando correctamente' });
 });
 
-// Rutas de autenticación
+// Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/cards', cardRoutes);
-
-
-app.use('/api/movements', movementRoutes); 
+app.use('/api/movements', movementRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/goals', goalRoutes);
-
 
 // Iniciar servidor
 app.listen(PORT, () => {

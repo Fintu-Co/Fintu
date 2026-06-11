@@ -6,11 +6,11 @@
  * controller. Las URLs no cambian respecto a la versión anterior.
  */
 const express = require('express');
-const { verifyToken } = require('../../../middleware/auth');
+const { verifyToken } = require('../../../shared/middleware/auth');
 
 // Infraestructura (adaptadores)
 const MySqlGoalRepository = require('../infrastructure/MySqlGoalRepository');
-const LegacyCardProvider = require('../infrastructure/LegacyCardProvider');
+const CardsModuleCardProvider = require('../infrastructure/CardsModuleCardProvider');
 
 // Aplicación (casos de uso)
 const GetUserGoals = require('../application/GetUserGoals');
@@ -25,7 +25,7 @@ const buildGoalController = require('./goalController');
 
 // ── Cableado de dependencias ──
 const goalRepository = new MySqlGoalRepository();
-const cardProvider = new LegacyCardProvider();
+const cardProvider = new CardsModuleCardProvider();
 
 const controller = buildGoalController({
   getUserGoals: new GetUserGoals({ goalRepository }),

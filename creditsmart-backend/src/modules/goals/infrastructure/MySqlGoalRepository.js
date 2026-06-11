@@ -4,7 +4,7 @@
  * (Consultas idénticas a las del antiguo models/Goal.js.)
  */
 const GoalRepository = require('../domain/GoalRepository');
-const db = require('../../../config/database');
+const db = require('../../../shared/infrastructure/database');
 
 class MySqlGoalRepository extends GoalRepository {
   async findActiveByUserId(userId) {
