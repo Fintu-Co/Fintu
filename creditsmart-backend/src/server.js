@@ -5,10 +5,10 @@ const db = require('./config/database');
 
 // Importar rutas
 const authRoutes = require('./routes/authRoutes');
-const cardRoutes = require('./routes/cardRoutes'); 
-const movementRoutes = require('./routes/movementRoutes'); 
+const cardRoutes = require('./routes/cardRoutes');
+const movementRoutes = require('./routes/movementRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
-const goalRoutes = require('./routes/goalRoutes');
+const goalRoutes = require('./modules/goals/interfaces/goalRoutes');
 
 
 const app = express();
