@@ -1,0 +1,182 @@
+/* ═══════════════════════════════════════
+   FAB — Botón flotante
+═══════════════════════════════════════ */
+
+.fab-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 22px;
+  background: #0f1729;
+  border: 1px solid rgba(196,154,60,0.30);
+  border-radius: 14px;
+  color: #dbb96a;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'DM Sans', inherit;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(15,23,41,0.30), 0 0 0 1px rgba(196,154,60,0.08);
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  z-index: 9998;
+  animation: fab-in 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes fab-in {
+  from { opacity: 0; transform: translateY(60px) scale(0.85); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fab-svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.fab-btn:hover {
+  background: #1e2d54;
+  border-color: rgba(196,154,60,0.55);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(15,23,41,0.36), 0 0 20px rgba(196,154,60,0.10);
+}
+.fab-btn:active { transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════
+   OVERLAY
+═══════════════════════════════════════ */
+
+.mp-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,41,0.50);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  animation: mp-fade 0.25s ease;
+  cursor: pointer;
+}
+@keyframes mp-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ═══════════════════════════════════════
+   PANEL LATERAL
+═══════════════════════════════════════ */
+
+.mp-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 42%;
+  max-width: 560px;
+  min-width: 380px;
+  background: #f0f3fb;
+  border-left: 1px solid rgba(30,45,100,0.10);
+  box-shadow: -12px 0 48px rgba(30,45,100,0.14);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  animation: mp-slide 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+@keyframes mp-slide {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+
+.mp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #0f1729;
+  border-bottom: 1px solid rgba(196,154,60,0.18);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Línea dorada superior */
+.mp-header::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196,154,60,0.45), transparent);
+}
+
+.mp-header-left { display: flex; align-items: center; gap: 14px; }
+
+.mp-header-icon {
+  width: 40px; height: 40px; border-radius: 11px;
+  background: rgba(196,154,60,0.14);
+  border: 1px solid rgba(196,154,60,0.28);
+  display: flex; align-items: center; justify-content: center;
+  color: #dbb96a; flex-shrink: 0;
+}
+.mp-header-icon svg { width: 18px; height: 18px; }
+
+.mp-title { margin: 0 0 2px; font-size: 17px; font-weight: 800; color: #edf0f8; letter-spacing: -0.3px; }
+.mp-subtitle { margin: 0; font-size: 11px; color: rgba(196,154,60,0.50); font-weight: 500; }
+
+.mp-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.mp-btn-add {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  background: rgba(196,154,60,0.14);
+  border: 1px solid rgba(196,154,60,0.32);
+  border-radius: 9px;
+  color: #dbb96a;
+  font-size: 12px; font-weight: 700;
+  font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.mp-btn-add:hover {
+  background: rgba(196,154,60,0.24);
+  border-color: rgba(196,154,60,0.55);
+  transform: translateY(-1px);
+}
+
+.mp-btn-close {
+  width: 34px; height: 34px; border-radius: 9px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: rgba(255,255,255,0.35);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.mp-btn-close:hover {
+  background: rgba(220,38,38,0.12);
+  border-color: rgba(220,38,38,0.35);
+  color: #f87171;
+  transform: rotate(90deg);
+}
+
+/* ═══════════════════════════════════════
+   CUERPO
+═══════════════════════════════════════ */
+
+.mp-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px 40px;
+  background: #f0f3fb;
+}
+
+.mp-body::-webkit-scrollbar { width: 4px; }
+.mp-body::-webkit-scrollbar-track { background: #f0f3fb; }
+.mp-body::-webkit-scrollbar-thumb { background: rgba(196,154,60,0.30); border-radius: 10px; }
+.mp-body::-webkit-scrollbar-thumb:hover { background: rgba(196,154,60,0.55); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+
+@media (max-width: 1200px) { .mp-panel { width: 52%; } }
+@media (max-width: 768px) {
+  .mp-panel { width: 88%; min-width: unset; }
+  .fab-btn  { bottom: 20px; right: 20px; padding: 12px 18px; }
+}
+@media (max-width: 480px) {
+  .mp-panel { width: 100%; border-left: none; }
+  .fab-label { display: none; }
+  .fab-btn { padding: 14px; border-radius: 50%; }
+}
