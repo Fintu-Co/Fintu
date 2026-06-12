@@ -444,12 +444,13 @@ export default function Landing() {
         <div className="lp-sec-head reveal">
           <h2 className="lp-sec-title">Preguntas frecuentes</h2>
         </div>
-        <div className="lp-faq-list">
+        {/* El reveal va en el contenedor: si fuera en cada item, React borraría
+            la clase `visible` (agregada por el observer) al re-renderizar con `open` */}
+        <div className="lp-faq-list reveal">
           {FAQS.map((f, i) => (
             <div
-              className={`lp-faq-item reveal${openFaq === i ? ' open' : ''}`}
+              className={`lp-faq-item${openFaq === i ? ' open' : ''}`}
               key={f.q}
-              style={{ transitionDelay: `${i * 0.05}s` }}
               onClick={() => setOpenFaq(openFaq === i ? null : i)}
             >
               <div className="lp-faq-q">
