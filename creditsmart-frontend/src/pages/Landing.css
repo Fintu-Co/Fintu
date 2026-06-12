@@ -946,11 +946,28 @@
   flex-shrink: 0;
 }
 
+.lp-price-terms {
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--dim);
+  margin-top: 14px;
+}
+.lp-price-terms span {
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.lp-price-terms span:hover { color: var(--gold); }
+
 .lp-price-login {
   text-align: center;
   font-size: 12.5px;
   color: var(--dim);
-  margin-top: 16px;
+  margin-top: 10px;
 }
 .lp-price-login span {
   color: var(--gold);
@@ -1038,8 +1055,8 @@
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 44px;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
   padding-bottom: 48px;
 }
 
@@ -1092,6 +1109,144 @@
   font-size: 12px;
   color: rgba(237, 240, 248, 0.30);
 }
+
+/* ════════════════════════════════════════════════════════════
+   MODAL LEGAL — header navy + cuerpo light (patrón de la app)
+════════════════════════════════════════════════════════════ */
+.lp-legal-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 41, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: lpLegalFade 0.25s ease;
+}
+@keyframes lpLegalFade { from { opacity: 0; } to { opacity: 1; } }
+
+.lp-legal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 23, 41, 0.30);
+  animation: lpLegalUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes lpLegalUp {
+  from { opacity: 0; transform: translateY(26px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.lp-legal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--navy);
+  position: relative;
+  flex-shrink: 0;
+}
+.lp-legal-head::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 154, 60, 0.45), transparent);
+}
+
+.lp-legal-head h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #edf0f8;
+  margin-bottom: 3px;
+  letter-spacing: -0.3px;
+}
+
+.lp-legal-head span {
+  font-size: 11px;
+  color: rgba(196, 154, 60, 0.60);
+  font-weight: 600;
+}
+
+.lp-legal-x {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.22s;
+  flex-shrink: 0;
+}
+.lp-legal-x:hover {
+  background: rgba(220, 38, 38, 0.14);
+  border-color: rgba(220, 38, 38, 0.40);
+  color: #f87171;
+  transform: rotate(90deg);
+}
+
+.lp-legal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 26px;
+  background: #f7f9ff;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(196, 154, 60, 0.35) #f0f3fb;
+}
+.lp-legal-body::-webkit-scrollbar { width: 5px; }
+.lp-legal-body::-webkit-scrollbar-track { background: #f0f3fb; }
+.lp-legal-body::-webkit-scrollbar-thumb { background: rgba(196, 154, 60, 0.35); border-radius: 10px; }
+
+.lp-legal-body section { margin-bottom: 20px; }
+
+.lp-legal-body h4 {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 7px;
+  letter-spacing: -0.1px;
+}
+
+.lp-legal-body p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.lp-legal-contact {
+  padding: 12px 16px;
+  background: rgba(196, 154, 60, 0.06);
+  border: 1px solid rgba(196, 154, 60, 0.18);
+  border-radius: 11px;
+  font-size: 12.5px !important;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.lp-legal-foot {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+.lp-legal-foot .lp-btn-gold { padding: 10px 24px; font-size: 13.5px; }
 
 /* ════════════════════════════════════════════════════════════
    MOBILE STICKY CTA
@@ -1183,6 +1338,10 @@
   .lp-footer-bottom { padding-bottom: 86px; } /* espacio para el sticky CTA */
   .lp-pricing { padding: 76px 18px; }
   .lp-price-amount .num { font-size: 68px; }
+  .lp-legal-ov { padding: 12px; }
+  .lp-legal { max-height: 92vh; border-radius: 16px; }
+  .lp-legal-head { padding: 16px 18px; }
+  .lp-legal-body { padding: 18px; }
 }
 
 /* ════════════════════════════════════════════════════════════

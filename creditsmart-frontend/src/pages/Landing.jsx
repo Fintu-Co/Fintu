@@ -63,6 +63,105 @@ function IntroGreeting({ onDone }) {
 }
 
 /* ════════════════════════════════════════════════════════════
+   LEGAL — Términos y Privacidad
+   Plantilla de referencia; revisar con un abogado antes de operar.
+════════════════════════════════════════════════════════════ */
+const LEGAL = {
+  terminos: {
+    title: 'Términos y Condiciones',
+    updated: 'Junio 2026',
+    sections: [
+      { h: '1. El servicio', p: [
+        'Fintú & Co. es una herramienta de organización financiera personal. No somos una entidad financiera, no otorgamos créditos ni nos conectamos a tu banco. La app te permite registrar y visualizar manualmente la información de tus tarjetas de crédito.',
+      ]},
+      { h: '2. Acceso y pago', p: [
+        'El acceso se obtiene mediante un pago único de $4 USD procesado por PayPal. La licencia es personal, intransferible y válida durante toda la vida del servicio. No existen suscripciones ni cobros recurrentes.',
+      ]},
+      { h: '3. Tu cuenta', p: [
+        'Eres responsable de mantener la confidencialidad de tu contraseña y de la veracidad de los datos que registras. Una cuenta corresponde a una sola persona.',
+      ]},
+      { h: '4. Información referencial', p: [
+        'Los cálculos que muestra la app (intereses, ciclos, score de salud financiera y similares) son estimaciones referenciales basadas en los datos que tú ingresas. No constituyen asesoría financiera, contable ni legal. Las decisiones que tomes con esta información son tu responsabilidad.',
+      ]},
+      { h: '5. Reembolsos', p: [
+        'Por la naturaleza digital del producto, no se realizan reembolsos una vez activado el acceso, salvo error de cobro demostrable.',
+      ]},
+      { h: '6. Propiedad intelectual', p: [
+        'La marca Fintú & Co., el diseño, el código, los textos y todos los contenidos de la plataforma son propiedad exclusiva de Fintú & Co. Queda prohibida su copia, reproducción, distribución, modificación o ingeniería inversa, total o parcial, sin autorización escrita.',
+      ]},
+      { h: '7. Cambios', p: [
+        'Podemos actualizar el servicio y estos términos para mejorarlos. Los cambios relevantes se comunicarán dentro de la app.',
+      ]},
+      { h: '8. Ley aplicable', p: [
+        'Estos términos se rigen por las leyes de la República del Perú.',
+      ]},
+    ],
+  },
+  privacidad: {
+    title: 'Política de Privacidad',
+    updated: 'Junio 2026',
+    sections: [
+      { h: '1. Datos que recopilamos', p: [
+        'Para crear tu cuenta solo pedimos: nombre, apellido, email y una contraseña (que guardamos cifrada). Al pagar, registramos el identificador de la transacción que nos entrega PayPal.',
+        'Nunca pedimos ni almacenamos números de tarjeta, CVV, claves bancarias ni credenciales de banca por internet.',
+      ]},
+      { h: '2. Datos que tú registras', p: [
+        'Los montos, fechas de ciclo y movimientos que ingresas en la app son datos que tú decides registrar manualmente. Se usan únicamente para mostrarte tu propia información y cálculos.',
+      ]},
+      { h: '3. Para qué usamos tus datos', p: [
+        'Autenticarte, operar las funciones de la app, enviarte el código de recuperación de contraseña a tu email y brindarte soporte. Nada más.',
+      ]},
+      { h: '4. Con quién compartimos', p: [
+        'Con nadie. No vendemos ni cedemos tus datos a terceros. El pago lo procesa PayPal bajo sus propios términos y nosotros solo recibimos la confirmación.',
+      ]},
+      { h: '5. Seguridad', p: [
+        'Contraseñas cifradas con bcrypt, acceso autenticado mediante token y comunicación restringida a tu propia cuenta.',
+      ]},
+      { h: '6. Tus derechos (Ley N° 29733)', p: [
+        'Conforme a la Ley de Protección de Datos Personales del Perú, puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición escribiendo a soporte@fintu.pe.',
+      ]},
+      { h: '7. Almacenamiento local', p: [
+        'La app guarda tu sesión (token) en el almacenamiento local de tu navegador para mantenerte conectado. Se elimina al cerrar sesión.',
+      ]},
+    ],
+  },
+};
+
+function LegalModal({ doc, onClose }) {
+  const data = LEGAL[doc];
+  if (!data) return null;
+  return (
+    <div className="lp-legal-ov" onClick={onClose} role="presentation">
+      <div className="lp-legal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={data.title}>
+        <div className="lp-legal-head">
+          <div>
+            <h3>{data.title}</h3>
+            <span>Última actualización: {data.updated}</span>
+          </div>
+          <button className="lp-legal-x" onClick={onClose} aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" width="14" height="14">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div className="lp-legal-body">
+          {data.sections.map((s) => (
+            <section key={s.h}>
+              <h4>{s.h}</h4>
+              {s.p.map((t, i) => <p key={i}>{t}</p>)}
+            </section>
+          ))}
+          <p className="lp-legal-contact">¿Dudas? Escríbenos a soporte@fintu.pe</p>
+        </div>
+        <div className="lp-legal-foot">
+          <button className="lp-btn-gold" onClick={onClose}>Entendido</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════
    ICONOS
 ════════════════════════════════════════════════════════════ */
 const Arr = () => (
@@ -257,6 +356,7 @@ export default function Landing() {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
   const [navScrolled, setNavScrolled] = useState(false);
+  const [legalOpen, setLegalOpen] = useState(null); // null | 'terminos' | 'privacidad'
 
   // Intro: solo una vez por sesión y nunca con reduced-motion
   const [showIntro, setShowIntro] = useState(() => {
@@ -269,11 +369,19 @@ export default function Landing() {
     setShowIntro(false);
   }, []);
 
-  // Bloquear scroll mientras corre el intro
+  // Bloquear scroll mientras corre el intro o hay un modal legal abierto
   useEffect(() => {
-    document.body.style.overflow = showIntro ? 'hidden' : '';
+    document.body.style.overflow = (showIntro || legalOpen) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  }, [showIntro]);
+  }, [showIntro, legalOpen]);
+
+  // Cerrar modal legal con Escape
+  useEffect(() => {
+    if (!legalOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') setLegalOpen(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [legalOpen]);
 
   useReveal(!showIntro);
 
@@ -289,6 +397,7 @@ export default function Landing() {
     <div className="lp">
 
       {showIntro && <IntroGreeting onDone={handleIntroDone} />}
+      {legalOpen && <LegalModal doc={legalOpen} onClose={() => setLegalOpen(null)} />}
 
       {/* ─── NAV ─── */}
       <nav className={`lp-nav${navScrolled ? ' lp-nav--scrolled' : ''}`}>
@@ -432,6 +541,10 @@ export default function Landing() {
             <button className="lp-btn-gold lp-btn-full" onClick={() => navigate('/registro')}>
               Crear mi cuenta <Arr />
             </button>
+            <p className="lp-price-terms">
+              Al crear tu cuenta aceptas los <span onClick={() => setLegalOpen('terminos')}>Términos</span> y
+              la <span onClick={() => setLegalOpen('privacidad')}>Política de Privacidad</span>.
+            </p>
             <p className="lp-price-login">
               ¿Ya tienes cuenta? <span onClick={() => navigate('/login')}>Inicia sesión</span>
             </p>
@@ -482,6 +595,13 @@ export default function Landing() {
               <li onClick={() => navigate('/login')}>Iniciar sesión</li>
               <li onClick={() => scrollTo('sec-pricing')}>Precio</li>
               <li onClick={() => scrollTo('sec-faq')}>Preguntas frecuentes</li>
+            </ul>
+          </div>
+          <div className="lp-footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li onClick={() => setLegalOpen('terminos')}>Términos y Condiciones</li>
+              <li onClick={() => setLegalOpen('privacidad')}>Política de Privacidad</li>
             </ul>
           </div>
           <div className="lp-footer-col">
