@@ -1,0 +1,183 @@
+/* ============================================================
+   SIDEBAR — dark navy  |  ESTÁTICO en desktop, overlay en mobile
+
+   Vive con el componente, no con una página: Sidebar se usa en seis
+   pantallas y antes sus estilos estaban solo en Dashboard.css, así que
+   al entrar directo a cualquier otra (recarga, enlace guardado) salía
+   sin estilos.
+
+   Las variables se declaran sobre .sidebar en vez de :root para que la
+   hoja sea autosuficiente sin filtrar tokens al resto de la app.
+============================================================ */
+
+.sidebar {
+  --app-gold:    #c49a3c;
+  --app-sidebar: #0c1425;
+
+  width: 260px; flex-shrink: 0;
+  height: 100vh; position: sticky; top: 0;
+  background: var(--app-sidebar);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  z-index: 200;
+}
+.sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,168,112,0.40), transparent);
+}
+
+.sidebar-header {
+  padding: 20px 18px 16px;
+  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+}
+.sidebar-brand { align-items: flex-start; color: var(--app-gold); cursor: pointer; }
+.sidebar-brand-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(200,168,112,0.15); border: 1px solid rgba(200,168,112,0.25);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--app-gold); flex-shrink: 0;
+}
+.sidebar-header h2 {
+  font-size: 16px; font-weight: 800; color: var(--app-gold); letter-spacing: -0.3px;
+}
+.sidebar-close {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.50); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.sidebar-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* ── Bloque inferior: usuario + logout ── */
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px 12px 12px;
+  flex-shrink: 0;
+}
+.sidebar-user {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 12px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.sidebar-user:hover {
+  background: rgba(200,168,112,0.08);
+  border-color: rgba(200,168,112,0.25);
+}
+.sidebar-user:focus-visible { outline: 2px solid var(--app-gold); outline-offset: 2px; }
+.sidebar-user-avatar {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  background: rgba(200,168,112,0.20); border: 1px solid rgba(200,168,112,0.28);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--app-gold); letter-spacing: -0.3px;
+}
+.sidebar-user-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.sidebar-user-name  { font-size: 13px; font-weight: 700; color: #edf0f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-plan  { font-size: 9.5px; font-weight: 600; color: var(--app-gold); letter-spacing: 0.5px; }
+.sidebar-logout {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  background: transparent; border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.40); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.sidebar-logout:hover {
+  background: rgba(220,38,38,0.12);
+  border-color: rgba(220,38,38,0.40);
+  color: #f87171;
+}
+
+/* ── Navegación ── */
+.sidebar-nav { padding: 0 10px; flex: 1; }
+.nav-item {
+  width: 100%; display: flex; align-items: center; gap: 11px;
+  padding: 10px 13px; border-radius: 9px;
+  color: rgba(255,255,255,0.45); text-decoration: none;
+  transition: all 0.2s; margin-bottom: 2px;
+  cursor: pointer; background: transparent; border: none;
+  text-align: left; font-family: 'DM Sans', inherit; position: relative; overflow: hidden;
+}
+.nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+.nav-item.active { background: rgba(200,168,112,0.12); color: #c49a3c; }
+.nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 18%; bottom: 18%;
+  width: 2.5px; border-radius: 999px;
+  background: #c49a3c; box-shadow: 0 0 8px rgba(200,168,112,0.60);
+}
+.nav-item--coming { opacity: 0.38; cursor: not-allowed; }
+.nav-item--coming:hover { background: transparent; color: rgba(255,255,255,0.38); }
+
+.nav-icon-svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.70; transition: opacity 0.2s; }
+.nav-item:hover .nav-icon-svg { opacity: 1; }
+.nav-item.active .nav-icon-svg { opacity: 1; }
+.nav-label { font-size: 13px; font-weight: 500; flex: 1; }
+.nav-soon {
+  font-size: 8px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 2px 6px; background: rgba(200,168,112,0.10);
+  border: 1px solid rgba(200,168,112,0.18); border-radius: 4px; color: #c49a3c;
+}
+.nav-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 14px 4px 6px; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.20);
+}
+.nav-divider::before, .nav-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+.nav-divider span { white-space: nowrap; }
+
+.sidebar-footer {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 10.5px; color: rgba(255,255,255,0.22); font-weight: 500; flex-shrink: 0;
+}
+.sidebar-footer-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.22); }
+
+.sidebar-overlay { display: none; /* oculto en desktop */ }
+
+/* ── Botón que abre el sidebar ──
+   Lo pintan las seis páginas en su cabecera, así que vive aquí y no en la
+   hoja de ninguna de ellas. Declara sus tokens por lo mismo. */
+.menu-toggle {
+  --app-surface:  #ffffff;
+  --app-surface2: #f7f9ff;
+  --app-text:     #1a1d2e;
+  --app-border:   rgba(30,45,100,0.08);
+  --app-border-h: rgba(30,45,100,0.16);
+
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  color: var(--app-text); font-size: 18px;
+  width: 36px; height: 36px; border-radius: 9px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 3px rgba(30,45,100,0.07);
+}
+.menu-toggle:hover { background: var(--app-surface2); border-color: var(--app-border-h); }
+
+/* ── Desktop: sin botón de menú ni de cerrar ── */
+@media (min-width: 1024px) {
+  .menu-toggle   { display: none !important; }
+  .sidebar-close { display: none !important; }
+}
+
+/* ── Mobile: el sidebar pasa a overlay ── */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed; top: 0; left: -280px; height: 100vh;
+    width: 270px; z-index: 1000;
+    transition: left 0.30s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 4px 0 40px rgba(0,0,0,0.25);
+  }
+  .sidebar.open { left: 0; }
+  .sidebar-overlay {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(10,16,36,0.55);
+    z-index: 999; backdrop-filter: blur(4px);
+  }
+  .menu-toggle   { display: flex !important; }
+  .sidebar-close { display: flex !important; }
+}
