@@ -1,12 +1,18 @@
 /**
  * SERVICIO DE DOMINIO: ciclo de facturación de una tarjeta.
  *
- * Lógica pura de fechas (sin BD, sin HTTP). Calcula, a partir de los
- * días configurados (inicio, cierre, pago), las fechas reales del ciclo
- * vigente y los días restantes. Extraído de Card.calcularCicloActual
- * con comportamiento idéntico.
+ * Lógica pura de fechas (sin BD, sin HTTP). El ciclo se ancla en el CIERRE
+ * y es CONTINUO: va del día siguiente al cierre anterior hasta el cierre.
+ * Así ningún consumo queda huérfano entre dos estados de cuenta, que es
+ * como funcionan las tarjetas reales.
  *
- * Ejemplo (tarjeta BCP: inicio=26, cierre=25, pago=20):
+ * `diaInicio` queda como dato informativo de la tarjeta: el inicio se
+ * deriva del cierre para que ambos no puedan contradecirse.
+ *
+ * Espejo de creditsmart-frontend/src/shared/utils/ciclo.js — si cambias
+ * uno, cambia el otro.
+ *
+ * Ejemplo (tarjeta BCP: cierre=25, pago=20):
  *   - Hoy 17 Feb → ciclo 26 Ene → 25 Feb, pago 20 Mar
  *   - Hoy 28 Feb (cierre ya pasó) → ciclo 26 Feb → 25 Mar, pago 20 Abr
  */
@@ -17,54 +23,66 @@ function formatearFecha(fecha) {
   return `${fecha.getDate()} ${MESES[fecha.getMonth()]}`;
 }
 
+/** 'YYYY-MM-DD' en hora local. toISOString() pasa a UTC y corre el día. */
+function aISO(fecha) {
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  return `${fecha.getFullYear()}-${mes}-${dia}`;
+}
+
+const ultimoDiaDelMes = (anio, mes) => new Date(anio, mes + 1, 0).getDate();
+
+/** Fecha con el día recortado al último real del mes (los 29-31 no existen siempre). */
+function diaDelMes(anio, mes, dia) {
+  const ref = new Date(anio, mes, 1);
+  const a = ref.getFullYear();
+  const m = ref.getMonth();
+  return new Date(a, m, Math.min(Math.max(dia, 1), ultimoDiaDelMes(a, m)));
+}
+
+const soloDia = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
 class BillingCycle {
-  static calcularActual(diaInicio, diaCierre, diaPago) {
-    const hoy = new Date();
-    const mesActual = hoy.getMonth(); // 0-11
-    const anioActual = hoy.getFullYear();
-    const diaHoy = hoy.getDate();
+  static calcularActual(diaInicio, diaCierre, diaPago, refDate = new Date()) {
+    const hoy = refDate;
+    const dC = Number(diaCierre) || Number(diaInicio) || ultimoDiaDelMes(hoy.getFullYear(), hoy.getMonth());
+    const dP = Number(diaPago) || dC;
 
-    // Determinar el mes del cierre actual
-    let mesCierre = mesActual;
-    let anioCierre = anioActual;
+    // Si ya pasó el día de cierre este mes, el cierre vigente es el del próximo
+    const cierraEsteMes = hoy.getDate() <= Math.min(dC, ultimoDiaDelMes(hoy.getFullYear(), hoy.getMonth()));
+    const fechaCierre = diaDelMes(hoy.getFullYear(), hoy.getMonth() + (cierraEsteMes ? 0 : 1), dC);
 
-    // Si ya pasó el día de cierre este mes, el cierre actual es el próximo mes
-    if (diaHoy > diaCierre) {
-      mesCierre = mesActual + 1;
-      if (mesCierre > 11) {
-        mesCierre = 0;
-        anioCierre++;
-      }
-    }
+    // Inicio: el día siguiente al cierre anterior
+    const cierreAnterior = diaDelMes(fechaCierre.getFullYear(), fechaCierre.getMonth() - 1, dC);
+    const fechaInicio = new Date(cierreAnterior);
+    fechaInicio.setDate(fechaInicio.getDate() + 1);
 
-    const fechaCierre = new Date(anioCierre, mesCierre, diaCierre);
+    // Pago: vence tras el cierre — mismo mes si el día es posterior, el siguiente si no
+    const pagoDe = (cierre) =>
+      diaDelMes(cierre.getFullYear(), cierre.getMonth() + (dP >= dC ? 0 : 1), dP);
 
-    // Inicio del ciclo: mes anterior al cierre
-    let mesInicio = mesCierre - 1;
-    let anioInicio = anioCierre;
-    if (mesInicio < 0) {
-      mesInicio = 11;
-      anioInicio--;
-    }
-    const fechaInicio = new Date(anioInicio, mesInicio, diaInicio);
+    const fechaPagoDelCiclo = pagoDe(fechaCierre);
 
-    // Pago: mes siguiente al cierre
-    let mesPago = mesCierre + 1;
-    let anioPago = anioCierre;
-    if (mesPago > 11) {
-      mesPago = 0;
-      anioPago++;
-    }
-    const fechaPago = new Date(anioPago, mesPago, diaPago);
+    /* ── Pago realmente vigente ──
+       Al cerrar un ciclo empiezas a acumular el siguiente, pero sigues
+       debiendo el que cerró. El vencimiento que el usuario tiene encima es
+       el del ciclo ANTERIOR mientras no haya pasado; si se usara el del
+       ciclo que acumula, la cuenta regresiva diría "faltan 32 días" el día
+       antes de que le cobren intereses. */
+    const cierreAnteriorFecha = cierreAnterior;
+    const fechaPagoAnterior = pagoDe(cierreAnteriorFecha);
+    const pagoAnteriorVigente = soloDia(fechaPagoAnterior) >= soloDia(hoy);
 
-    const diasAlCierre = Math.ceil((fechaCierre - hoy) / (1000 * 60 * 60 * 24));
-    const diasAlPago = Math.ceil((fechaPago - hoy) / (1000 * 60 * 60 * 24));
+    const fechaPago = pagoAnteriorVigente ? fechaPagoAnterior : fechaPagoDelCiclo;
+    const cierreDelPago = pagoAnteriorVigente ? cierreAnteriorFecha : fechaCierre;
+
+    const enDias = (f) => Math.round((soloDia(f) - soloDia(hoy)) / (1000 * 60 * 60 * 24));
 
     return {
       // Fechas ISO para la BD
-      fecha_inicio: fechaInicio.toISOString().split('T')[0],
-      fecha_cierre: fechaCierre.toISOString().split('T')[0],
-      fecha_pago: fechaPago.toISOString().split('T')[0],
+      fecha_inicio: aISO(fechaInicio),
+      fecha_cierre: aISO(fechaCierre),
+      fecha_pago: aISO(fechaPago),
 
       // Fechas formateadas para UI
       fecha_inicio_formateada: formatearFecha(fechaInicio),
@@ -72,8 +90,19 @@ class BillingCycle {
       fecha_pago_formateada: formatearFecha(fechaPago),
 
       // Días restantes
-      dias_al_cierre: Math.max(0, diasAlCierre),
-      dias_al_pago: Math.max(0, diasAlPago),
+      dias_al_cierre: Math.max(0, enDias(fechaCierre)),
+      dias_al_pago: Math.max(0, enDias(fechaPago)),
+
+      /* El pago vigente puede pertenecer al ciclo anterior: en ese caso su
+         monto ya está cerrado y no crece con nuevos consumos. */
+      pago_es_ciclo_anterior: pagoAnteriorVigente,
+      pago_ciclo_cerrado: soloDia(cierreDelPago) < soloDia(hoy),
+      pago_ciclo_cierre: aISO(cierreDelPago),
+
+      /* Vencimiento propio del ciclo que acumula. No es el que hay que
+         mostrar como cuenta regresiva —para eso está fecha_pago— pero sí
+         el que corresponde a fecha_inicio/fecha_cierre. */
+      fecha_pago_ciclo: aISO(fechaPagoDelCiclo),
 
       ciclo_descripcion: `${formatearFecha(fechaInicio)} → ${formatearFecha(fechaCierre)}`,
     };

@@ -5,6 +5,7 @@
 function buildMovementController({
   getMovementsByCard,
   getMovementsByCycle,
+  getMovementsByRange,
   createMovement,
   getCycleStats,
   getChartData,
@@ -21,7 +22,13 @@ function buildMovementController({
           return res.json({ success: false, message: 'ID de tarjeta no proporcionado' });
         }
 
-        const movimientos = await getMovementsByCard.execute(tarjetaId);
+        // ?limite=N (opcional): entero positivo, con tope de seguridad de 100.
+        const limiteRaw = parseInt(req.query.limite, 10);
+        const limite = Number.isInteger(limiteRaw) && limiteRaw > 0
+          ? Math.min(limiteRaw, 100)
+          : null;
+
+        const movimientos = await getMovementsByCard.execute(tarjetaId, limite);
         res.json({ success: true, movimientos });
       } catch (error) {
         console.error('Error al obtener movimientos:', error);
@@ -42,6 +49,27 @@ function buildMovementController({
       } catch (error) {
         console.error('Error al obtener movimientos del ciclo:', error);
         res.json({ success: false, message: 'Error al obtener movimientos del ciclo' });
+      }
+    },
+
+    async getMovementsByRange(req, res) {
+      try {
+        const { tarjetaId, desde, hasta } = req.query;
+
+        if (!tarjetaId || !desde || !hasta) {
+          return res.json({ success: false, message: 'Faltan parámetros (tarjetaId, desde, hasta)' });
+        }
+
+        const result = await getMovementsByRange.execute({ tarjetaId, desde, hasta });
+
+        if (!result.ok) {
+          return res.json({ success: false, message: result.message });
+        }
+
+        res.json({ success: true, movimientos: result.movimientos });
+      } catch (error) {
+        console.error('Error al obtener movimientos por rango:', error);
+        res.json({ success: false, message: 'Error al obtener movimientos por rango' });
       }
     },
 
