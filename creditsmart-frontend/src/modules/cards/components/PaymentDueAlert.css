@@ -1,0 +1,111 @@
+/* ── Aviso de pago próximo a vencer ── */
+
+.pda-wrap {
+  display: flex;
+  gap: 16px;
+  padding: 20px 22px;
+  border-radius: 16px;
+  border: 1.5px solid;
+  background: #ffffff;
+  margin-bottom: 22px;
+}
+
+/* Escala de urgencia: el color sube conforme se acerca el vencimiento */
+.pda-aviso    { border-color: rgba(30,45,100,0.12);  background: #fbfcff; }
+.pda-atencion { border-color: rgba(196,154,60,0.40); background: #fffdf6; }
+.pda-urgente  { border-color: rgba(217,119,6,0.45);  background: #fffaf2; }
+.pda-critico  { border-color: rgba(186,38,38,0.45);  background: #fff7f7; }
+
+.pda-icon {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 11px;
+}
+.pda-icon svg { width: 20px; height: 20px; }
+
+.pda-aviso    .pda-icon { background: rgba(30,45,100,0.06);  color: #5c6480; }
+.pda-atencion .pda-icon { background: rgba(196,154,60,0.13); color: #c49a3c; }
+.pda-urgente  .pda-icon { background: rgba(217,119,6,0.13);  color: #d97706; }
+.pda-critico  .pda-icon { background: rgba(186,38,38,0.11);  color: #ba2626; }
+
+.pda-body { flex: 1; min-width: 0; }
+
+.pda-title {
+  margin: 0 0 6px;
+  font-size: 16px; font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #1a1d2e;
+}
+.pda-critico .pda-title { color: #ba2626; }
+.pda-urgente .pda-title { color: #b45309; }
+
+.pda-lead {
+  margin: 0 0 16px;
+  font-size: 13px; line-height: 1.55;
+  color: #5c6480;
+}
+.pda-lead strong { color: #1a1d2e; font-weight: 700; }
+
+/* ── Montos ── */
+.pda-montos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pda-monto {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 12px 14px;
+  border-radius: 11px;
+  background: rgba(30,45,100,0.035);
+  border: 1px solid rgba(30,45,100,0.07);
+}
+.pda-monto-reco {
+  background: rgba(21,122,85,0.06);
+  border-color: rgba(21,122,85,0.20);
+}
+
+.pda-monto-label {
+  font-size: 9.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.9px;
+  color: #9aa4c0;
+}
+.pda-monto-valor {
+  font-size: 19px; font-weight: 800;
+  letter-spacing: -0.6px;
+  color: #1a1d2e;
+}
+.pda-monto-reco .pda-monto-valor { color: #157a55; }
+
+.pda-monto-hint {
+  font-size: 10.5px; line-height: 1.35;
+  color: #9aa4c0;
+}
+
+/* ── Consecuencia y notas ── */
+.pda-consecuencia {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: rgba(186,38,38,0.05);
+  border-left: 2.5px solid rgba(186,38,38,0.45);
+  font-size: 12px; line-height: 1.5;
+  color: #5c6480;
+}
+.pda-consecuencia strong { color: #ba2626; font-weight: 700; }
+
+.pda-nota {
+  margin: 10px 0 0;
+  font-size: 11.5px; line-height: 1.45;
+  color: #9aa4c0;
+  font-style: italic;
+}
+
+/* ── Móvil ── */
+@media (max-width: 640px) {
+  .pda-wrap { flex-direction: column; gap: 12px; padding: 17px 16px; }
+  .pda-montos { grid-template-columns: 1fr; }
+  .pda-title { font-size: 15px; }
+}
