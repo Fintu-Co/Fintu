@@ -22,7 +22,13 @@ class CreateMovement {
       return { ok: false, message: 'El monto debe ser mayor a 0' };
     }
 
-    const { fecha, ciclo_mes, ciclo_anio } = Movement.derivarCiclo(fecha_movimiento);
+    /* La fecha llega del cliente: se valida antes de tocar la BD. */
+    const fechaNormalizada = Movement.normalizarFecha(fecha_movimiento);
+    if (!fechaNormalizada.ok) {
+      return { ok: false, message: fechaNormalizada.message };
+    }
+
+    const { fecha, ciclo_mes, ciclo_anio } = Movement.derivarCiclo(fechaNormalizada.fecha);
 
     const movimientoId = await this.movementRepository.create({
       tarjeta_id,
