@@ -1,0 +1,352 @@
+/* ============================================================
+   FINTÚ & CO. — COMPARADOR DE BANCOS (página, light theme)
+   Shell y hero reutilizan clases de Dashboard.css / Educacion.css
+============================================================ */
+
+/* ── LOADING ── */
+.comp-page .comp-loading {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding: 60px 0;
+  color: var(--app-dim);
+  font-size: 13.5px;
+}
+
+/* ── FILTROS ── */
+.comp-page .comp-objetivos {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.comp-page .comp-objetivos-label {
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--app-muted);
+}
+.comp-page .comp-objetivos-list { display: flex; gap: 6px; flex-wrap: wrap; }
+.comp-page .comp-objetivo-btn {
+  padding: 8px 15px;
+  border: 1px solid var(--app-border);
+  border-radius: 99px;
+  background: var(--app-surface);
+  color: var(--app-muted);
+  font-size: 12.5px; font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.comp-page .comp-objetivo-btn:hover { border-color: rgba(196,154,60,0.40); color: var(--app-gold-d); }
+.comp-page .comp-objetivo-btn.active {
+  background: var(--app-navy);
+  border-color: var(--app-navy);
+  color: var(--app-gold-l);
+}
+
+.comp-page .comp-objetivo-desc {
+  background: rgba(196,154,60,0.06);
+  border: 1px solid rgba(196,154,60,0.20);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+.comp-page .comp-objetivo-desc p { font-size: 13px; color: var(--app-muted); }
+
+/* ── TOOLBAR ── */
+.comp-page .comp-toolbar { display: flex; gap: 10px; margin-bottom: 14px; }
+.comp-page .comp-search {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+}
+.comp-page .comp-search::placeholder { color: var(--app-dim); }
+.comp-page .comp-search:focus {
+  border-color: var(--app-gold);
+  box-shadow: 0 0 0 3px rgba(196,154,60,0.10);
+}
+.comp-page .comp-sort-btn {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1.5px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-muted);
+  font-size: 13px; font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.comp-page .comp-sort-btn:hover { border-color: rgba(196,154,60,0.40); color: var(--app-gold-d); }
+
+/* ── TABLA ── */
+.comp-page .comp-table {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  margin-bottom: 20px;
+}
+.comp-page .comp-table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.3fr 0.8fr;
+  gap: 12px;
+  padding: 13px 20px;
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--app-border);
+  font-size: 10.5px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--app-dim);
+}
+.comp-page .comp-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.3fr 0.8fr;
+  gap: 12px;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--app-border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.comp-page .comp-table-row:last-child { border-bottom: none; }
+.comp-page .comp-table-row:hover { background: rgba(196,154,60,0.04); }
+.comp-page .comp-table-row.best { background: rgba(196,154,60,0.05); }
+.comp-page .comp-table-row.expanded { background: var(--app-bg); }
+
+.comp-page .comp-row-banco { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.comp-page .comp-row-rank {
+  font-size: 11px; font-weight: 800; color: var(--app-dim);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  width: 26px;
+}
+.comp-page .comp-row-nombre { font-size: 13.5px; font-weight: 700; color: var(--app-text); display: block; }
+.comp-page .comp-row-mejor {
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--app-gold-d);
+}
+.comp-page .comp-row-tea { font-size: 14.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.comp-page .comp-row-tea.green  { color: var(--app-green); }
+.comp-page .comp-row-tea.yellow { color: var(--app-amber); }
+.comp-page .comp-row-tea.red    { color: var(--app-red); }
+.comp-page .comp-row-interes { font-size: 13px; color: var(--app-muted); font-variant-numeric: tabular-nums; }
+.comp-page .comp-row-nivel {
+  font-size: 11px; font-weight: 800;
+  padding: 4px 10px; border-radius: 99px;
+  text-align: center;
+  width: fit-content;
+}
+.comp-page .comp-row-nivel.green  { background: rgba(29,154,108,0.10); color: #157a55; }
+.comp-page .comp-row-nivel.yellow { background: rgba(217,119,6,0.10);  color: var(--app-amber); }
+.comp-page .comp-row-nivel.red    { background: rgba(220,38,38,0.08);  color: var(--app-red); }
+
+/* ── DETALLE EXPANDIBLE ── */
+.comp-page .comp-row-detail {
+  grid-column: 1 / -1;
+  cursor: default;
+  padding-top: 14px;
+  border-top: 1px dashed var(--app-border);
+  margin-top: 4px;
+}
+.comp-page .comp-detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 12px;
+}
+.comp-page .comp-detail-item {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.comp-page .comp-detail-item span { font-size: 11px; font-weight: 700; color: var(--app-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.comp-page .comp-detail-item strong { font-size: 13px; color: var(--app-text); font-variant-numeric: tabular-nums; }
+.comp-page .comp-detail-item strong.danger { color: var(--app-red); }
+.comp-page .comp-detail-tip {
+  background: rgba(196,154,60,0.06);
+  border: 1px solid rgba(196,154,60,0.20);
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+.comp-page .comp-detail-tip p { font-size: 12.5px; color: var(--app-muted); line-height: 1.55; }
+
+/* ── EMPTY ── */
+.comp-page .comp-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--app-dim);
+  font-size: 13.5px;
+}
+
+/* ── GUÍA EDUCATIVA ── */
+.comp-page .comp-edu-section {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  margin-bottom: 14px;
+}
+.comp-page .comp-edu-section h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 14px; }
+.comp-page .comp-edu-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.comp-page .comp-edu-card {
+  background: var(--app-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.comp-page .comp-edu-card strong { font-size: 13px; color: var(--app-text); display: block; margin-bottom: 4px; }
+.comp-page .comp-edu-card p { font-size: 12px; color: var(--app-muted); line-height: 1.55; }
+
+.comp-page .comp-footer-note {
+  font-size: 11.5px; color: var(--app-dim);
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+/* ── Guía "Cómo comparar" (reemplaza al destacado del "mejor banco") ── */
+.comp-page .comp-guia {
+  background: #fffdf9;
+  border: 1px solid rgba(20, 23, 31, 0.08);
+  border-radius: 18px;
+  padding: 24px 24px 20px;
+  margin-bottom: 22px;
+  animation: compGuiaFade 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes compGuiaFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.comp-page .comp-guia-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.comp-page .comp-guia-ico {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(196, 154, 60, 0.12);
+  border: 1px solid rgba(196, 154, 60, 0.26);
+  color: #9a7628;
+  flex-shrink: 0;
+}
+.comp-page .comp-guia-ico svg { width: 20px; height: 20px; }
+.comp-page .comp-guia-head h3 {
+  font-size: 17px; font-weight: 800;
+  color: #14171f; letter-spacing: -0.2px;
+  margin: 0 0 4px;
+}
+.comp-page .comp-guia-head p {
+  font-size: 13px; line-height: 1.55;
+  color: #5c6480; margin: 0; max-width: 60ch;
+}
+
+.comp-page .comp-guia-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.comp-page .comp-guia-item {
+  position: relative;
+  overflow: hidden;
+  background: #f7f9ff;
+  border: 1px solid rgba(20, 23, 31, 0.06);
+  border-radius: 14px;
+  padding: 16px 18px 16px;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  animation: compItemIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes compItemIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.comp-page .comp-guia-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(196, 154, 60, 0.32);
+  box-shadow: 0 12px 28px rgba(20, 23, 31, 0.08);
+}
+.comp-page .comp-guia-num {
+  position: absolute;
+  right: 14px; bottom: 6px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 44px; font-weight: 600; line-height: 1;
+  color: rgba(20, 23, 31, 0.06);
+  pointer-events: none;
+}
+.comp-page .comp-guia-item h4 {
+  font-size: 14px; font-weight: 800;
+  color: #14171f; margin: 0 0 5px;
+}
+.comp-page .comp-guia-item p {
+  font-size: 12.5px; line-height: 1.6;
+  color: #5c6480; margin: 0; max-width: 44ch;
+}
+
+.comp-page .comp-guia-rango {
+  display: flex; align-items: flex-start; gap: 9px;
+  margin-top: 16px; padding-top: 15px;
+  border-top: 1px solid rgba(20, 23, 31, 0.07);
+}
+.comp-page .comp-guia-rango svg {
+  width: 15px; height: 15px; color: #9a7628; flex-shrink: 0; margin-top: 2px;
+}
+.comp-page .comp-guia-rango span {
+  font-size: 12.5px; line-height: 1.6; color: #5c6480;
+}
+.comp-page .comp-guia-rango strong { color: #14171f; font-weight: 800; }
+
+@media (max-width: 720px) {
+  .comp-page .comp-guia-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .comp-page .comp-guia,
+  .comp-page .comp-guia-item { animation: none !important; }
+}
+
+/* ── Fuente y vigencia de las tasas (aviso legal visible) ── */
+.comp-page .comp-fuente {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid rgba(196, 154, 60, 0.28);
+  background: rgba(196, 154, 60, 0.07);
+  border-radius: 12px;
+}
+.comp-page .comp-fuente svg {
+  width: 16px; height: 16px;
+  color: #9a7628;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.comp-page .comp-fuente p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #5c6480;
+  margin: 0;
+}
+.comp-page .comp-fuente strong { color: #1a1d2e; font-weight: 700; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .comp-page .comp-edu-cards { grid-template-columns: 1fr; }
+  .comp-page .comp-detail-grid { grid-template-columns: 1fr; }
+  .comp-page .comp-table-header { display: none; }
+  .comp-page .comp-table-row {
+    grid-template-columns: 1fr auto;
+    row-gap: 6px;
+  }
+  .comp-page .comp-row-banco { grid-column: 1 / -1; }
+  .comp-page .comp-row-interes { display: none; }
+}
+
+@media (max-width: 640px) {
+  .comp-page .comp-toolbar { flex-direction: column; }
+}

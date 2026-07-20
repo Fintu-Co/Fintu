@@ -66,8 +66,10 @@ class MySqlGoalRepository extends GoalRepository {
   }
 
   async deactivate(goalId, userId) {
+    // Soft-delete: lo saca de "activos" (activo=FALSE) y también de "logrados"
+    // (completado=FALSE), así funciona tanto para objetivos activos como cumplidos.
     const [result] = await db.execute(
-      'UPDATE objetivos SET activo = FALSE WHERE id = ? AND usuario_id = ?',
+      'UPDATE objetivos SET activo = FALSE, completado = FALSE WHERE id = ? AND usuario_id = ?',
       [goalId, userId]
     );
     return result.affectedRows > 0;

@@ -1,0 +1,88 @@
+/* ═══════════════════════════════════════════════
+   USAGE DONUT — donut compacto de uso de línea
+   Prefijo: ud-
+═══════════════════════════════════════════════ */
+
+.ud-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.ud-donut {
+  position: relative;
+  flex-shrink: 0;
+  width: 92px;
+  height: 92px;
+}
+.ud-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ud-pct b {
+  font-size: 21px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.ud-pct span {
+  font-size: 9px;
+  font-weight: 800;
+  color: #9aa4c0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.ud-info { min-width: 0; }
+.ud-info h4 {
+  margin: 0 0 4px;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #1a1d2e;
+}
+.ud-info p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #5c6480;
+}
+.ud-tag {
+  display: inline-block;
+  margin-top: 9px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+.ud-tag-good { background: rgba(21,122,85,0.12); color: #157a55; }
+.ud-tag-warn { background: rgba(217,119,6,0.12); color: #d97706; }
+.ud-tag-bad  { background: rgba(220,38,38,0.12); color: #dc2626; }
+
+.ud-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #9a7628;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: gap 0.2s;
+}
+.ud-btn:hover { gap: 9px; color: #c49a3c; }
+
+@media (max-width: 480px) {
+  .ud-wrap { gap: 14px; }
+  .ud-donut { width: 78px; height: 78px; }
+  .ud-donut svg { width: 78px; height: 78px; }
+}

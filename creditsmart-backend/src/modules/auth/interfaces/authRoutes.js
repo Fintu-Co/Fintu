@@ -10,6 +10,7 @@ const MySqlUserRepository = require('../infrastructure/MySqlUserRepository');
 const BcryptPasswordHasher = require('../infrastructure/BcryptPasswordHasher');
 const JwtTokenService = require('../infrastructure/JwtTokenService');
 const NodemailerMailService = require('../infrastructure/NodemailerMailService');
+const PayPalPaymentVerifier = require('../infrastructure/PayPalPaymentVerifier');
 
 // Aplicación
 const RegisterUser = require('../application/RegisterUser');
@@ -32,12 +33,13 @@ const userRepository = new MySqlUserRepository();
 const passwordHasher = new BcryptPasswordHasher();
 const tokenService = new JwtTokenService();
 const mailService = new NodemailerMailService();
+const paymentVerifier = new PayPalPaymentVerifier();
 
 const controller = buildAuthController({
   registerUser: new RegisterUser({ userRepository, passwordHasher }),
   loginUser: new LoginUser({ userRepository, passwordHasher, tokenService }),
-  confirmPayment: new ConfirmPayment({ userRepository, tokenService }),
-  registerWithPayment: new RegisterWithPayment({ userRepository, passwordHasher, tokenService }),
+  confirmPayment: new ConfirmPayment({ userRepository, tokenService, paymentVerifier }),
+  registerWithPayment: new RegisterWithPayment({ userRepository, passwordHasher, tokenService, paymentVerifier }),
   registerSentinelQuery: new RegisterSentinelQuery({ userRepository }),
   getSentinelQuery: new GetSentinelQuery({ userRepository }),
   forgotPassword: new ForgotPassword({ userRepository, mailService }),

@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════════
+   CONFIRM DIALOG — modal de confirmación compartida
+   Prefijo: cfd-
+═══════════════════════════════════════════════ */
+
+.cfd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  background: rgba(10, 16, 30, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: cfd-fade 0.18s ease;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+@keyframes cfd-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.cfd {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  padding: 28px 26px 24px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(15, 23, 41, 0.35);
+  animation: cfd-up 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes cfd-up {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cfd-icon {
+  width: 52px; height: 52px;
+  margin: 0 auto 16px;
+  border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(30, 45, 100, 0.08);
+  color: #5c6480;
+}
+.cfd-icon.danger { background: rgba(220, 38, 38, 0.10); color: #dc2626; }
+.cfd-icon svg { width: 24px; height: 24px; }
+
+.cfd-title {
+  font-size: 18px; font-weight: 800;
+  color: #1a1d2e; letter-spacing: -0.3px;
+  margin: 0 0 8px;
+}
+.cfd-msg {
+  font-size: 13.5px; line-height: 1.55;
+  color: #5c6480;
+  margin: 0 auto 22px;
+  max-width: 34ch;
+}
+
+.cfd-actions { display: flex; gap: 10px; }
+.cfd-cancel,
+.cfd-confirm {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px;
+  border-radius: 12px;
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+.cfd-cancel {
+  background: #fff;
+  border: 1px solid rgba(30, 45, 100, 0.14);
+  color: #5c6480;
+}
+.cfd-cancel:hover { background: rgba(30, 45, 100, 0.03); border-color: rgba(30, 45, 100, 0.24); }
+
+.cfd-confirm {
+  background: #0f1729;
+  border: 1px solid #0f1729;
+  color: #fff;
+}
+.cfd-confirm:hover { background: #16203a; transform: translateY(-1px); }
+.cfd-confirm.danger {
+  background: #dc2626; border-color: #dc2626;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.28);
+}
+.cfd-confirm.danger:hover { background: #b91c1c; border-color: #b91c1c; }
+
+.cfd-cancel:focus-visible,
+.cfd-confirm:focus-visible { outline: 2px solid #c49a3c; outline-offset: 3px; }
+
+@media (max-width: 420px) {
+  .cfd { padding: 24px 20px 20px; }
+  .cfd-actions { flex-direction: column-reverse; }
+}

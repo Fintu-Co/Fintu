@@ -1,0 +1,175 @@
+/* ═══════════════════════════════════════════════
+   TEA MARKET CARD — "Tu TEA vs el mercado"
+   Prefijo: tmc-
+═══════════════════════════════════════════════ */
+
+.tmc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid rgba(30, 45, 100, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(30, 45, 100, 0.06);
+  position: relative;
+  overflow: hidden;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+.tmc-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.5), transparent);
+}
+
+/* Badge superior */
+.tmc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  background: rgba(212, 165, 116, 0.08);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  color: #d4a574;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  width: fit-content;
+}
+.tmc-badge svg { width: 12px; height: 12px; }
+
+/* Titular */
+.tmc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.tmc-tea {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.tmc-tea-good { color: #157a55; }
+.tmc-tea-warn { color: #d97706; }
+
+.tmc-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+.tmc-pill-good { background: rgba(21, 122, 85, 0.12); color: #157a55; }
+.tmc-pill-warn { background: rgba(217, 119, 6, 0.12); color: #d97706; }
+
+/* Escala del mercado */
+.tmc-scale { display: flex; flex-direction: column; gap: 8px; }
+.tmc-track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #157a55 0%, #d97706 55%, #dc2626 100%);
+  opacity: 0.9;
+}
+/* Marca del promedio del mercado */
+.tmc-prom {
+  position: absolute;
+  top: -4px; bottom: -4px;
+  width: 2px;
+  background: rgba(26, 29, 46, 0.55);
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+/* Marcador de tu TEA */
+.tmc-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+.tmc-marker-dot {
+  display: block;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3.5px solid currentColor;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.tmc-marker-good { color: #157a55; }
+.tmc-marker-warn { color: #d97706; }
+
+.tmc-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #5c6480;
+}
+.tmc-scale-labels em {
+  font-style: normal;
+  font-weight: 500;
+  color: #9aa4c0;
+}
+
+/* Lectura */
+.tmc-text {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #454b63;
+}
+.tmc-text strong { font-weight: 800; color: #1a1d2e; }
+
+/* Costo extra */
+.tmc-costo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 13px;
+  border-radius: 11px;
+}
+.tmc-costo {
+  background: rgba(196, 154, 60, 0.07);
+  border: 1px solid rgba(196, 154, 60, 0.2);
+}
+.tmc-costo strong { font-size: 14px; font-weight: 900; letter-spacing: -0.3px; color: #9a7628; }
+.tmc-costo span { font-size: 11.5px; line-height: 1.45; color: #5c6480; }
+
+/* CTA */
+.tmc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #9a7628;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: gap 0.2s;
+  width: fit-content;
+}
+.tmc-cta svg { width: 13px; height: 13px; }
+.tmc-cta:hover { gap: 9px; color: #c49a3c; }
+
+/* Estados */
+.tmc-loading, .tmc-empty {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #9aa4c0;
+}
+
+@media (max-width: 480px) {
+  .tmc-tea { font-size: 28px; }
+}

@@ -1,0 +1,206 @@
+/* ═══════════════════════════════════════════════
+   PAYMENT PLAN — "¿Cuánto pagar este ciclo?"
+   Prefijo: pp-
+═══════════════════════════════════════════════ */
+
+.pp-wrap {
+  background: #ffffff;
+  border: 1px solid rgba(30, 45, 100, 0.08);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  max-width: 1800px;
+  margin: 0 auto 16px;
+}
+
+/* ── Header ── */
+.pp-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.pp-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a1d2e;
+  letter-spacing: -0.2px;
+}
+.pp-sub {
+  margin: 3px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9aa4c0;
+}
+.pp-calc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(196, 154, 60, 0.1);
+  border: 1px solid rgba(196, 154, 60, 0.3);
+  color: #9a7628;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.pp-calc-btn svg { width: 13px; height: 13px; }
+.pp-calc-btn:hover { background: rgba(196, 154, 60, 0.18); }
+
+/* ── Tiers ── */
+.pp-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.pp-tier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  border-radius: 14px;
+  background: #f7f9ff;
+  border: 1px solid rgba(30, 45, 100, 0.08);
+  transition: all 0.2s;
+}
+.pp-tier:hover { border-color: rgba(30, 45, 100, 0.18); transform: translateY(-2px); }
+
+/* Destacado: la opción recomendada */
+.pp-tier-reco {
+  background: rgba(21, 122, 85, 0.05);
+  border-color: rgba(21, 122, 85, 0.28);
+}
+.pp-reco-tag {
+  position: absolute;
+  top: -9px; left: 16px;
+  background: #157a55;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.pp-tier-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.pp-tier-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.pp-tier-icon svg { width: 16px; height: 16px; }
+.pp-icon-good   { background: rgba(21, 122, 85, 0.12);  color: #157a55; }
+.pp-icon-warn   { background: rgba(217, 119, 6, 0.12);  color: #d97706; }
+.pp-icon-danger { background: rgba(220, 38, 38, 0.12);  color: #dc2626; }
+
+.pp-tier-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.pp-badge-good   { background: rgba(21, 122, 85, 0.12);  color: #157a55; }
+.pp-badge-warn   { background: rgba(217, 119, 6, 0.12);  color: #d97706; }
+.pp-badge-danger { background: rgba(220, 38, 38, 0.12);  color: #dc2626; }
+
+.pp-tier-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #5c6480;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.pp-tier-monto {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.pp-monto-good   { color: #157a55; }
+.pp-monto-warn   { color: #d97706; }
+.pp-monto-danger { color: #dc2626; }
+
+.pp-tier-desc {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #5c6480;
+}
+
+/* Proyección del mínimo */
+.pp-proy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.16);
+}
+.pp-proy strong { font-size: 12px; font-weight: 800; color: #b91c1c; }
+.pp-proy span   { font-size: 11.5px; line-height: 1.45; color: #7c3030; }
+
+/* ── Estado sin deuda ── */
+.pp-clear {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.pp-clear-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px;
+  border-radius: 16px;
+  background: rgba(21, 122, 85, 0.1);
+  border: 1px solid rgba(21, 122, 85, 0.26);
+  color: #157a55;
+  flex-shrink: 0;
+}
+.pp-clear-icon svg { width: 28px; height: 28px; }
+.pp-clear-body h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a1d2e;
+  letter-spacing: -0.2px;
+}
+.pp-clear-body p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5c6480;
+  max-width: 68ch;
+}
+.pp-clear-body strong { color: #157a55; font-weight: 800; }
+
+@media (max-width: 1023px) {
+  .pp-tiers { grid-template-columns: 1fr; }
+  .pp-head  { flex-direction: column; align-items: stretch; }
+  .pp-calc-btn { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .pp-wrap { padding: 16px; }
+  .pp-tier-monto { font-size: 21px; }
+  .pp-clear { flex-direction: column; align-items: flex-start; gap: 12px; }
+}

@@ -1,0 +1,406 @@
+/* ═══════════════════════════════════════
+   USAGE METER — VELOCÍMETRO PREMIUM
+   Prefijo: um-
+═══════════════════════════════════════ */
+
+.um-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 4px 4px;
+  position: relative;
+}
+
+/* Borde exterior pulsante según nivel */
+.um-wrap-good { --clr-border: rgba(29,154,108,0.25); }
+.um-wrap-warn { --clr-border: rgba(245,158,11,0.3); }
+.um-wrap-bad  { --clr-border: rgba(239,68,68,0.35); }
+
+/* ── Fondo glow radial detrás del gauge ── */
+.um-bg-glow {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--rgb), 0.12) 0%, transparent 65%);
+  pointer-events: none;
+  animation: um-bg-breathe 2.8s ease-in-out infinite;
+  filter: blur(18px);
+}
+
+@keyframes um-bg-breathe {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+}
+
+/* ── Gauge wrap — pulso de escala ── */
+.um-gauge-wrap {
+  position: relative;
+  width: 210px;
+  height: 196px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.um-pulse-good { animation: um-heartbeat-slow 3.5s ease-in-out infinite; }
+.um-pulse-warn { animation: um-heartbeat-mid  2.4s ease-in-out infinite; }
+.um-pulse-bad  { animation: um-heartbeat-fast 1.6s ease-in-out infinite; }
+
+@keyframes um-heartbeat-slow {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.025); }
+}
+@keyframes um-heartbeat-mid {
+  0%, 100% { transform: scale(1); }
+  30%       { transform: scale(1.03); }
+  60%       { transform: scale(1.015); }
+}
+@keyframes um-heartbeat-fast {
+  0%, 100% { transform: scale(1); }
+  20%       { transform: scale(1.04); }
+  40%       { transform: scale(1.01); }
+  60%       { transform: scale(1.035); }
+}
+
+.um-svg {
+  width: 100%;
+  height: 100%;
+  animation: um-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: visible;
+}
+
+@keyframes um-in {
+  from { opacity: 0; transform: scale(0.75) rotate(-10deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* ── Glow que respira (más agresivo por nivel) ── */
+.um-glow-arc { stroke-opacity: 0.08; }
+
+.um-glow-good { animation: um-breathe-good 3s   ease-in-out infinite; }
+.um-glow-warn { animation: um-breathe-warn 2.1s ease-in-out infinite; }
+.um-glow-bad  { animation: um-breathe-bad  1.3s ease-in-out infinite; }
+
+@keyframes um-breathe-good {
+  0%, 100% { stroke-opacity: 0.06; stroke-width: 26; }
+  50%       { stroke-opacity: 0.22; stroke-width: 34; }
+}
+@keyframes um-breathe-warn {
+  0%, 100% { stroke-opacity: 0.08; stroke-width: 28; }
+  50%       { stroke-opacity: 0.28; stroke-width: 38; }
+}
+@keyframes um-breathe-bad {
+  0%, 100% { stroke-opacity: 0.10; stroke-width: 30; }
+  50%       { stroke-opacity: 0.38; stroke-width: 44; }
+}
+
+/* ── Shimmer que barre el arco cada ~4s ── */
+.um-shimmer {
+  animation: um-shimmer-sweep 4s ease-in-out infinite;
+}
+
+@keyframes um-shimmer-sweep {
+  0%   { stroke-dashoffset: 0;    opacity: 0;   }
+  6%   { opacity: 0.85; }
+  75%  { stroke-dashoffset: -368; opacity: 0.7; }
+  88%  { stroke-dashoffset: -368; opacity: 0;   }
+  100% { stroke-dashoffset: 0;    opacity: 0;   }
+}
+
+/* ── Anillos del punto deslizante ── */
+.um-dot-ring1 {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: um-ring-expand 2s ease-out infinite;
+}
+.um-dot-ring2 {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: um-ring-expand 2s ease-out infinite 0.7s;
+}
+
+@keyframes um-ring-expand {
+  0%   { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0;   }
+}
+
+/* ── Centro: número animado ── */
+.um-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+  padding-top: 20px;
+}
+
+.um-center-glow {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  animation: um-center-pulse 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes um-center-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.6; }
+  50%       { transform: scale(1.3); opacity: 1; }
+}
+
+.um-pct {
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  animation: um-pop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 1;
+}
+.um-pct-sign {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+@keyframes um-pop {
+  from { opacity: 0; transform: scale(0.3) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.um-pct-good { color: #1d9a6c; }
+.um-pct-warn { color: #d97706; }
+.um-pct-bad  { color: #dc2626; animation: um-pop 0.9s cubic-bezier(0.34,1.56,0.64,1), um-pct-danger 1.6s ease-in-out 1.5s infinite; }
+
+@keyframes um-pct-danger {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.75; }
+}
+
+.um-pct-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9aa4c0;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Badge ── */
+.um-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid;
+  animation: um-slide 0.5s ease 0.3s both;
+}
+.um-badge-icon { width: 13px; height: 13px; flex-shrink: 0; }
+.um-badge-good { background: rgba(29,154,108,0.08);  border-color: rgba(29,154,108,0.25);  color: #1d9a6c; }
+.um-badge-warn { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.28); color: #f59e0b; }
+.um-badge-bad  { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.28);  color: #f87171; animation: um-slide 0.5s ease 0.3s both, um-badge-urgent 1.8s ease-in-out 1.5s infinite; }
+
+@keyframes um-badge-urgent {
+  0%, 100% { box-shadow: none; }
+  50%       { box-shadow: 0 0 16px rgba(239,68,68,0.4); }
+}
+
+@keyframes um-slide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Stats ── */
+.um-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  animation: um-slide 0.5s ease 0.4s both;
+}
+
+.um-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 12px;
+  background: #f7f9ff;
+  border: 1px solid rgba(30,45,100,0.08);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+.um-stat-card:hover {
+  border-color: rgba(var(--rgb), 0.25);
+  background: rgba(var(--rgb), 0.04);
+  transform: translateY(-2px);
+}
+
+.um-stat-card-label {
+  font-size: 10px; font-weight: 700; color: #9aa4c0;
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+.um-stat-card-val { font-size: 15px; font-weight: 800; color: #1a1d2e; letter-spacing: -0.3px; }
+.um-val-good { color: #157a55; }
+.um-val-warn { color: #d97706; }
+.um-val-bad  { color: #dc2626; }
+
+.um-micro-bar-track {
+  height: 3px; background: rgba(30,45,100,0.08); border-radius: 10px; overflow: hidden;
+}
+.um-micro-bar-fill {
+  height: 100%; border-radius: 10px;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.um-fill-good { background: #1d9a6c; }
+.um-fill-warn { background: #f59e0b; }
+.um-fill-bad  { background: #ef4444; }
+
+/* ── Total ── */
+.um-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  background: #f7f9ff;
+  border: 1px solid rgba(30,45,100,0.08);
+  border-radius: 10px;
+  animation: um-slide 0.5s ease 0.45s both;
+}
+.um-total-label { font-size: 10px; font-weight: 700; color: #9aa4c0; text-transform: uppercase; letter-spacing: 0.5px; }
+.um-total-val   { font-size: 13px; font-weight: 800; color: #5c6480; }
+
+/* ── Tip ── */
+.um-tip {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid;
+  animation: um-slide 0.5s ease 0.5s both;
+}
+.um-tip svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+.um-tip-good { background: rgba(29,154,108,0.05);  border-color: rgba(29,154,108,0.15);  color: rgba(67,176,138,0.85); }
+.um-tip-warn { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.18); color: rgba(245,158,11,0.9); }
+.um-tip-bad  { background: rgba(239,68,68,0.06);  border-color: rgba(239,68,68,0.2);   color: rgba(248,113,113,0.9); }
+
+/* ── Botón análisis — muy llamativo ── */
+.um-btn-analysis {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.2px;
+  transition: all 0.25s;
+  animation: um-slide 0.5s ease 0.55s both;
+}
+
+/* Variantes por nivel — botón claro, el color del nivel solo acentúa */
+.um-btn-good,
+.um-btn-warn,
+.um-btn-bad {
+  background: #ffffff;
+  border: 1.5px solid rgba(196,154,60,0.45);
+  color: #9a7628;
+  box-shadow: 0 2px 10px rgba(30,45,100,0.08);
+}
+.um-btn-warn { border-color: rgba(217,119,6,0.45); color: #b45309; }
+.um-btn-bad  {
+  border-color: rgba(220,38,38,0.45);
+  color: #dc2626;
+  animation: um-slide 0.5s ease 0.55s both, um-btn-glow-bad 1.8s ease-in-out 1s infinite;
+}
+
+@keyframes um-btn-glow-bad {
+  0%, 100% { box-shadow: 0 2px 10px rgba(30,45,100,0.08); }
+  50%       { box-shadow: 0 4px 16px rgba(220,38,38,0.22); }
+}
+
+/* Shimmer interno del botón */
+.um-btn-analysis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 25%, rgba(255,255,255,0.12) 50%, transparent 75%);
+  transform: translateX(-100%);
+  animation: um-btn-shimmer 2.5s ease-in-out infinite 1.5s;
+}
+@keyframes um-btn-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Punto "live" parpadeante */
+.um-btn-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  animation: um-live-blink 1.2s ease-in-out infinite;
+}
+@keyframes um-live-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.7); }
+}
+
+.um-btn-analysis svg:nth-child(2) { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Flecha — se desliza solo al hover */
+.um-btn-arrow {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-left: auto;
+  transition: transform 0.25s ease;
+}
+.um-btn-analysis:hover .um-btn-arrow { transform: translateX(4px); }
+
+.um-btn-analysis:hover {
+  transform: translateY(-2px);
+  border-color: rgba(196,154,60,0.75);
+  background: rgba(196,154,60,0.05);
+  box-shadow: 0 8px 20px rgba(30,45,100,0.12);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .um-gauge-wrap { width: 185px; height: 172px; }
+  .um-pct        { font-size: 40px; }
+  .um-pct-sign   { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+  .um-gauge-wrap  { width: 165px; height: 153px; }
+  .um-pct         { font-size: 34px; }
+  .um-pct-sign    { font-size: 18px; }
+  .um-stats-grid  { grid-template-columns: 1fr; gap: 8px; }
+  .um-stat-card   { padding: 12px; }
+  .um-bg-glow     { width: 200px; height: 200px; }
+  .um-btn-analysis { font-size: 12px; padding: 12px 16px; }
+}

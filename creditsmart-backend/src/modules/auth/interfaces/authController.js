@@ -91,6 +91,13 @@ function buildAuthController({
 
         const result = await confirmPayment.execute({ userId, paymentId });
 
+        if (result.status === 'PAYMENT_INVALID') {
+          console.warn(`Pago rechazado (${result.reason}) para userId=${userId}`);
+          return res.status(402).json({ success: false, message: 'No pudimos verificar tu pago con PayPal. Si el cobro se realizó, contacta a soporte con tu ID de transacción.' });
+        }
+        if (result.status === 'PAYMENT_ALREADY_USED') {
+          return res.status(409).json({ success: false, message: 'Este pago ya fue utilizado en otra cuenta.' });
+        }
         if (result.status === 'NOT_UPDATED') {
           return res.status(400).json({ success: false, message: 'No se pudo actualizar el estado del pago' });
         }
@@ -124,6 +131,11 @@ function buildAuthController({
             return res.status(400).json({ success: false, message: 'La contraseña debe tener al menos 6 caracteres' });
           case 'EMAIL_TAKEN':
             return res.status(400).json({ success: false, message: 'Este email ya está registrado' });
+          case 'PAYMENT_INVALID':
+            console.warn(`Pago rechazado (${result.reason}) para email=${email}`);
+            return res.status(402).json({ success: false, message: 'No pudimos verificar tu pago con PayPal. Si el cobro se realizó, contacta a soporte con tu ID de transacción.' });
+          case 'PAYMENT_ALREADY_USED':
+            return res.status(409).json({ success: false, message: 'Este pago ya fue utilizado en otra cuenta.' });
           default:
             return res.status(201).json({
               success: true,

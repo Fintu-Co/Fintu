@@ -1,0 +1,203 @@
+/* ═══════════════════════════════════════════════
+   CARD INTRO GUIDE — guía de primera visita
+   Prefijo: cig-
+═══════════════════════════════════════════════ */
+
+.cig-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(9, 14, 26, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cig-fade 0.25s ease;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+@keyframes cig-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.cig-modal {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  animation: cig-pop 0.32s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+@keyframes cig-pop {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header navy ── */
+.cig-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 22px;
+  background: linear-gradient(135deg, #0f1729, #0c1425);
+  color: #fff;
+}
+.cig-head-eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #d4a574;
+}
+.cig-head-title {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.cig-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.cig-x:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+
+/* ── Cuerpo ── */
+.cig-body {
+  padding: 24px 22px 6px;
+  animation: cig-step-in 0.32s ease;
+}
+@keyframes cig-step-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cig-step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: rgba(196, 154, 60, 0.1);
+  border: 1px solid rgba(196, 154, 60, 0.22);
+  color: #c49a3c;
+  margin-bottom: 14px;
+}
+.cig-step-icon svg { width: 24px; height: 24px; }
+
+.cig-cat {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #9aa4c0;
+}
+.cig-title {
+  margin: 6px 0 8px;
+  font-size: 19px;
+  font-weight: 800;
+  color: #1a1d2e;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+.cig-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #454b63;
+}
+
+.cig-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: rgba(196, 154, 60, 0.07);
+  border: 1px solid rgba(196, 154, 60, 0.18);
+  border-radius: 12px;
+}
+.cig-tip svg { width: 15px; height: 15px; color: #c49a3c; flex-shrink: 0; margin-top: 1px; }
+.cig-tip p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #6b5a30;
+  font-weight: 600;
+}
+
+/* ── Puntos de progreso ── */
+.cig-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  padding: 20px 0 4px;
+}
+.cig-dot {
+  width: 7px; height: 7px;
+  border-radius: 999px;
+  background: rgba(30, 45, 100, 0.15);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.cig-dot.on {
+  width: 22px;
+  background: #c49a3c;
+}
+
+/* ── Footer ── */
+.cig-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 16px 22px 22px;
+}
+.cig-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9aa4c0;
+}
+.cig-btn-ghost,
+.cig-btn-navy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.cig-btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(30, 45, 100, 0.14);
+  color: #6b7490;
+}
+.cig-btn-ghost:hover { border-color: rgba(30, 45, 100, 0.28); color: #1a1d2e; }
+.cig-btn-navy {
+  background: #0f1729;
+  border: 1px solid #0f1729;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(15, 23, 41, 0.28);
+}
+.cig-btn-navy:hover { background: #16203a; }
+
+@media (max-width: 480px) {
+  .cig-modal { max-width: 100%; }
+  .cig-title { font-size: 17px; }
+  .cig-text  { font-size: 13px; }
+  .cig-foot  { padding: 14px 16px 18px; }
+  .cig-btn-ghost, .cig-btn-navy { padding: 9px 12px; font-size: 12px; }
+}

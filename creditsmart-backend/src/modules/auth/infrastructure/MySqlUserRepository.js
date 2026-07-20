@@ -66,6 +66,14 @@ class MySqlUserRepository extends UserRepository {
     return rows[0];
   }
 
+  async findByPaymentId(paymentId) {
+    const [rows] = await db.execute(
+      'SELECT id, email FROM usuarios WHERE paypal_payment_id = ?',
+      [paymentId]
+    );
+    return rows[0];
+  }
+
   async updatePaymentStatus(userId, paymentId) {
     const [result] = await db.execute(
       `UPDATE usuarios

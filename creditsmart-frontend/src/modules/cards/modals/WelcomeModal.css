@@ -1,0 +1,261 @@
+/* ===============================
+   WELCOME MODAL — ONBOARDING
+   Encabezado navy + cuerpo blanco (patrón del dashboard)
+================================ */
+
+.wm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 16, 30, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  animation: wm-fade 0.25s ease;
+}
+
+@keyframes wm-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.wm-card {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  position: relative;
+  animation: wm-up 0.3s ease;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 32px 70px rgba(15, 23, 41, 0.32);
+}
+
+@keyframes wm-up {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ══ ENCABEZADO NAVY ══ */
+.wm-top {
+  position: relative;
+  overflow: hidden;
+  background: var(--app-navy, #0f1729);
+  padding: 26px 32px 28px;
+}
+/* Línea dorada superior (firma del dashboard) */
+.wm-top::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 154, 60, 0.45), transparent);
+}
+/* Glow dorado decorativo */
+.wm-top::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -50px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 154, 60, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.wm-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.wm-logo {
+  width: 42px;
+  height: 42px;
+  background: rgba(196, 154, 60, 0.14);
+  border: 1px solid rgba(196, 154, 60, 0.30);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--app-gold-l, #dbb96a);
+}
+.wm-logo svg { width: 20px; height: 20px; }
+
+.wm-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(237, 240, 248, 0.55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.wm-close svg { width: 14px; height: 14px; }
+.wm-close:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+/* ── Saludo (sobre navy) ── */
+.wm-greeting {
+  position: relative;
+  z-index: 1;
+}
+.wm-greeting h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 8px;
+  letter-spacing: -0.4px;
+}
+.wm-greeting p {
+  font-size: 14px;
+  color: rgba(237, 240, 248, 0.62);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ══ CUERPO BLANCO ══ */
+.wm-body {
+  background: #ffffff;
+  padding: 26px 32px 28px;
+}
+
+/* ── PASOS ── */
+.wm-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 26px;
+  position: relative;
+}
+
+.wm-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.wm-step-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(196, 154, 60, 0.10);
+  border: 1px solid rgba(196, 154, 60, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--app-gold, #c49a3c);
+  flex-shrink: 0;
+}
+.wm-step-icon svg { width: 18px; height: 18px; }
+
+.wm-step-body {
+  flex: 1;
+  padding-top: 2px;
+  padding-bottom: 20px;
+}
+
+.wm-step-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--app-gold-d, #9a7628);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.wm-step-titulo {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--app-text, #1a1d2e);
+  margin-bottom: 3px;
+}
+
+.wm-step-desc {
+  font-size: 12.5px;
+  color: var(--app-muted, #5c6480);
+  line-height: 1.55;
+}
+
+/* Línea conectora entre pasos */
+.wm-step-connector {
+  position: absolute;
+  left: 21px;
+  top: 44px;
+  width: 2px;
+  height: calc(100% - 10px);
+  background: linear-gradient(to bottom, rgba(196, 154, 60, 0.35), rgba(196, 154, 60, 0.08));
+  border-radius: 2px;
+}
+
+/* ── ACTIONS ── */
+.wm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wm-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--app-gold-l, #dbb96a), var(--app-gold, #c49a3c));
+  color: var(--app-navy, #0f1729);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 16px rgba(196, 154, 60, 0.28);
+}
+.wm-btn-primary svg { width: 16px; height: 16px; }
+.wm-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(196, 154, 60, 0.40);
+}
+.wm-btn-primary:active { transform: translateY(0) scale(0.99); }
+
+.wm-btn-ghost {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--app-border, rgba(30, 45, 100, 0.12));
+  background: transparent;
+  color: var(--app-muted, #5c6480);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.wm-btn-ghost:hover {
+  color: var(--app-text, #1a1d2e);
+  border-color: rgba(30, 45, 100, 0.22);
+  background: rgba(30, 45, 100, 0.03);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .wm-top  { padding: 22px 20px 24px; }
+  .wm-body { padding: 22px 20px 24px; }
+  .wm-greeting h2 { font-size: 19px; }
+}

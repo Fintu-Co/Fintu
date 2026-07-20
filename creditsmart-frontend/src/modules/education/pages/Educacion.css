@@ -1,0 +1,651 @@
+/* ============================================================
+   FINTÚ & CO. — EDUCACIÓN FINANCIERA (página, light theme)
+   Shell reutiliza clases de Dashboard.css (global).
+   Tokens: var(--app-*) definidos en Dashboard.css :root
+============================================================ */
+
+/* ── HERO NAVY ── */
+.edu-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--app-navy);
+  border-radius: 20px;
+  padding: 28px 30px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 32px rgba(15, 23, 41, 0.18);
+}
+.edu-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196,154,60,0.55), transparent);
+}
+.edu-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 50% 80% at 85% 20%, rgba(196,154,60,0.12), transparent 65%);
+}
+.edu-hero-icon {
+  width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+  background: rgba(196,154,60,0.14);
+  border: 1px solid rgba(196,154,60,0.30);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--app-gold-l);
+}
+.edu-hero-icon svg { width: 26px; height: 26px; }
+.edu-hero-text h1 {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+  color: #edf0f8; margin-bottom: 4px;
+}
+.edu-hero-text p {
+  font-size: 13.5px; color: rgba(237,240,248,0.55); line-height: 1.5;
+  max-width: 56ch;
+}
+
+/* ── TABS ── */
+.edu-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  padding: 5px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  width: fit-content;
+  max-width: 100%;
+}
+.edu-tab {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--app-muted);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.edu-tab:hover { color: var(--app-text); background: rgba(30,45,100,0.04); }
+.edu-tab.active {
+  background: var(--app-navy);
+  color: var(--app-gold-l);
+  box-shadow: 0 4px 12px rgba(15,23,41,0.22);
+}
+
+/* ── SECTION BASE ── */
+.edu-page .tea-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: eduFade 0.3s ease;
+}
+@keyframes eduFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ── HERO CARD (por tab) ── */
+.edu-page .tea-hero-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 26px 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-hero-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent 10%, rgba(196,154,60,0.45) 50%, transparent 90%);
+}
+.edu-page .tea-hero-card h3 {
+  font-size: 19px; font-weight: 800; letter-spacing: -0.4px;
+  text-transform: none;
+  color: var(--app-text); margin-bottom: 8px;
+}
+.edu-page .tea-hero-card p { font-size: 14px; color: var(--app-muted); line-height: 1.65; max-width: 68ch; }
+.edu-page .tea-hero-card.warning::before { background: linear-gradient(90deg, transparent 10%, rgba(217,119,6,0.50) 50%, transparent 90%); }
+.edu-page .tea-hero-card.gold::before    { background: linear-gradient(90deg, var(--app-gold-d), var(--app-gold-l), var(--app-gold-d)); }
+
+/* ── ANALOGÍA ── */
+.edu-page .tea-analogy {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: rgba(196,154,60,0.06);
+  border: 1px solid rgba(196,154,60,0.20);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.edu-page .tea-analogy-icon { font-size: 18px; flex-shrink: 0; }
+.edu-page .tea-analogy strong { font-size: 13.5px; color: var(--app-text); display: block; margin-bottom: 4px; }
+.edu-page .tea-analogy p { font-size: 13.5px; color: var(--app-muted); line-height: 1.6; }
+.edu-page .tea-analogy p strong { display: inline; color: var(--app-gold-d); }
+
+/* ── SIMULADOR ── */
+.edu-page .tea-simulator {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-simulator h4 {
+  font-size: 14px; font-weight: 800; color: var(--app-text);
+  margin-bottom: 18px; letter-spacing: -0.2px;
+}
+.edu-page .tea-sim-inputs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 18px;
+}
+.edu-page .tea-sim-group label {
+  display: block; font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--app-muted); margin-bottom: 8px;
+}
+.edu-page .tea-sim-slider-wrap { display: flex; align-items: center; gap: 14px; }
+.edu-page .tea-slider {
+  flex: 1; height: 5px; border-radius: 99px;
+  appearance: none; -webkit-appearance: none;
+  background: rgba(30,45,100,0.10);
+  outline: none;
+  cursor: pointer;
+}
+.edu-page .tea-slider::-webkit-slider-thumb {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--app-gold-l), var(--app-gold));
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 8px rgba(196,154,60,0.45);
+  cursor: grab;
+}
+.edu-page .tea-slider::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--app-gold-l), var(--app-gold));
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 8px rgba(196,154,60,0.45);
+  cursor: grab;
+}
+.edu-page .tea-slider-value {
+  font-size: 14px; font-weight: 800; color: var(--app-gold-d);
+  min-width: 76px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.edu-page .tea-sim-results {
+  display: flex; flex-direction: column; gap: 8px;
+  border-top: 1px solid var(--app-border);
+  padding-top: 16px;
+}
+.edu-page .tea-sim-result-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.edu-page .tea-sim-label { font-size: 13px; color: var(--app-muted); }
+.edu-page .tea-sim-value { font-size: 14.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.edu-page .tea-sim-value.gold   { color: var(--app-gold-d); }
+.edu-page .tea-sim-value.warn   { color: var(--app-amber); }
+.edu-page .tea-sim-value.danger { color: var(--app-red); }
+
+/* ── TEAs DEL MERCADO ── */
+.edu-page .tea-market {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-market h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 14px; }
+.edu-page .tea-market-list { display: flex; flex-direction: column; gap: 8px; }
+.edu-page .tea-market-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-radius: 11px;
+  background: var(--app-bg);
+  border: 1px solid var(--app-border);
+}
+.edu-page .tea-market-tipo { font-size: 13.5px; font-weight: 600; color: var(--app-text); }
+.edu-page .tea-market-tea  { font-size: 13.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.edu-page .tea-market-tea.green  { color: var(--app-green); }
+.edu-page .tea-market-tea.yellow { color: var(--app-amber); }
+.edu-page .tea-market-tea.red    { color: var(--app-red); }
+
+/* ── TCEA: definiciones ── */
+.edu-page .tcea-definitions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.edu-page .tcea-def-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tcea-def-card.tcea-side { border-color: rgba(196,154,60,0.35); }
+.edu-page .tcea-def-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.edu-page .tcea-def-badge {
+  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 8px;
+}
+.edu-page .tcea-def-badge.tea  { background: rgba(30,45,100,0.08);  color: var(--app-muted); }
+.edu-page .tcea-def-badge.tcea { background: rgba(196,154,60,0.12); color: var(--app-gold-d); border: 1px solid rgba(196,154,60,0.30); }
+.edu-page .tcea-def-header h4 { font-size: 13.5px; font-weight: 800; color: var(--app-text); }
+.edu-page .tcea-def-card > p { font-size: 13px; color: var(--app-muted); line-height: 1.6; margin-bottom: 12px; }
+.edu-page .tcea-def-includes { display: flex; flex-direction: column; gap: 6px; }
+.edu-page .tcea-include {
+  font-size: 12.5px; font-weight: 600; padding: 7px 12px; border-radius: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.edu-page .tcea-include::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.edu-page .tcea-include.yes { background: rgba(29,154,108,0.07); color: #157a55; }
+.edu-page .tcea-include.yes::before { background: var(--app-green); }
+.edu-page .tcea-include.no  { background: rgba(30,45,100,0.04); color: var(--app-dim); }
+.edu-page .tcea-include.no::before { background: var(--app-dim); }
+
+/* ── TCEA: ejemplo/breakdown ── */
+.edu-page .tcea-example {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tcea-example h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 4px; }
+.edu-page .tcea-example-sub { font-size: 12.5px; color: var(--app-dim); margin-bottom: 16px; }
+.edu-page .tcea-breakdown { display: flex; flex-direction: column; gap: 12px; }
+.edu-page .tcea-breakdown-item {
+  display: grid; grid-template-columns: 160px 1fr 90px;
+  align-items: center; gap: 14px;
+}
+.edu-page .tcea-breakdown-label { font-size: 12.5px; color: var(--app-muted); font-weight: 600; }
+.edu-page .tcea-breakdown-bar-wrap {
+  height: 8px; border-radius: 99px; background: rgba(30,45,100,0.06); overflow: hidden;
+}
+.edu-page .tcea-breakdown-bar { height: 100%; border-radius: 99px; }
+.edu-page .tcea-breakdown-bar.tea       { background: linear-gradient(90deg, var(--app-gold-l), var(--app-gold)); }
+.edu-page .tcea-breakdown-bar.seguro    { background: rgba(92,100,128,0.55); }
+.edu-page .tcea-breakdown-bar.membresia { background: rgba(154,164,192,0.55); }
+.edu-page .tcea-breakdown-value {
+  font-size: 12.5px; font-weight: 700; color: var(--app-text);
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.edu-page .tcea-breakdown-total {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--app-border);
+  padding-top: 14px; margin-top: 4px;
+  font-size: 13.5px; font-weight: 700; color: var(--app-text);
+}
+.edu-page .tcea-total-value { font-size: 16px; font-weight: 800; color: var(--app-gold-d); }
+
+/* ── TCEA: legal + tip ── */
+.edu-page .tcea-legal,
+.edu-page .tcea-tip {
+  display: flex; gap: 14px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-left: 3px solid var(--app-gold);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.edu-page .tcea-legal strong,
+.edu-page .tcea-tip strong { font-size: 13.5px; color: var(--app-text); display: block; margin-bottom: 4px; }
+.edu-page .tcea-legal p,
+.edu-page .tcea-tip p { font-size: 13px; color: var(--app-muted); line-height: 1.6; }
+.edu-page .tcea-tip p strong { display: inline; color: var(--app-gold-d); }
+
+/* ── INTERESES: mes a mes ── */
+.edu-page .tea-monthly-example {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-monthly-example h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 4px; }
+.edu-page .tea-example-sub { font-size: 12.5px; color: var(--app-dim); margin-bottom: 16px; }
+.edu-page .tea-months-list { display: flex; flex-direction: column; gap: 12px; }
+.edu-page .tea-month-row {
+  display: grid; grid-template-columns: 64px 1fr auto;
+  align-items: center; gap: 14px;
+}
+.edu-page .tea-month-num { font-size: 12.5px; font-weight: 800; color: var(--app-muted); }
+.edu-page .tea-month-bar-wrap {
+  height: 9px; border-radius: 99px; background: rgba(30,45,100,0.06); overflow: hidden;
+}
+.edu-page .tea-month-bar {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--app-gold-l), var(--app-gold));
+  transition: width 0.4s ease;
+}
+.edu-page .tea-month-data { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; min-width: 130px; }
+.edu-page .tea-month-saldo { font-size: 12px; font-weight: 700; color: var(--app-text); font-variant-numeric: tabular-nums; }
+.edu-page .tea-month-interest { font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.edu-page .tea-month-interest.danger { color: var(--app-red); }
+
+/* ── INTERESES: comparación ── */
+.edu-page .tea-comparison-dramatic {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-comparison-dramatic h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 16px; }
+.edu-page .tea-compare-cards {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: stretch; gap: 14px;
+}
+.edu-page .tea-compare-card {
+  border-radius: 14px; padding: 18px;
+  border: 1px solid var(--app-border);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.edu-page .tea-compare-card.bad  { background: rgba(220,38,38,0.04);  border-color: rgba(220,38,38,0.18); }
+.edu-page .tea-compare-card.good { background: rgba(29,154,108,0.05); border-color: rgba(29,154,108,0.22); }
+.edu-page .tea-compare-header strong { font-size: 14px; font-weight: 800; color: var(--app-text); }
+.edu-page .tea-compare-stat {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 12.5px;
+}
+.edu-page .tea-compare-stat span { color: var(--app-muted); }
+.edu-page .tea-compare-stat strong { color: var(--app-text); font-variant-numeric: tabular-nums; }
+.edu-page .tea-compare-stat strong.danger { color: var(--app-red); }
+.edu-page .tea-compare-stat strong.good   { color: var(--app-green); }
+.edu-page .tea-compare-stat.total {
+  border-top: 1px dashed var(--app-border);
+  padding-top: 10px; margin-top: auto;
+  font-weight: 700;
+}
+.edu-page .tea-compare-vs {
+  align-self: center;
+  font-size: 12px; font-weight: 900; color: var(--app-dim);
+  background: var(--app-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 99px;
+  padding: 8px 10px;
+}
+.edu-page .tea-saving-badge {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13.5px; font-weight: 800; color: #157a55;
+  background: rgba(29,154,108,0.08);
+  border: 1px solid rgba(29,154,108,0.25);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+/* ── INTERESES: interés compuesto ── */
+.edu-page .tea-compound-explainer {
+  display: flex; gap: 14px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-left: 3px solid var(--app-amber);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.edu-page .tea-compound-explainer strong { font-size: 13.5px; color: var(--app-text); display: block; margin-bottom: 4px; }
+.edu-page .tea-compound-explainer p { font-size: 13px; color: var(--app-muted); line-height: 1.6; }
+.edu-page .tea-compound-explainer p strong { display: inline; color: var(--app-amber); }
+
+/* ── TIPOS DE PAGO ── */
+.edu-page .tea-payment-types { display: flex; flex-direction: column; gap: 14px; }
+.edu-page .tea-payment-type {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  position: relative;
+  overflow: hidden;
+}
+.edu-page .tea-payment-type::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+}
+.edu-page .tea-payment-type.best::before { background: var(--app-green); }
+.edu-page .tea-payment-type.ok::before   { background: var(--app-amber); }
+.edu-page .tea-payment-type.bad::before  { background: var(--app-red); }
+.edu-page .tea-payment-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
+.edu-page .tea-payment-title-row h4 { font-size: 15px; font-weight: 800; color: var(--app-text); }
+.edu-page .tea-payment-badge {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 99px;
+}
+.edu-page .tea-payment-badge.best { background: rgba(29,154,108,0.10); color: #157a55; }
+.edu-page .tea-payment-badge.ok   { background: rgba(217,119,6,0.10);  color: var(--app-amber); }
+.edu-page .tea-payment-badge.bad  { background: rgba(220,38,38,0.08);  color: var(--app-red); }
+.edu-page .tea-payment-top p { font-size: 13px; color: var(--app-muted); }
+.edu-page .tea-payment-benefits {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 14px 0;
+}
+.edu-page .tea-benefit {
+  font-size: 12px; font-weight: 700;
+  padding: 6px 12px; border-radius: 99px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.edu-page .tea-benefit::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+.edu-page .tea-benefit.good   { background: rgba(29,154,108,0.08); color: #157a55; }
+.edu-page .tea-benefit.good::before { background: var(--app-green); }
+.edu-page .tea-benefit.warn   { background: rgba(217,119,6,0.08); color: var(--app-amber); }
+.edu-page .tea-benefit.warn::before { background: var(--app-amber); }
+.edu-page .tea-benefit.danger { background: rgba(220,38,38,0.06); color: var(--app-red); }
+.edu-page .tea-benefit.danger::before { background: var(--app-red); }
+.edu-page .tea-payment-tip {
+  font-size: 12.5px; color: var(--app-muted); font-style: italic;
+  border-top: 1px dashed var(--app-border);
+  padding-top: 12px;
+}
+
+/* ── FÓRMULA DEL MÍNIMO ── */
+.edu-page .tea-minimum-explainer {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-minimum-explainer h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 16px; }
+.edu-page .tea-formula { display: flex; flex-direction: column; gap: 10px; }
+.edu-page .tea-formula-item { display: flex; gap: 12px; align-items: flex-start; }
+.edu-page .tea-formula-icon {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(196,154,60,0.10);
+  border: 1px solid rgba(196,154,60,0.25);
+  color: var(--app-gold-d);
+  font-weight: 800; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.edu-page .tea-formula-item strong { font-size: 13px; color: var(--app-text); display: block; }
+.edu-page .tea-formula-item p { font-size: 12px; color: var(--app-dim); }
+.edu-page .tea-formula-result {
+  display: flex; align-items: center; gap: 12px;
+  border-top: 1px solid var(--app-border);
+  padding-top: 14px; margin-top: 4px;
+}
+.edu-page .tea-formula-result span {
+  width: 26px; text-align: center;
+  font-size: 16px; font-weight: 800; color: var(--app-gold-d);
+}
+.edu-page .tea-formula-result strong { font-size: 14.5px; font-weight: 800; color: var(--app-gold-d); }
+
+/* ── REGLA 15/30 ── */
+.edu-page .regla-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.edu-page .regla-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  position: relative;
+  overflow: hidden;
+}
+.edu-page .regla-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.edu-page .regla-card.green::before  { background: var(--app-green); }
+.edu-page .regla-card.yellow::before { background: var(--app-amber); }
+.edu-page .regla-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.edu-page .regla-number {
+  font-size: 38px; font-weight: 900; letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+}
+.edu-page .regla-card.green  .regla-number { color: var(--app-green); }
+.edu-page .regla-card.yellow .regla-number { color: var(--app-amber); }
+.edu-page .regla-tag {
+  font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 99px;
+}
+.edu-page .regla-tag.good { background: rgba(29,154,108,0.10); color: #157a55; }
+.edu-page .regla-tag.warn { background: rgba(217,119,6,0.10);  color: var(--app-amber); }
+.edu-page .regla-card h3 { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; text-transform: none; color: var(--app-text); margin-bottom: 6px; }
+.edu-page .regla-card p  { font-size: 13px; color: var(--app-muted); line-height: 1.6; margin-bottom: 12px; }
+.edu-page .regla-example {
+  font-size: 12.5px; color: var(--app-muted);
+  background: var(--app-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.edu-page .regla-example strong { color: var(--app-text); }
+
+.edu-page .regla-why,
+.edu-page .regla-tips {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .regla-why h4,
+.edu-page .regla-tips h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 14px; }
+.edu-page .regla-list { list-style: none; display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.edu-page .regla-list li {
+  font-size: 13px; color: var(--app-muted); line-height: 1.6;
+  padding-left: 18px; position: relative;
+}
+.edu-page .regla-list li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--app-gold);
+}
+.edu-page .regla-list li strong { color: var(--app-text); }
+.edu-page .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.edu-page .tip-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--app-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.edu-page .tip-num {
+  width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(196,154,60,0.12);
+  border: 1px solid rgba(196,154,60,0.28);
+  color: var(--app-gold-d);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.edu-page .tip-item p { font-size: 12.5px; color: var(--app-muted); line-height: 1.55; }
+.edu-page .tip-item p strong { color: var(--app-text); }
+
+/* ── REGLAS DE ORO ── */
+.edu-page .tea-rules-list { display: flex; flex-direction: column; gap: 14px; }
+.edu-page .tea-rule {
+  display: flex; gap: 18px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+}
+.edu-page .tea-rule-number {
+  font-size: 15px; font-weight: 900; color: var(--app-gold);
+  flex-shrink: 0;
+  display: inline-flex; align-items: flex-start; gap: 10px;
+  padding-top: 2px;
+}
+.edu-page .tea-rule-content h4 { font-size: 14.5px; font-weight: 800; color: var(--app-text); margin-bottom: 6px; }
+.edu-page .tea-rule-content > p { font-size: 13px; color: var(--app-muted); line-height: 1.6; }
+.edu-page .tea-rule-example { margin-top: 12px; }
+.edu-page .tea-rule-bar-wrap {
+  height: 26px; border-radius: 99px;
+  background: rgba(30,45,100,0.06);
+  overflow: hidden;
+}
+.edu-page .tea-rule-bar {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--app-gold-l), var(--app-gold));
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 0 10px;
+  min-width: fit-content;
+}
+.edu-page .tea-rule-bar span { font-size: 10.5px; font-weight: 800; color: var(--app-navy); white-space: nowrap; }
+.edu-page .tea-rule-example-calc {
+  font-size: 12.5px; font-weight: 700; color: var(--app-gold-d);
+  background: rgba(196,154,60,0.07);
+  border: 1px solid rgba(196,154,60,0.22);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: inline-block;
+}
+.edu-page .tea-card-types { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.edu-page .tea-card-type {
+  background: var(--app-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.edu-page .tea-card-type strong { font-size: 12.5px; color: var(--app-text); display: block; margin-bottom: 2px; }
+.edu-page .tea-card-type p { font-size: 11.5px; color: var(--app-dim); line-height: 1.5; }
+
+/* ── RESUMEN ── */
+.edu-page .tea-summary-box {
+  background: var(--app-navy);
+  border-radius: 18px;
+  padding: 24px 26px;
+  position: relative;
+  overflow: hidden;
+}
+.edu-page .tea-summary-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196,154,60,0.50), transparent);
+}
+.edu-page .tea-summary-box h4 {
+  font-size: 14px; font-weight: 800; color: var(--app-gold-l); margin-bottom: 14px;
+}
+.edu-page .tea-summary-list { list-style: none; display: flex; flex-direction: column; gap: 9px; padding: 0; }
+.edu-page .tea-summary-list li {
+  font-size: 13px; color: rgba(237,240,248,0.75); line-height: 1.5;
+  padding-left: 20px; position: relative;
+}
+.edu-page .tea-summary-list li::before {
+  content: ''; position: absolute; left: 0; top: 6px;
+  width: 7px; height: 7px; border-radius: 2px;
+  background: var(--app-gold);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .edu-page .tea-sim-inputs { grid-template-columns: 1fr; }
+  .edu-page .tcea-definitions { grid-template-columns: 1fr; }
+  .edu-page .tea-compare-cards { grid-template-columns: 1fr; }
+  .edu-page .tea-compare-vs { justify-self: center; }
+  .edu-page .regla-cards { grid-template-columns: 1fr; }
+  .edu-page .tips-grid { grid-template-columns: 1fr; }
+  .edu-page .tea-card-types { grid-template-columns: 1fr; }
+  .edu-page .tcea-breakdown-item { grid-template-columns: 1fr; gap: 6px; }
+  .edu-page .tcea-breakdown-value { text-align: left; }
+}
+
+@media (max-width: 640px) {
+  .edu-hero { padding: 22px 20px; }
+  .edu-hero-text h1 { font-size: 19px; }
+  .edu-tabs { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+  .edu-tab { flex-shrink: 0; }
+  .edu-page .tea-month-row { grid-template-columns: 52px 1fr; }
+  .edu-page .tea-month-data { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; min-width: 0; }
+}

@@ -11,7 +11,6 @@ class MySqlCardRepository extends CardRepository {
       SELECT
         t.*,
         b.nombre as banco_nombre,
-        b.logo_url as banco_logo,
         b.tea_promedio as banco_tea
       FROM tarjetas t
       LEFT JOIN bancos b ON t.banco_id = b.id
