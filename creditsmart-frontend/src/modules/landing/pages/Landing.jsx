@@ -319,6 +319,7 @@ export default function Landing() {
   const [navScrolled, setNavScrolled] = useState(false);
   const [navMobileOpen, setNavMobileOpen] = useState(false);
   const [legalOpen, setLegalOpen] = useState(null); // null | 'terminos' | 'privacidad'
+  const [gtipo, setGtipo] = useState('con');        // guía: 'con' | 'sin' garantía
 
   // Intro: solo una vez por sesión y nunca con reduced-motion
   const [showIntro, setShowIntro] = useState(() => {
@@ -426,15 +427,15 @@ export default function Landing() {
 
           {/* ── IZQUIERDA · mensaje ── */}
           <div className="lp-hero-msg">
-            <div className="lp-hero-eyebrow">Toma el control · desde $4</div>
+            <div className="lp-hero-eyebrow">Para tus tarjetas de crédito</div>
             <h1 className="lp-hero-title">
-              Tus tarjetas,
+              No pagues
               <br />
-              <span className="lp-hero-gold">bajo control.</span>
+              <span className="lp-hero-gold">intereses de más.</span>
             </h1>
             <p className="lp-hero-sub">
-              La app web que organiza tus tarjetas, evita intereses de más
-              y hace crecer tu salud financiera.
+              Se adapta a tus tarjetas y te ayuda a gestionar tu deuda, ciclos
+              y pagos. Sin conectar tu banco.
             </p>
             <div className="lp-hero-cta">
               <button className="lp-btn-gold lp-btn-hero" onClick={() => navigate('/registro')}>
@@ -508,24 +509,98 @@ export default function Landing() {
             <p className="lp-hero-detail-desc">
               Mira, entiende y mejora la salud de todas tus tarjetas: ciclos, intereses y metas en un tablero claro.
             </p>
-            <div className="lp-hero-ministats">
-              <div><b>6</b><small>Herramientas</small></div>
-              <div><b>0</b><small>Datos bancarios</small></div>
-              <div><b>100%</b><small>Peruano</small></div>
-            </div>
-            <div className="lp-hero-pricerow">
-              <div className="lp-hero-price">
-                <small>Hoy · pago único</small>
-                <b>$4</b>
-              </div>
-              <button className="lp-btn-dark lp-hero-buy" onClick={() => navigate('/login')}>
-                Iniciar sesión <Arr />
-              </button>
-            </div>
+            <button className="lp-btn-dark lp-hero-buy" onClick={() => navigate('/login')}>
+              Iniciar sesión <Arr />
+            </button>
           </div>
 
         </div>
       </header>
+
+      {/* ─── GUÍA NOVATOS · educación honesta (con/sin garantía) ─── */}
+      <section id="sec-guia" className="lp-guide">
+        <div className="lp-guide-in">
+          <div className="lp-guide-head reveal">
+            <h2 className="lp-guide-title">
+              ¿Cansado de no entender cómo funciona{' '}
+              <span className="lp-hero-gold">una tarjeta de crédito?</span>
+            </h2>
+            <p className="lp-guide-sub">Aquí te ayudamos. Empezar es más simple de lo que crees.</p>
+          </div>
+
+          {/* Recorrido: cómo empezar, paso a paso */}
+          <div className="lp-guide-journey reveal">
+            {[
+              {
+                n: '01', t: 'Ve a tu banco',
+                d: 'Pregunta si calificas para una tarjeta, con o sin garantía.',
+                ic: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18M5 21V10l7-5 7 5v11M10 21v-6h4v6" /></svg>,
+              },
+              {
+                n: '02', t: 'Saca la tuya',
+                d: 'Con el monto y las condiciones que de verdad te convengan.',
+                ic: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>,
+              },
+              {
+                n: '03', t: 'Fintú hace el resto',
+                d: 'Ordena tus ciclos, pagos e intereses. Te acompaña en cada paso.',
+                ic: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>,
+              },
+            ].map((p) => (
+              <div className="lp-jstep" key={p.n}>
+                <span className="lp-jstep-ico">{p.ic}</span>
+                <span className="lp-jstep-num">{p.n}</span>
+                <h4 className="lp-jstep-title">{p.t}</h4>
+                <p className="lp-jstep-desc">{p.d}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Diferencia con/sin garantía: toca para revelar */}
+          <div className="lp-guide-toggle reveal">
+            <p className="lp-toggle-q">¿Con garantía o sin garantía? Toca para ver la diferencia.</p>
+            <div className="lp-toggle-pills" role="tablist" aria-label="Tipo de tarjeta">
+              <button
+                type="button" role="tab"
+                aria-selected={gtipo === 'sin'}
+                className={`lp-toggle-pill${gtipo === 'sin' ? ' active' : ''}`}
+                onClick={() => setGtipo('sin')}
+              >
+                Sin garantía
+              </button>
+              <button
+                type="button" role="tab"
+                aria-selected={gtipo === 'con'}
+                className={`lp-toggle-pill${gtipo === 'con' ? ' active' : ''}`}
+                onClick={() => setGtipo('con')}
+              >
+                Con garantía
+              </button>
+            </div>
+            <div className="lp-toggle-panel" key={gtipo}>
+              {gtipo === 'sin' ? (
+                <p>
+                  La común. El banco mira tus ingresos y tu historial, y te da
+                  una línea de crédito basada en confianza. Necesitas sustentar
+                  ingresos y, casi siempre, algo de historial.
+                </p>
+              ) : (
+                <p>
+                  <span className="lp-toggle-badge">Ideal si recién empiezas</span>
+                  Para quien aún no tiene historial. Dejas un depósito como
+                  respaldo y el banco te da una línea sobre ese monto. Es la forma
+                  más fácil de <strong>construir tu historial</strong> desde cero,
+                  con menos riesgo de que te rechacen.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <p className="lp-guide-note reveal">
+            Información referencial. Las condiciones dependen de cada entidad; verifica con el banco antes de decidir.
+          </p>
+        </div>
+      </section>
 
       {/* ─── FUNCIONES (tarjetas numeradas, estilo ficha) ─── */}
       <section id="sec-features" className="lp-feat">
