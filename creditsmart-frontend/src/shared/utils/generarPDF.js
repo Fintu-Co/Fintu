@@ -339,13 +339,14 @@ export const generarEstadoCuenta = async (
     `${pagos.length} pago${pagos.length !== 1 ? 's' : ''} registrado${pagos.length !== 1 ? 's' : ''}`,
     M + colW3 * 2, y + 11
   );
+  y += 11;   // baja hasta la línea de sub-etiquetas (si no, la siguiente sección se le encima)
 
   /* ═════════════════════════════════════════
      5. COSTO DEL FINANCIAMIENTO
      Solo tiene sentido con deuda viva y TEA registrada.
   ═════════════════════════════════════════ */
   if (deudaNum > 0 && teaNum > 0) {
-    y += 19;
+    y += 8;
     sectionTitle('Costo del financiamiento', y);
     y += 5;
 

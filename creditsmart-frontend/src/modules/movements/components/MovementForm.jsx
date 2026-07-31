@@ -213,16 +213,6 @@ function MovementForm({ tarjeta, tarjetaId, userId, simboloMoneda, deudaActual, 
                   <span className={`mf-fecha-hint${diasAtras > 0 ? ' retro' : ''}`}>{etiquetaFecha}</span>
                 )}
               </div>
-              <input
-                type="date"
-                value={fecha}
-                min={minISO}
-                max={hoyISO}
-                onChange={(e) => setFecha(e.target.value)}
-                disabled={loading}
-                className="mf-input"
-              />
-
               {cicloDestino && (
                 <p className={`mf-ciclo${diasAtras > 0 ? ' retro' : ''}`}>
                   Entra en el estado de cuenta{' '}

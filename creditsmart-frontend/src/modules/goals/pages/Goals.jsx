@@ -114,12 +114,50 @@ const generarPlanExperto = (tarjetas) => {
   });
 
   const estrategia = [];
-  if (totalDeuda === 0) { estrategia.push({ icono: 'Sin deuda', texto: '¡Sin deuda! Eres un usuario totalero. Sigue así.' }); }
-  else {
-    if (ordenadas.length > 1) estrategia.push({ icono: 'Prioridad', texto: `Prioriza pagar ${ordenadas[0].banco_nombre || 'tu tarjeta más cara'} primero — TEA más alta (${ordenadas[0].tasa_interes}%).` });
-    if (usoPromedio > 30) estrategia.push({ icono: 'Meta 30%', texto: `Necesitas pagar S/ ${Math.ceil(totalDeuda - totalLinea * 0.3).toLocaleString('es-PE')} en total para llegar al 30% de uso ideal.` });
-    estrategia.push({ icono: 'Consejo', texto: 'Paga antes del cierre de ciclo, no del vencimiento. Así reduces el saldo reportado a centrales de riesgo.' });
-    if (activas.length > 1) estrategia.push({ icono: 'Balance', texto: 'Mantén cada tarjeta bajo 30% individualmente, no solo el promedio total.' });
+  if (totalDeuda === 0) {
+    estrategia.push({ icono: 'Sin deuda', texto: '¡Sin deuda! Eres un usuario totalero. Sigue así y la TEA nunca te tocará.' });
+  } else {
+    const top   = ordenadas.find(t => parseFloat(t.deuda_actual || 0) > 0) || ordenadas[0];
+    const tNom  = top.banco_nombre || top.banco_nombre_custom || 'tu tarjeta';
+    const tSim  = top.simbolo_moneda || 'S/';
+    const tDeuda = parseFloat(top.deuda_actual || 0);
+    const tTea  = parseFloat(top.tasa_interes || 0);
+    const tInteresMes = Math.round(tDeuda * (Math.pow(1 + tTea / 100, 1 / 12) - 1));
+
+    // La tarjeta más cara, con lo que te cuesta AHORA en soles
+    if (tInteresMes >= 1 && tTea > 0) {
+      estrategia.push({
+        icono: activas.length > 1 ? 'La más cara' : 'Tu costo',
+        texto: `${tNom} te cuesta ~${tSim} ${tInteresMes.toLocaleString('es-PE')} al mes solo en intereses (TEA ${tTea}%). ${activas.length > 1 ? 'Es la más cara de tus tarjetas: págala primero.' : 'Bájala cuanto antes.'}`,
+      });
+    }
+
+    // Cuánto pagar exactamente para llegar al 30% de uso
+    if (usoPromedio > 30) {
+      estrategia.push({
+        icono: 'Meta 30%',
+        texto: `Tu uso está en ${usoPromedio}%. Paga S/ ${Math.ceil(totalDeuda - totalLinea * 0.3).toLocaleString('es-PE')} en total para bajar al 30%, el rango que cuida tu score.`,
+      });
+    }
+
+    // Cuándo pagar, con los días y la fecha reales de tu cierre
+    if (top.dias_al_cierre !== undefined && top.dias_al_cierre >= 0) {
+      estrategia.push({
+        icono: 'Cuándo pagar',
+        texto: `A ${tNom} le quedan ${top.dias_al_cierre} día${top.dias_al_cierre === 1 ? '' : 's'} para cerrar${top.fecha_cierre_formateada ? ` (${top.fecha_cierre_formateada})` : ''}. Paga antes de ese día: ese saldo es el que ven las centrales de riesgo, no el del vencimiento.`,
+      });
+    } else {
+      estrategia.push({
+        icono: 'Cuándo pagar',
+        texto: 'Paga antes del cierre de tu ciclo, no del vencimiento. El saldo de ese día es el que reportan a las centrales de riesgo.',
+      });
+    }
+
+    // El objetivo real: cero intereses pagando el total
+    estrategia.push({
+      icono: 'Lo ideal',
+      texto: `Si pagas el total (${tSim} ${Math.round(totalDeuda).toLocaleString('es-PE')}) antes de cada cierre, no pagas ni un sol de intereses. Ese es el objetivo.`,
+    });
   }
   return { recomendaciones, alertas, estrategia, totalDeuda, usoPromedio };
 };
