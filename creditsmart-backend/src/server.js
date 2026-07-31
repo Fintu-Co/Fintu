@@ -1,5 +1,5 @@
 /**
- * CreditSmart PE — API
+ * Fintú & Co. — API
  *
  * Arquitectura DDD pragmática por módulos:
  *   src/modules/<dominio>/{domain, application, infrastructure, interfaces}
@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Healthcheck
 app.get('/', (req, res) => {
-  res.json({ message: 'CreditSmart PE API funcionando correctamente' });
+  res.json({ message: 'Fintú & Co. API funcionando correctamente' });
 });
 
 // Rutas — authLimiter es más estricto (fuerza bruta); apiLimiter protege el resto

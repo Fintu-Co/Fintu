@@ -104,7 +104,7 @@ function buildAuthController({
 
         res.json({
           success: true,
-          message: 'Pago confirmado. Bienvenido a CreditSmart PE',
+          message: 'Pago confirmado. Bienvenido a Fintú & Co.',
           token: result.token,
           user: result.user,
         });
@@ -139,7 +139,7 @@ function buildAuthController({
           default:
             return res.status(201).json({
               success: true,
-              message: '¡Bienvenido a CreditSmart PE!',
+              message: '¡Bienvenido a Fintú & Co.!',
               token: result.token,
               user: result.user,
             });
