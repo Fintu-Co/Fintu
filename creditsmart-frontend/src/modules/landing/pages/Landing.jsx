@@ -750,29 +750,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* El premio: para qué construyes historial */}
-          <div className="lp-guide-payoff reveal">
-            <div className="lp-payoff-head">
-              <h3>
-                ¿Y por qué importa?{' '}
-                <span className="lp-hero-gold">Un buen historial te abre puertas.</span>
-              </h3>
-              <p>
-                Cada pago puntual construye tu reputación ante los bancos.
-                Con el tiempo, eso se convierte en:
-              </p>
-            </div>
-            <div className="lp-payoff-row">
-              {PAYOFF.map((b) => (
-                <div className="lp-payoff-item" key={b.t}>
-                  <span className="lp-payoff-ico"><b.Icon /></span>
-                  <h4>{b.t}</h4>
-                  <p>{b.d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <p className="lp-guide-note reveal">
             Información referencial. Las condiciones dependen de cada entidad; verifica con el banco antes de decidir.
           </p>
@@ -794,37 +771,18 @@ export default function Landing() {
               de crédito desde un solo lugar.
             </p>
           </div>
-          <div className="lp-feat-grid">
+          {/* Franja sin cajas: es información, no botones */}
+          <div className="lp-feat-list">
             {FEATURES.map((f, i) => (
-              <div className="lp-feat-card reveal" key={f.titulo} style={{ transitionDelay: `${i * 0.07}s` }}>
-                <div className="lp-feat-ico"><f.Icon /></div>
+              <div className="lp-feat-item reveal" key={f.titulo} style={{ transitionDelay: `${i * 0.07}s` }}>
+                <div className="lp-feat-item-ico"><f.Icon /></div>
                 <h3>{f.titulo}</h3>
                 <p>{f.desc}</p>
                 <span className="lp-feat-res">{f.res}</span>
-                <span className="lp-feat-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               </div>
             ))}
           </div>
 
-          {/* Antes / después: el porqué — qué cambia en el día a día */}
-          <div className="lp-feat-daily-head reveal">
-            <h3>El cambio en tu <span className="lp-hero-gold">día a día.</span></h3>
-          </div>
-          <div className="lp-feat-daily reveal">
-            <div className="lp-fd-col lp-fd-col--now">
-              <span className="lp-fd-tag">Sin Fintú</span>
-              <ul>
-                {DAILY.antes.map((t) => <li key={t}>{t}</li>)}
-              </ul>
-            </div>
-            <div className="lp-fd-arrow" aria-hidden="true"><Arr /></div>
-            <div className="lp-fd-col lp-fd-col--fintu">
-              <span className="lp-fd-tag">Con Fintú</span>
-              <ul>
-                {DAILY.despues.map((t) => <li key={t}>{t}</li>)}
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -862,6 +820,55 @@ export default function Landing() {
         <div className="lp-visual-body">
           <h2 className="reveal">Diseñado para sentirse <span>premium.</span></h2>
           <p className="reveal delay-1">La experiencia de una app de banca privada, al precio de un café.</p>
+        </div>
+      </section>
+
+      {/* ─── EL PREMIO DEL HISTORIAL (aspiracional, a mitad de página) ─── */}
+      <section className="lp-payoff-sec">
+        <div className="lp-payoff-in reveal">
+          <div className="lp-payoff-head">
+            <h2>
+              Ordenarte tiene premio:{' '}
+              <span className="lp-hero-gold">un buen historial te abre puertas.</span>
+            </h2>
+            <p>
+              Cada pago puntual construye tu reputación ante los bancos.
+              Con el tiempo, eso se convierte en:
+            </p>
+          </div>
+          <div className="lp-payoff-row">
+            {PAYOFF.map((b) => (
+              <div className="lp-payoff-item" key={b.t}>
+                <span className="lp-payoff-ico"><b.Icon /></span>
+                <h4>{b.t}</h4>
+                <p>{b.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── EL CAMBIO EN TU DÍA A DÍA (argumento, camino al cierre) ─── */}
+      <section className="lp-sec">
+        <div className="lp-sec-head reveal">
+          <h2 className="lp-sec-title">
+            El cambio en tu <span className="lp-hero-gold">día a día.</span>
+          </h2>
+        </div>
+        <div className="lp-daily-grid reveal">
+          <div className="lp-fd-col lp-fd-col--now">
+            <span className="lp-fd-tag">Sin Fintú</span>
+            <ul>
+              {DAILY.antes.map((t) => <li key={t}>{t}</li>)}
+            </ul>
+          </div>
+          <div className="lp-fd-arrow" aria-hidden="true"><Arr /></div>
+          <div className="lp-fd-col lp-fd-col--fintu">
+            <span className="lp-fd-tag">Con Fintú</span>
+            <ul>
+              {DAILY.despues.map((t) => <li key={t}>{t}</li>)}
+            </ul>
+          </div>
         </div>
       </section>
 
