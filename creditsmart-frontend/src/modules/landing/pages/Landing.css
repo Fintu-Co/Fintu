@@ -723,6 +723,26 @@
 }
 .lp-guide-sub { font-size: 16px; color: var(--muted); }
 
+/* Eyebrow centrado con líneas a ambos lados (variante del de Funciones) */
+.lp-guide-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-d);
+  margin-bottom: 16px;
+}
+.lp-guide-eyebrow::before,
+.lp-guide-eyebrow::after {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: rgba(154, 118, 40, 0.5);
+}
+
 .lp-guide-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -797,38 +817,160 @@
 }
 .lp-guide-note { text-align: center; font-size: 11.5px; color: var(--dim); max-width: 560px; margin: 0 auto; }
 
-/* Recorrido en pasos (estilo metodología) */
+/* Recorrido en pasos — una ruta con estaciones: hilo dorado punteado
+   que conecta las tarjetas; cada paso es una estación con su nodo.
+   El paso 03 (Fintú) va en navy: es el destino de la ruta. */
 .lp-guide-journey {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 22px;
   margin-bottom: 46px;
 }
+/* El hilo: pasa por detrás de las tarjetas a la altura de los nodos;
+   solo asoma en los espacios entre tarjeta y tarjeta */
+.lp-guide-journey::before {
+  content: '';
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 46px;
+  border-top: 2px dashed rgba(196, 154, 60, 0.45);
+}
+
+.lp-jstep {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid rgba(20, 23, 31, 0.08);
+  border-radius: 18px;
+  padding: 22px 22px 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.lp-jstep:hover {
+  transform: translateY(-4px);
+  border-color: rgba(196, 154, 60, 0.35);
+  box-shadow: 0 18px 40px rgba(20, 23, 31, 0.09);
+}
+
+/* Entrada escalonada 01 → 02 → 03 cuando la fila entra en pantalla.
+   `backwards` solo pinta el estado inicial durante el delay; al terminar
+   no deja fill, así el hover (transform) sigue funcionando normal. */
+.lp-guide-journey.reveal .lp-jstep { opacity: 0; }
+.lp-guide-journey.reveal.visible .lp-jstep {
+  opacity: 1;
+  animation: lpJstepIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.lp-guide-journey.reveal.visible .lp-jstep:nth-child(2) { animation-delay: 0.12s; }
+.lp-guide-journey.reveal.visible .lp-jstep:nth-child(3) { animation-delay: 0.24s; }
+@keyframes lpJstepIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Nodo-estación: círculo con halo, el hilo "pasa" por él */
 .lp-jstep-ico {
   display: inline-flex;
-  width: 46px; height: 46px;
+  width: 48px; height: 48px;
   align-items: center; justify-content: center;
-  border-radius: 13px;
-  background: rgba(196, 154, 60, 0.10);
-  border: 1px solid rgba(196, 154, 60, 0.22);
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid rgba(196, 154, 60, 0.45);
+  box-shadow: 0 0 0 5px rgba(196, 154, 60, 0.08);
   color: var(--gold-d);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 .lp-jstep-ico svg { width: 22px; height: 22px; }
+
+/* Número serif gigante y tenue (el mismo gesto de Funciones) */
 .lp-jstep-num {
-  display: block;
-  font-size: 11px; font-weight: 800; letter-spacing: 2px;
-  color: var(--dim); margin-bottom: 8px;
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 54px;
+  font-weight: 600;
+  line-height: 1;
+  color: rgba(20, 23, 31, 0.07);
+  pointer-events: none;
 }
 .lp-jstep-title { font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; margin-bottom: 8px; }
 .lp-jstep-desc { font-size: 13.5px; line-height: 1.6; color: var(--muted); }
 
-/* Toggle con/sin garantía — tocar para revelar */
-.lp-guide-toggle { max-width: 680px; margin: 0 auto 40px; text-align: center; }
-.lp-toggle-q { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+/* Paso destacado — navy + dorado, el momento Fintú */
+.lp-jstep--hl {
+  background: linear-gradient(160deg, var(--navy-3), var(--navy-2));
+  border-color: rgba(196, 154, 60, 0.38);
+  box-shadow: 0 24px 50px -18px rgba(12, 20, 37, 0.5);
+}
+.lp-jstep--hl:hover {
+  border-color: rgba(196, 154, 60, 0.6);
+  box-shadow: 0 28px 56px -18px rgba(12, 20, 37, 0.6);
+}
+.lp-jstep--hl .lp-jstep-title { color: #edf0f8; }
+.lp-jstep--hl .lp-jstep-desc  { color: rgba(237, 240, 248, 0.68); }
+.lp-jstep--hl .lp-jstep-num   { color: rgba(219, 185, 106, 0.16); }
+.lp-jstep--hl .lp-jstep-ico {
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  border-color: transparent;
+  color: var(--navy);
+  box-shadow: 0 0 0 5px rgba(196, 154, 60, 0.16);
+}
+
+/* Toggle con/sin garantía — tarjeta de consulta unificada:
+   pregunta en serif, pills refinadas y respuesta estructurada
+   (lead + specs con checks). Todo vive dentro de una sola pieza. */
+.lp-guide-toggle { max-width: 780px; margin: 0 auto 40px; }
+
+.lp-toggle-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fffefb 0%, var(--surface) 100%);
+  border: 1px solid rgba(196, 154, 60, 0.28);
+  border-radius: 22px;
+  padding: 34px 36px 30px;
+  box-shadow: 0 26px 60px -26px rgba(30, 45, 100, 0.18);
+  text-align: center;
+}
+/* Aura dorada que respira desde arriba, como en el hero */
+.lp-toggle-card::before {
+  content: '';
+  position: absolute;
+  left: -20%; right: -20%; top: -45%;
+  height: 80%;
+  background: radial-gradient(ellipse 50% 60% at 50% 100%, rgba(196, 154, 60, 0.09), transparent 70%);
+  pointer-events: none;
+}
+
+.lp-toggle-head { position: relative; margin-bottom: 20px; }
+.lp-toggle-kicker {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-d);
+  margin-bottom: 10px;
+}
+.lp-toggle-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-wrap: balance;
+}
+.lp-toggle-hint { font-size: 13px; color: var(--muted); }
+
 .lp-toggle-pills {
+  position: relative;
   display: inline-flex; gap: 6px; padding: 5px;
-  background: rgba(30, 45, 100, 0.05); border-radius: 999px; margin-bottom: 20px;
+  background: rgba(30, 45, 100, 0.05);
+  border: 1px solid rgba(30, 45, 100, 0.06);
+  border-radius: 999px;
 }
 .lp-toggle-pill {
   border: none; background: transparent; color: var(--muted);
@@ -837,30 +979,146 @@
   transition: background 0.25s, color 0.25s, box-shadow 0.25s;
 }
 .lp-toggle-pill:hover { color: var(--text); }
-.lp-toggle-pill.active { background: var(--gold); color: #fffdf9; box-shadow: 0 8px 20px rgba(196, 154, 60, 0.32); }
+.lp-toggle-pill.active {
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  color: var(--navy);
+  box-shadow: 0 8px 20px rgba(196, 154, 60, 0.32);
+}
+
+/* Respuesta: lead a la izquierda, specs a la derecha,
+   separadas del toggle por un hilo punteado (el de la ruta) */
 .lp-toggle-panel {
-  background: linear-gradient(180deg, #fffefb 0%, var(--surface) 100%);
-  border: 1px solid rgba(30, 45, 100, 0.08); border-radius: 18px;
-  padding: 26px 28px; text-align: left;
-  box-shadow: 0 20px 46px -22px rgba(30, 45, 100, 0.16);
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 12px 34px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px dashed rgba(196, 154, 60, 0.35);
+  text-align: left;
   animation: lpToggleIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lp-toggle-panel p { font-size: 14.5px; line-height: 1.7; color: var(--muted); }
-.lp-toggle-panel strong { color: var(--text); font-weight: 700; }
+.lp-toggle-lead h4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.lp-toggle-lead p { font-size: 14.5px; line-height: 1.7; color: var(--muted); }
+.lp-toggle-lead strong { color: var(--text); font-weight: 700; }
 .lp-toggle-badge {
   display: inline-block; background: rgba(196, 154, 60, 0.14); color: var(--gold-d);
-  font-size: 11px; font-weight: 800; letter-spacing: 0.3px;
-  padding: 4px 11px; border-radius: 999px; margin-right: 8px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px;
+  padding: 4px 11px; border-radius: 999px;
 }
+
+.lp-toggle-specs {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.lp-toggle-specs li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+/* Check dorado dibujado en CSS: círculo suave + palomita */
+.lp-toggle-specs li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 154, 60, 0.30);
+  background-color: rgba(196, 154, 60, 0.14);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a7628' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 10px;
+}
+
 @keyframes lpToggleIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* El premio del buen historial — franja editorial de 4 beneficios
+   separados por hilos punteados (sin cajas: cambio de ritmo) */
+.lp-guide-payoff { margin: 56px auto 42px; }
+.lp-payoff-head { text-align: center; max-width: 640px; margin: 0 auto 34px; }
+.lp-payoff-head h3 {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  line-height: 1.12;
+  color: var(--text);
+  text-wrap: balance;
+}
+.lp-payoff-head p { font-size: 14px; color: var(--muted); margin-top: 10px; }
+
+.lp-payoff-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.lp-payoff-item {
+  padding: 6px 22px;
+  border-left: 1px dashed rgba(196, 154, 60, 0.30);
+}
+.lp-payoff-item:first-child { border-left: none; }
+
+.lp-payoff-ico {
+  display: inline-flex;
+  width: 40px; height: 40px;
+  align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid rgba(196, 154, 60, 0.45);
+  box-shadow: 0 0 0 4px rgba(196, 154, 60, 0.08);
+  color: var(--gold-d);
+  margin-bottom: 13px;
+}
+.lp-payoff-ico svg { width: 19px; height: 19px; }
+
+.lp-payoff-item h4 {
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.lp-payoff-item p { font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+
 @media (max-width: 760px) {
   .lp-guide { padding: 66px 18px; }
-  .lp-guide-journey { grid-template-columns: 1fr; gap: 26px; margin-bottom: 36px; }
-  .lp-toggle-panel { padding: 22px 20px; }
+  .lp-guide-journey { grid-template-columns: 1fr; gap: 22px; margin-bottom: 36px; }
+  /* El hilo se vuelve vertical: baja por el centro entre tarjetas apiladas */
+  .lp-guide-journey::before {
+    left: 50%;
+    right: auto;
+    top: 24px;
+    bottom: 24px;
+    border-top: none;
+    border-left: 2px dashed rgba(196, 154, 60, 0.45);
+    transform: translateX(-1px);
+  }
+  .lp-toggle-card { padding: 26px 20px 24px; border-radius: 18px; }
+  .lp-toggle-panel { grid-template-columns: 1fr; gap: 16px; margin-top: 20px; padding-top: 20px; }
+  .lp-toggle-specs { justify-content: flex-start; }
+  .lp-guide-payoff { margin: 44px auto 36px; }
+  .lp-payoff-row { grid-template-columns: 1fr 1fr; gap: 26px 0; }
+  .lp-payoff-item { padding: 0 16px; }
+  .lp-payoff-item:nth-child(odd) { border-left: none; }
   .lp-guide-cta { flex-direction: column; gap: 12px; }
 }
 
@@ -1020,6 +1278,293 @@
   line-height: 1;
   color: rgba(20, 23, 31, 0.06);
   pointer-events: none;
+}
+
+/* El resultado en tu vida: línea dorada al pie de cada tarjeta */
+.lp-feat-res {
+  margin-top: auto;
+  padding-top: 12px;
+  max-width: 85%;
+  border-top: 1px dashed rgba(196, 154, 60, 0.30);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  color: var(--gold-d);
+}
+.lp-feat-res::before { content: '→ '; }
+.lp-feat-card p { margin-bottom: 14px; }
+
+/* ── Antes / después: el porqué — qué cambia en el día a día ── */
+.lp-feat-daily-head { text-align: center; margin: 56px 0 24px; }
+.lp-feat-daily-head h3 {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #14171f;
+  text-wrap: balance;
+}
+
+.lp-feat-daily {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.lp-fd-col {
+  border-radius: 18px;
+  padding: 24px 26px 26px;
+  border: 1px solid rgba(20, 23, 31, 0.08);
+}
+/* Hoy: presente pero sin protagonismo */
+.lp-fd-col--now { background: var(--surface); }
+/* Con Fintú: el momento navy + dorado de la casa */
+.lp-fd-col--fintu {
+  background: linear-gradient(160deg, var(--navy-3), var(--navy-2));
+  border-color: rgba(196, 154, 60, 0.38);
+  box-shadow: 0 24px 50px -18px rgba(12, 20, 37, 0.45);
+}
+
+.lp-fd-tag {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+.lp-fd-col--now .lp-fd-tag   { color: var(--dim); }
+.lp-fd-col--fintu .lp-fd-tag { color: var(--gold-l); }
+
+.lp-fd-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 15px;
+}
+.lp-fd-col li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.lp-fd-col--now li   { color: var(--muted); }
+.lp-fd-col--fintu li { color: rgba(237, 240, 248, 0.80); }
+
+.lp-fd-col li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 9px 9px;
+}
+/* Hoy: cruces grises apagadas */
+.lp-fd-col--now li::before {
+  border: 1px solid rgba(154, 164, 192, 0.30);
+  background-color: rgba(154, 164, 192, 0.12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa4c0' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
+}
+/* Con Fintú: checks dorados vivos */
+.lp-fd-col--fintu li::before {
+  border: 1px solid rgba(219, 185, 106, 0.32);
+  background-color: rgba(219, 185, 106, 0.14);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dbb96a' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+/* La transición: flecha dorada entre los dos mundos,
+   con anillo del color del panel para flotar sobre el gap */
+.lp-fd-arrow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  color: var(--navy);
+  box-shadow: 0 10px 26px rgba(196, 154, 60, 0.45), 0 0 0 6px #f2efe6;
+  z-index: 2;
+}
+
+/* ════════════════════════════════════════════════════════════
+   VIDEOS — aprende con Fintú
+   Portada propia con play dorado; el iframe de YouTube solo se
+   monta al hacer clic. Sin link → placeholder "Próximamente".
+════════════════════════════════════════════════════════════ */
+.lp-vids { padding: 96px 24px; }
+.lp-vids-in { max-width: 1080px; margin: 0 auto; }
+
+.lp-vids-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
+.lp-vids-head .lp-feat-eyebrow { margin-bottom: 14px; }
+.lp-vids-intro {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 14px;
+}
+
+.lp-vids-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.lp-vid {
+  background: var(--surface);
+  border: 1px solid rgba(20, 23, 31, 0.08);
+  border-radius: 18px;
+  padding: 10px 10px 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.lp-vid:hover {
+  transform: translateY(-4px);
+  border-color: rgba(196, 154, 60, 0.35);
+  box-shadow: 0 18px 40px rgba(20, 23, 31, 0.09);
+}
+
+.lp-vid-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--navy-2);
+}
+.lp-vid-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Portada: miniatura + velo navy + play dorado */
+.lp-vid-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+.lp-vid-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-vid-cover:hover img { transform: scale(1.04); }
+.lp-vid-cover:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+
+.lp-vid-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(12, 20, 37, 0.10), rgba(12, 20, 37, 0.55)),
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(196, 154, 60, 0.10), transparent 70%);
+}
+
+.lp-vid-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  color: var(--navy);
+  box-shadow: 0 10px 30px rgba(12, 20, 37, 0.45);
+  transition: transform 0.25s ease;
+}
+.lp-vid-play svg { margin-left: 3px; }
+.lp-vid-cover:hover .lp-vid-play { transform: translate(-50%, -50%) scale(1.08); }
+
+.lp-vid-dur {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(12, 20, 37, 0.72);
+  color: #edf0f8;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  backdrop-filter: blur(4px);
+}
+
+/* Placeholder mientras no hay link */
+.lp-vid-soon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: rgba(237, 240, 248, 0.55);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 42%, rgba(196, 154, 60, 0.12), transparent 70%),
+    var(--navy-2);
+}
+.lp-vid-soon svg { opacity: 0.7; margin-bottom: 4px; }
+.lp-vid-soon span {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(219, 185, 106, 0.85);
+}
+.lp-vid-soon small { font-size: 11.5px; color: rgba(237, 240, 248, 0.35); }
+
+/* Meta bajo el marco */
+.lp-vid-meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 14px 18px;
+}
+.lp-vid-num {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 0.9;
+  color: rgba(20, 23, 31, 0.14);
+}
+.lp-vid-meta h3 {
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: #14171f;
+  margin-bottom: 4px;
+}
+.lp-vid-meta p { font-size: 13px; line-height: 1.55; color: var(--muted); }
+
+@media (max-width: 860px) {
+  .lp-vids-grid { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+}
+@media (max-width: 640px) {
+  .lp-vids { padding: 68px 18px; }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1696,6 +2241,8 @@
   .lp-nav-btns .lp-btn-gold { display: none; }
   .lp-feat-card--featured .lp-feat-ico { margin-bottom: 18px; }
   .lp-steps-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .lp-feat-daily { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+  .lp-fd-arrow { transform: translate(-50%, -50%) rotate(90deg); }
 }
 
 @media (max-width: 640px) {
@@ -1733,7 +2280,10 @@
   .lp-hero-in > *,
   .lp-hero-split > * { opacity: 1 !important; animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .lp-btn-gold, .lp-btn-outline, .lp-btn-dark, .lp-feat-card, .lp-step { transition: none; }
+  .lp-btn-gold, .lp-btn-outline, .lp-btn-dark, .lp-feat-card, .lp-step,
+  .lp-vid, .lp-vid-cover img, .lp-vid-play, .lp-jstep { transition: none; }
+  .lp-guide-journey.reveal .lp-jstep { opacity: 1 !important; animation: none !important; }
+  .lp-toggle-panel { animation: none !important; }
 }
 
 /* ════════════════════════════════════════════════════════════

@@ -208,6 +208,11 @@ const IcGauge = () => (
     <line x1="12" y1="12" x2="15.5" y2="8.5" />
   </svg>
 );
+const IcHome = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+);
 const IcCheck = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
     <polyline points="20 6 9 17 4 12" />
@@ -223,11 +228,35 @@ const IcLock = () => (
    DATA
 ════════════════════════════════════════════════════════════ */
 const FEATURES = [
-  { Icon: IcCard,    titulo: 'Hasta 4 tarjetas',          desc: 'Todas tus tarjetas de cualquier banco peruano, en un solo dashboard.' },
-  { Icon: IcCal,     titulo: 'Ciclos automáticos',         desc: 'Fechas de inicio, cierre y pago calculadas solas. Nunca más una mora.' },
-  { Icon: IcChart,   titulo: 'Historial visual',           desc: 'Gastos, pagos y evolución de tu deuda en gráficos claros.' },
-  { Icon: IcTarget,  titulo: 'Metas de ahorro',            desc: 'Define objetivos vinculados a tu deuda y rastrea tu progreso mes a mes.' },
+  { Icon: IcCard,    titulo: 'Hasta 4 tarjetas',   desc: 'Todas tus tarjetas de cualquier banco peruano, en un solo dashboard.',        res: 'Se acabó revisar cuatro apps distintas.' },
+  { Icon: IcCal,     titulo: 'Ciclos automáticos', desc: 'Fechas de inicio, cierre y pago calculadas solas, tarjeta por tarjeta.',      res: 'Nunca más una mora por olvido.' },
+  { Icon: IcChart,   titulo: 'Historial visual',   desc: 'Gastos, pagos y evolución de tu deuda en gráficos claros.',                   res: 'Entiendes tu plata de un vistazo.' },
+  { Icon: IcTarget,  titulo: 'Metas de ahorro',    desc: 'Define objetivos vinculados a tu deuda y rastrea tu progreso mes a mes.',     res: 'Ves tu deuda bajar mes a mes.' },
 ];
+
+/* El premio del buen historial: lo que te abre en el sistema financiero */
+const PAYOFF = [
+  { Icon: IcPercent, t: 'Tasas más bajas',      d: 'Un buen perfil paga menos intereses por el mismo préstamo.' },
+  { Icon: IcHome,    t: 'Créditos grandes',     d: 'Vehicular o hipotecario: tu historial es la llave para montos altos.' },
+  { Icon: IcCard,    t: 'Mejores tarjetas',     d: 'Líneas más altas y tarjetas con beneficios de verdad.' },
+  { Icon: IcGauge,   t: 'Los bancos te buscan', d: 'Dejas de rogar créditos: las ofertas llegan a ti y tú eliges.' },
+];
+
+/* El cambio real en el día a día: sin Fintú vs con Fintú (ítems 1:1) */
+const DAILY = {
+  antes: [
+    '«¿Cuándo cierra mi ciclo?» — ni idea',
+    'Moras por pagos que se te pasan',
+    'Intereses que caen de sorpresa',
+    'Tu deuda regada en apps, correos y papeles',
+  ],
+  despues: [
+    'Sabes qué pagar y cuándo, siempre',
+    'Cero sustos: las fechas se calculan solas',
+    'Ves el interés venir antes de que te cobren',
+    'Todo en un solo tablero, claro y tuyo',
+  ],
+};
 
 const STEPS = [
   { num: '01', titulo: 'Crea tu cuenta',      desc: 'Regístrate y paga $4 una sola vez vía PayPal. Toma 2 minutos.' },
@@ -249,6 +278,27 @@ const PRICE_INCLUDES = [
   'Sin publicidad ni suscripciones',
   'Sin datos bancarios requeridos',
   'Soporte personalizado',
+];
+
+/* ── VIDEOS ──────────────────────────────────────────────────
+   Pega en `youtube` el link de cada video cuando lo tengas
+   (sirve youtu.be/…, youtube.com/watch?v=… o el ID solo).
+   Mientras esté vacío ('') la tarjeta muestra "Próximamente". */
+const VIDEOS = [
+  {
+    num: '01',
+    titulo: 'Conoce Fintú',
+    desc: 'Qué es Fintú, quién está detrás y qué problema resolvemos.',
+    dur: '1 min',
+    youtube: '',
+  },
+  {
+    num: '02',
+    titulo: 'Tour por la app',
+    desc: 'Cómo registrar tus tarjetas y dominar tus ciclos, paso a paso.',
+    dur: '2 min',
+    youtube: '',
+  },
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -292,6 +342,75 @@ function AmbientVideo({ src, poster, className }) {
 }
 
 /* ════════════════════════════════════════════════════════════
+   VIDEO CARD — portada propia; el reproductor de YouTube solo
+   se monta al hacer clic (la página no carga nada de YouTube
+   hasta entonces). Sin link aún → placeholder "Próximamente".
+════════════════════════════════════════════════════════════ */
+function ytId(url) {
+  if (!url) return null;
+  const s = String(url).trim();
+  const m = s.match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/|live\/)([\w-]{11})/) || s.match(/^([\w-]{11})$/);
+  return m ? m[1] : null;
+}
+
+function VideoCard({ video, playing, onPlay }) {
+  const id = ytId(video.youtube);
+  // maxresdefault no existe en todos los videos; si falla, cae a hqdefault
+  const [thumbLow, setThumbLow] = useState(false);
+
+  return (
+    <article className={`lp-vid${playing ? ' lp-vid--playing' : ''}`}>
+      <div className="lp-vid-frame">
+        {id ? (
+          playing ? (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&color=white`}
+              title={video.titulo}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <button
+              type="button"
+              className="lp-vid-cover"
+              onClick={onPlay}
+              aria-label={`Reproducir video: ${video.titulo} (${video.dur})`}
+            >
+              <img
+                src={`https://i.ytimg.com/vi/${id}/${thumbLow ? 'hqdefault' : 'maxresdefault'}.jpg`}
+                alt=""
+                loading="lazy"
+                onError={() => setThumbLow(true)}
+              />
+              <span className="lp-vid-shade" aria-hidden="true" />
+              <span className="lp-vid-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M8 5.5v13l11-6.5z" /></svg>
+              </span>
+              <span className="lp-vid-dur">{video.dur}</span>
+            </button>
+          )
+        ) : (
+          <div className="lp-vid-soon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="26" height="26">
+              <path d="M23 7l-7 5 7 5V7z" /><rect x="1" y="5" width="15" height="14" rx="2" />
+            </svg>
+            <span>Próximamente</span>
+            <small>estamos grabando este video</small>
+          </div>
+        )}
+      </div>
+      <div className="lp-vid-meta">
+        <span className="lp-vid-num" aria-hidden="true">{video.num}</span>
+        <div>
+          <h3>{video.titulo}</h3>
+          <p>{video.desc}</p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════
    REVEAL ON SCROLL
 ════════════════════════════════════════════════════════════ */
 function useReveal(active) {
@@ -320,6 +439,7 @@ export default function Landing() {
   const [navMobileOpen, setNavMobileOpen] = useState(false);
   const [legalOpen, setLegalOpen] = useState(null); // null | 'terminos' | 'privacidad'
   const [gtipo, setGtipo] = useState('con');        // guía: 'con' | 'sin' garantía
+  const [playingVid, setPlayingVid] = useState(null); // num del video activo (uno a la vez)
 
   // Intro: solo una vez por sesión y nunca con reduced-motion
   const [showIntro, setShowIntro] = useState(() => {
@@ -521,6 +641,7 @@ export default function Landing() {
       <section id="sec-guia" className="lp-guide">
         <div className="lp-guide-in">
           <div className="lp-guide-head reveal">
+            <div className="lp-guide-eyebrow">Guía para novatos</div>
             <h2 className="lp-guide-title">
               ¿Cansado de no entender cómo funciona{' '}
               <span className="lp-hero-gold">una tarjeta de crédito?</span>
@@ -544,55 +665,111 @@ export default function Landing() {
               {
                 n: '03', t: 'Fintú hace el resto',
                 d: 'Ordena tus ciclos, pagos e intereses. Te acompaña en cada paso.',
+                hl: true, // el destino de la ruta: navy + dorado, el momento Fintú
                 ic: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>,
               },
             ].map((p) => (
-              <div className="lp-jstep" key={p.n}>
+              <div className={`lp-jstep${p.hl ? ' lp-jstep--hl' : ''}`} key={p.n}>
                 <span className="lp-jstep-ico">{p.ic}</span>
-                <span className="lp-jstep-num">{p.n}</span>
+                <span className="lp-jstep-num" aria-hidden="true">{p.n}</span>
                 <h4 className="lp-jstep-title">{p.t}</h4>
                 <p className="lp-jstep-desc">{p.d}</p>
               </div>
             ))}
           </div>
 
-          {/* Diferencia con/sin garantía: toca para revelar */}
+          {/* Diferencia con/sin garantía: tarjeta de consulta con toggle */}
           <div className="lp-guide-toggle reveal">
-            <p className="lp-toggle-q">¿Con garantía o sin garantía? Toca para ver la diferencia.</p>
-            <div className="lp-toggle-pills" role="tablist" aria-label="Tipo de tarjeta">
-              <button
-                type="button" role="tab"
-                aria-selected={gtipo === 'sin'}
-                className={`lp-toggle-pill${gtipo === 'sin' ? ' active' : ''}`}
-                onClick={() => setGtipo('sin')}
-              >
-                Sin garantía
-              </button>
-              <button
-                type="button" role="tab"
-                aria-selected={gtipo === 'con'}
-                className={`lp-toggle-pill${gtipo === 'con' ? ' active' : ''}`}
-                onClick={() => setGtipo('con')}
-              >
-                Con garantía
-              </button>
+            <div className="lp-toggle-card">
+              <div className="lp-toggle-head">
+                <span className="lp-toggle-kicker">La gran duda</span>
+                <h3 className="lp-toggle-title">
+                  ¿Con garantía o <span className="lp-hero-gold">sin garantía?</span>
+                </h3>
+                <p className="lp-toggle-hint">Toca cada opción y mira la diferencia.</p>
+              </div>
+              <div className="lp-toggle-pills" role="tablist" aria-label="Tipo de tarjeta">
+                <button
+                  type="button" role="tab"
+                  aria-selected={gtipo === 'sin'}
+                  className={`lp-toggle-pill${gtipo === 'sin' ? ' active' : ''}`}
+                  onClick={() => setGtipo('sin')}
+                >
+                  Sin garantía
+                </button>
+                <button
+                  type="button" role="tab"
+                  aria-selected={gtipo === 'con'}
+                  className={`lp-toggle-pill${gtipo === 'con' ? ' active' : ''}`}
+                  onClick={() => setGtipo('con')}
+                >
+                  Con garantía
+                </button>
+              </div>
+              {/* aria-live va en el wrapper estable; el key reinicia la animación */}
+              <div aria-live="polite">
+                <div className="lp-toggle-panel" key={gtipo}>
+                  {gtipo === 'sin' ? (
+                    <>
+                      <div className="lp-toggle-lead">
+                        <h4>La común</h4>
+                        <p>
+                          El banco mira tus ingresos y tu historial, y te da una
+                          línea de crédito basada en <strong>confianza</strong>.
+                          Es la que la mayoría conoce.
+                        </p>
+                      </div>
+                      <ul className="lp-toggle-specs">
+                        <li>Debes sustentar tus ingresos</li>
+                        <li>Casi siempre piden algo de historial</li>
+                        <li>Tu línea depende de tu perfil</li>
+                      </ul>
+                    </>
+                  ) : (
+                    <>
+                      <div className="lp-toggle-lead">
+                        <h4>
+                          La puerta de entrada
+                          <span className="lp-toggle-badge">Ideal si recién empiezas</span>
+                        </h4>
+                        <p>
+                          Dejas un depósito como respaldo y el banco te da una línea
+                          sobre ese monto. Es la forma más fácil de{' '}
+                          <strong>construir tu historial desde cero</strong>.
+                        </p>
+                      </div>
+                      <ul className="lp-toggle-specs">
+                        <li>No necesitas historial previo</li>
+                        <li>Tu depósito respalda tu línea</li>
+                        <li>Menos riesgo de que te rechacen</li>
+                      </ul>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="lp-toggle-panel" key={gtipo}>
-              {gtipo === 'sin' ? (
-                <p>
-                  La común. El banco mira tus ingresos y tu historial, y te da
-                  una línea de crédito basada en confianza. Necesitas sustentar
-                  ingresos y, casi siempre, algo de historial.
-                </p>
-              ) : (
-                <p>
-                  <span className="lp-toggle-badge">Ideal si recién empiezas</span>
-                  Para quien aún no tiene historial. Dejas un depósito como
-                  respaldo y el banco te da una línea sobre ese monto. Es la forma
-                  más fácil de <strong>construir tu historial</strong> desde cero,
-                  con menos riesgo de que te rechacen.
-                </p>
-              )}
+          </div>
+
+          {/* El premio: para qué construyes historial */}
+          <div className="lp-guide-payoff reveal">
+            <div className="lp-payoff-head">
+              <h3>
+                ¿Y por qué importa?{' '}
+                <span className="lp-hero-gold">Un buen historial te abre puertas.</span>
+              </h3>
+              <p>
+                Cada pago puntual construye tu reputación ante los bancos.
+                Con el tiempo, eso se convierte en:
+              </p>
+            </div>
+            <div className="lp-payoff-row">
+              {PAYOFF.map((b) => (
+                <div className="lp-payoff-item" key={b.t}>
+                  <span className="lp-payoff-ico"><b.Icon /></span>
+                  <h4>{b.t}</h4>
+                  <p>{b.d}</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -623,8 +800,56 @@ export default function Landing() {
                 <div className="lp-feat-ico"><f.Icon /></div>
                 <h3>{f.titulo}</h3>
                 <p>{f.desc}</p>
+                <span className="lp-feat-res">{f.res}</span>
                 <span className="lp-feat-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               </div>
+            ))}
+          </div>
+
+          {/* Antes / después: el porqué — qué cambia en el día a día */}
+          <div className="lp-feat-daily-head reveal">
+            <h3>El cambio en tu <span className="lp-hero-gold">día a día.</span></h3>
+          </div>
+          <div className="lp-feat-daily reveal">
+            <div className="lp-fd-col lp-fd-col--now">
+              <span className="lp-fd-tag">Sin Fintú</span>
+              <ul>
+                {DAILY.antes.map((t) => <li key={t}>{t}</li>)}
+              </ul>
+            </div>
+            <div className="lp-fd-arrow" aria-hidden="true"><Arr /></div>
+            <div className="lp-fd-col lp-fd-col--fintu">
+              <span className="lp-fd-tag">Con Fintú</span>
+              <ul>
+                {DAILY.despues.map((t) => <li key={t}>{t}</li>)}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── VIDEOS (aprende con Fintú en 3 minutos) ─── */}
+      <section id="sec-videos" className="lp-vids">
+        <div className="lp-vids-in">
+          <div className="lp-vids-head reveal">
+            <div className="lp-feat-eyebrow">En video</div>
+            <h2 className="lp-feat-title">
+              Míralo <span className="lp-hero-gold">en acción.</span>
+            </h2>
+            <p className="lp-vids-intro">
+              Dos videos cortos y al grano: qué es Fintú y cómo se usa por dentro.
+            </p>
+          </div>
+          {/* El reveal va en el grid: si fuera por tarjeta, React borraría
+              la clase `visible` al re-renderizar cuando le das play */}
+          <div className="lp-vids-grid reveal">
+            {VIDEOS.map((v) => (
+              <VideoCard
+                key={v.num}
+                video={v}
+                playing={playingVid === v.num}
+                onPlay={() => setPlayingVid(v.num)}
+              />
             ))}
           </div>
         </div>
