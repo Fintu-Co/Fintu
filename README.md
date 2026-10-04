@@ -2,6 +2,8 @@
 
 # FINTÚ & CO.
 
+[![CI](https://github.com/SebastianLima-PE/Fintu-Co/actions/workflows/ci.yml/badge.svg)](https://github.com/SebastianLima-PE/Fintu-Co/actions/workflows/ci.yml)
+
 **No pagues intereses de más.**
 Gestiona la deuda, los ciclos de facturación y los pagos de tus tarjetas de crédito, sin conectar tu banco.
 
@@ -91,6 +93,7 @@ Sin SMTP configurado, el código de recuperación de contraseña se imprime en l
 
 ## Despliegue
 
+- **CI**: GitHub Actions corre los tests del backend y el build del frontend en cada push y PR a `master`.
 - **Frontend**: Cloudflare Pages, con despliegue automático en cada push a `master`.
 - **Backend**: preparado para Railway + MySQL (ver [DEPLOY.md](./DEPLOY.md)). No va en serverless porque usa un pool de conexiones persistente y una tarea programada diaria.
 
