@@ -20,7 +20,8 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: creditsmart-backend/package-lock.json
-      - run: npm ci
+      - run: |
+          npm ci 2> npm-err.log || { grep -E "npm error (Invalid|Missing|code)|ERR" npm-err.log | head -8 | while read -r l; do echo "::error::$l"; done; exit 1; }
       - run: npm test
 
   frontend:
