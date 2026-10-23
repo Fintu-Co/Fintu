@@ -5,7 +5,7 @@ Monorepo con dos paquetes que se despliegan por separado:
 | Paquete | Dónde | Por qué |
 |---|---|---|
 | `creditsmart-backend` | Railway | Necesita proceso persistente |
-| `creditsmart-frontend` | Vercel | SPA estática |
+| `creditsmart-frontend` | Cloudflare Pages | SPA estática |
 
 > **El backend no puede ir en serverless.** Usa un pool de MySQL con `keepAlive`
 > y un `setInterval` diario (limpieza de movimientos). En serverless el pool se
@@ -74,15 +74,18 @@ Anota esa URL para el paso 2.
 
 ---
 
-## 2. Frontend en Vercel
+## 2. Frontend en Cloudflare Pages
 
-**Add New → Project**, importa el repo, y en *Root Directory*:
+**Workers & Pages → Create → Pages → Connect to Git**, elige el repo y configura:
 
 ```
-creditsmart-frontend
+Root directory:   creditsmart-frontend
+Build command:    npm run build
+Output directory: dist
 ```
 
-Vercel detecta Vite solo. Variables de entorno:
+El fallback de la SPA (que `/dashboard` no dé 404 al recargar) lo resuelve
+`public/_redirects`. Variables de entorno:
 
 ```
 VITE_API_URL=https://tu-backend.up.railway.app     # sin barra final
@@ -96,18 +99,18 @@ VITE_PAYPAL_CLIENT_ID=
 
 ## 3. Cerrar el círculo (CORS)
 
-Vuelve a Railway y pon `FRONTEND_URL` con el dominio exacto de Vercel:
+Vuelve a Railway y pon `FRONTEND_URL` con el dominio exacto de Cloudflare Pages:
 
 ```
-FRONTEND_URL=https://tu-app.vercel.app
+FRONTEND_URL=https://fintu-co.pages.dev
 ```
 
 Exacto quiere decir: **con `https://` y sin barra final**. `server.js` lo pasa
 tal cual como `origin` de CORS; si no coincide carácter por carácter, el
 navegador bloquea cada petición.
 
-**Gotcha de los previews:** Vercel genera una URL distinta por cada rama y cada
-PR (`tu-app-git-rama.vercel.app`). Como `FRONTEND_URL` admite un solo origen,
+**Gotcha de los previews:** Cloudflare Pages genera una URL distinta por cada
+rama y cada despliegue (`<hash>.fintu-co.pages.dev`). Como `FRONTEND_URL` admite un solo origen,
 los previews quedan bloqueados por CORS. Si los necesitas, hay que cambiar
 `corsOptions.origin` en `server.js` por una función que valide contra una lista
 o un patrón.
