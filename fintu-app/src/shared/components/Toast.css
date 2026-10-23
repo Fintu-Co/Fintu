@@ -42,26 +42,26 @@
 /* Variantes */
 .toast-success {
   background: rgba(15, 30, 20, 0.97);
-  border-color: rgba(34, 197, 94, 0.35);
-  color: #4ade80;
+  border-color: rgba(94, 140, 116, 0.35);
+  color: #7FAF94;
 }
 
 .toast-error {
   background: rgba(30, 10, 10, 0.97);
-  border-color: rgba(239, 68, 68, 0.35);
-  color: #f87171;
+  border-color: rgba(226, 96, 63, 0.35);
+  color: #EC8A6E;
 }
 
 .toast-warning {
   background: rgba(28, 22, 10, 0.97);
-  border-color: rgba(212, 165, 116, 0.35);
-  color: #f6c177;
+  border-color: rgba(232, 148, 106, 0.35);
+  color: #F5C9A6;
 }
 
 .toast-info {
   background: rgba(14, 14, 28, 0.97);
-  border-color: rgba(212, 165, 116, 0.25);
-  color: #d4a574;
+  border-color: rgba(232, 148, 106, 0.25);
+  color: #E8946A;
 }
 
 /* Icono */
@@ -109,10 +109,10 @@
   border-radius: 0 0 12px 12px;
 }
 
-.toast-success  .toast-progress { background: #4ade80; }
-.toast-error    .toast-progress { background: #f87171; }
-.toast-warning  .toast-progress { background: #f6c177; }
-.toast-info     .toast-progress { background: #d4a574; }
+.toast-success  .toast-progress { background: #7FAF94; }
+.toast-error    .toast-progress { background: #EC8A6E; }
+.toast-warning  .toast-progress { background: #F5C9A6; }
+.toast-info     .toast-progress { background: #E8946A; }
 
 @keyframes toastShrink {
   from { width: 100%; }

@@ -24,16 +24,16 @@ export const generarEstadoCuenta = async (
 
   /* ── Paleta de marca ── */
   const W = 210, H = 297, M = 14;
-  const NAVY    = [15,  23,  41 ];   // #0f1729
-  const GOLD    = [196, 154, 60 ];   // #c49a3c
-  const GOLD_L  = [219, 185, 106];   // #dbb96a
-  const TEXT    = [26,  29,  46 ];   // #1a1d2e
-  const MUTED   = [92,  100, 128];   // #5c6480
-  const DIM     = [154, 164, 192];   // #9aa4c0
+  const NAVY    = [15,  23,  41 ];   // #2B1B17
+  const GOLD    = [196, 154, 60 ];   // #E8946A
+  const GOLD_L  = [219, 185, 106];   // #F1B68C
+  const TEXT    = [26,  29,  46 ];   // #2B1B17
+  const MUTED   = [92,  100, 128];   // #6B5148
+  const DIM     = [154, 164, 192];   // #A8968A
   const SOFT    = [176, 183, 201];   // texto suave sobre navy
   const HAIR    = [225, 228, 236];   // hairlines
   const BG_ALT  = [249, 250, 253];   // zebra de tabla / panel
-  const GREEN   = [21,  122, 85 ];   // #157a55
+  const GREEN   = [21,  122, 85 ];   // #2F4A3E
   const RED     = [186, 38,  38 ];
   const AMB     = [217, 119, 6  ];
 

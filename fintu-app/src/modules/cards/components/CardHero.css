@@ -5,17 +5,17 @@
 
 .hero-block {
   background: #ffffff;
-  border: 1px solid rgba(30, 45, 100, 0.08);
+  border: 1px solid rgba(74, 47, 40, 0.08);
   border-radius: 22px;
   padding: 28px 24px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(30, 45, 100, 0.06);
+  box-shadow: 0 2px 12px rgba(74, 47, 40, 0.06);
   transition: border-color 0.25s, box-shadow 0.25s;
 }
 .hero-block:hover {
-  border-color: rgba(196, 154, 60, 0.30);
-  box-shadow: 0 8px 28px rgba(30, 45, 100, 0.10);
+  border-color: rgba(232, 148, 106, 0.30);
+  box-shadow: 0 8px 28px rgba(74, 47, 40, 0.10);
 }
 
 /* Línea dorada superior — firma de marca */
@@ -24,7 +24,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent 10%, rgba(196, 154, 60, 0.45) 50%, transparent 90%);
+  background: linear-gradient(90deg, transparent 10%, rgba(232, 148, 106, 0.45) 50%, transparent 90%);
   pointer-events: none;
 }
 
@@ -34,7 +34,7 @@
   position: absolute;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, rgba(196, 154, 60, 0.08), transparent 70%);
+  background: radial-gradient(circle, rgba(232, 148, 106, 0.08), transparent 70%);
   top: -90px;
   left: -90px;
   filter: blur(60px);
@@ -90,7 +90,7 @@
   position: absolute;
   width: 220px;
   height: 220px;
-  background: radial-gradient(circle, rgba(196, 154, 60, 0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(232, 148, 106, 0.14), transparent 70%);
   filter: blur(50px);
   animation: pulseCircle 3s ease-in-out infinite;
   pointer-events: none;
@@ -111,7 +111,7 @@
   position: absolute;
   width: 240px;
   height: 240px;
-  background: radial-gradient(circle, rgba(196, 154, 60, 0.09), transparent 60%);
+  background: radial-gradient(circle, rgba(232, 148, 106, 0.09), transparent 60%);
   filter: blur(40px);
   animation: pulseSlow 5s ease-in-out infinite;
   pointer-events: none;
@@ -132,7 +132,7 @@
 .hero-ring-rotating {
   position: absolute;
   border-radius: 50%;
-  border: 1px dashed rgba(196, 154, 60, 0.35);
+  border: 1px dashed rgba(232, 148, 106, 0.35);
   pointer-events: none;
 }
 
@@ -198,7 +198,7 @@
 
 .hero-currency {
   font-size: 16px;
-  color: #9a7628;
+  color: #A5562F;
   font-weight: 700;
   flex-shrink: 0;
   line-height: 1;
@@ -208,7 +208,7 @@
   font-size: 48px;
   font-weight: 900;
   letter-spacing: -2px;
-  background: linear-gradient(180deg, #8a6a24, #c49a3c);
+  background: linear-gradient(180deg, #8a6a24, #E8946A);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -223,7 +223,7 @@
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #5c6480;
+  color: #6B5148;
   margin-top: 8px;
   font-weight: 600;
   animation: fadeInUp 1s ease 0.3s both;
@@ -249,7 +249,7 @@
   flex-direction: column;
   gap: 8px;
   margin-top: 4px;
-  border-top: 1px solid rgba(30, 45, 100, 0.08);
+  border-top: 1px solid rgba(74, 47, 40, 0.08);
   padding-top: 16px;
 }
 
@@ -258,39 +258,39 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: #f7f9ff;
-  border: 1px solid rgba(30, 45, 100, 0.08);
+  background: #FAF7F2;
+  border: 1px solid rgba(74, 47, 40, 0.08);
   border-radius: 10px;
   transition: background 0.25s, border-color 0.25s;
 }
 
 .hero-cycle-item:hover {
-  background: rgba(196, 154, 60, 0.05);
-  border-color: rgba(196, 154, 60, 0.25);
+  background: rgba(232, 148, 106, 0.05);
+  border-color: rgba(232, 148, 106, 0.25);
 }
 
 .hero-cycle-item.urgent {
-  background: rgba(220, 38, 38, 0.05);
-  border-color: rgba(220, 38, 38, 0.22);
+  background: rgba(194, 70, 42, 0.05);
+  border-color: rgba(194, 70, 42, 0.22);
 }
 
 .hero-cycle-icon {
   width: 28px;
   height: 28px;
-  background: rgba(196, 154, 60, 0.10);
-  border: 1px solid rgba(196, 154, 60, 0.25);
+  background: rgba(232, 148, 106, 0.10);
+  border: 1px solid rgba(232, 148, 106, 0.25);
   border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c49a3c;
+  color: #E8946A;
   flex-shrink: 0;
 }
 
 .hero-cycle-item.urgent .hero-cycle-icon {
-  background: rgba(220, 38, 38, 0.08);
-  border-color: rgba(220, 38, 38, 0.28);
-  color: #dc2626;
+  background: rgba(194, 70, 42, 0.08);
+  border-color: rgba(194, 70, 42, 0.28);
+  color: #C2462A;
 }
 
 .hero-cycle-content {
@@ -303,7 +303,7 @@
 .hero-cycle-label {
   font-size: 10px;
   font-weight: 700;
-  color: #9aa4c0;
+  color: #8A746A;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -311,19 +311,19 @@
 .hero-cycle-date {
   font-size: 13px;
   font-weight: 700;
-  color: #1a1d2e;
+  color: #2B1B17;
 }
 
 .hero-cycle-days {
   font-size: 13px;
   font-weight: 800;
-  color: #9a7628;
+  color: #A5562F;
   white-space: nowrap;
   letter-spacing: -0.3px;
 }
 
 .hero-cycle-days.days-urgent {
-  color: #dc2626;
+  color: #C2462A;
   animation: pulse 2s ease-in-out infinite;
 }
 

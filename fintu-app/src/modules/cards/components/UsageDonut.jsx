@@ -20,8 +20,8 @@ function UsageDonut({ porcentajeUso, deudaActual, lineaCredito, simboloMoneda, t
     pct <= 70 ? 'warn' : 'bad';
 
   const color =
-    nivel === 'good' ? '#157a55' :
-    nivel === 'warn' ? '#d97706' : '#dc2626';
+    nivel === 'good' ? '#2F4A3E' :
+    nivel === 'warn' ? '#C27A1E' : '#C2462A';
 
   const estado =
     nivel === 'good' ? 'Zona saludable' :
@@ -39,7 +39,7 @@ function UsageDonut({ porcentajeUso, deudaActual, lineaCredito, simboloMoneda, t
       <div className="ud-wrap">
         <div className="ud-donut">
           <svg width="92" height="92" viewBox="0 0 92 92">
-            <circle cx="46" cy="46" r={R} fill="none" stroke="#eef1f8" strokeWidth="10" />
+            <circle cx="46" cy="46" r={R} fill="none" stroke="#F1EBE3" strokeWidth="10" />
             <circle
               cx="46" cy="46" r={R} fill="none" stroke={color} strokeWidth="10"
               strokeLinecap="round"

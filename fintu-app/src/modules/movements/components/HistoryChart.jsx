@@ -88,14 +88,14 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
     const barGradient = (context, actual) => {
       const { chart } = context;
       const { ctx, chartArea } = chart;
-      if (!chartArea) return actual ? '#c49a3c' : '#1a2540';
+      if (!chartArea) return actual ? '#E8946A' : '#4A2F28';
       const g = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
       if (actual) {
-        g.addColorStop(0, '#9a7628');
-        g.addColorStop(1, '#dbb96a');
+        g.addColorStop(0, '#A5562F');
+        g.addColorStop(1, '#F1B68C');
       } else {
-        g.addColorStop(0, '#141d33');
-        g.addColorStop(1, '#243456');
+        g.addColorStop(0, '#2B1B17');
+        g.addColorStop(1, '#4A2F28');
       }
       return g;
     };
@@ -123,13 +123,13 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
           type: 'line',
           label: 'Deuda',
           data: deudas,
-          borderColor: '#c49a3c',
+          borderColor: '#E8946A',
           borderWidth: 3,
           tension: 0.4,
           fill: false,
           pointRadius: 3,
           pointHoverRadius: 7,
-          pointBackgroundColor: '#c49a3c',
+          pointBackgroundColor: '#E8946A',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           order: 1,
@@ -147,7 +147,7 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
         position: 'top',
         align: 'end',
         labels: {
-          color: '#5c6480',
+          color: '#6B5148',
           font: { size: 12, weight: '600' },
           padding: 14,
           usePointStyle: true,
@@ -158,9 +158,9 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
       },
       tooltip: {
         backgroundColor: '#ffffff',
-        titleColor: '#1a1d2e',
-        bodyColor: '#5c6480',
-        borderColor: 'rgba(30,45,100,0.10)',
+        titleColor: '#2B1B17',
+        bodyColor: '#6B5148',
+        borderColor: 'rgba(74, 47, 40,0.10)',
         borderWidth: 1,
         padding: 12,
         cornerRadius: 10,
@@ -192,7 +192,7 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
         grid: { display: false },
         border: { display: false },
         ticks: {
-          color: '#9aa4c0',
+          color: '#8A746A',
           font: { size: 11, weight: '600' },
           maxRotation: 0,
           autoSkip: true
@@ -200,10 +200,10 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
       },
       y: {
         beginAtZero: true,
-        grid: { color: 'rgba(30,45,100,0.06)' },
+        grid: { color: 'rgba(74, 47, 40,0.06)' },
         border: { display: false },
         ticks: {
-          color: '#9aa4c0',
+          color: '#8A746A',
           font: { size: 11, weight: '600' },
           padding: 8,
           callback: function(value) {
@@ -226,15 +226,15 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
           type: 'line',
           yMin: insights.uso_30_porciento,
           yMax: insights.uso_30_porciento,
-          borderColor: 'rgba(217,119,6, 0.5)',
+          borderColor: 'rgba(194, 122, 30, 0.5)',
           borderWidth: 2,
           borderDash: [5, 5],
           label: {
             content: '30% - Uso saludable',
             enabled: true,
             position: 'end',
-            backgroundColor: 'rgba(217,119,6, 0.8)',
-            color: '#1a1a1a',
+            backgroundColor: 'rgba(194, 122, 30, 0.8)',
+            color: '#2B1B17',
             font: { size: 10, weight: 'bold' }
           }
         },
@@ -242,14 +242,14 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
           type: 'line',
           yMin: insights.uso_70_porciento,
           yMax: insights.uso_70_porciento,
-          borderColor: 'rgba(249, 115, 22, 0.5)',
+          borderColor: 'rgba(217, 120, 74, 0.5)',
           borderWidth: 2,
           borderDash: [5, 5],
           label: {
             content: '70% - Zona de peligro',
             enabled: true,
             position: 'end',
-            backgroundColor: 'rgba(249, 115, 22, 0.8)',
+            backgroundColor: 'rgba(217, 120, 74, 0.8)',
             color: '#fff',
             font: { size: 10, weight: 'bold' }
           }
@@ -258,14 +258,14 @@ function HistoryChart({ tarjetaId, simboloMoneda }) {
           type: 'line',
           yMin: insights.linea_credito,
           yMax: insights.linea_credito,
-          borderColor: 'rgba(239, 68, 68, 0.6)',
+          borderColor: 'rgba(226, 96, 63, 0.6)',
           borderWidth: 3,
           borderDash: [10, 5],
           label: {
             content: 'Límite',
             enabled: true,
             position: 'end',
-            backgroundColor: 'rgba(239, 68, 68, 0.9)',
+            backgroundColor: 'rgba(226, 96, 63, 0.9)',
             color: '#fff',
             font: { size: 11, weight: 'bold' }
           }

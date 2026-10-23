@@ -15,36 +15,36 @@
   position: relative;
   overflow: hidden;
   margin-bottom: 20px;
-  box-shadow: 0 12px 32px rgba(15, 23, 41, 0.18);
+  box-shadow: 0 12px 32px rgba(43, 27, 23, 0.18);
 }
 .edu-hero::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196,154,60,0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(232, 148, 106,0.55), transparent);
 }
 .edu-hero::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 50% 80% at 85% 20%, rgba(196,154,60,0.12), transparent 65%);
+  background: radial-gradient(ellipse 50% 80% at 85% 20%, rgba(232, 148, 106,0.12), transparent 65%);
 }
 .edu-hero-icon {
   width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
-  background: rgba(196,154,60,0.14);
-  border: 1px solid rgba(196,154,60,0.30);
+  background: rgba(232, 148, 106,0.14);
+  border: 1px solid rgba(232, 148, 106,0.30);
   display: flex; align-items: center; justify-content: center;
   color: var(--app-gold-l);
 }
 .edu-hero-icon svg { width: 26px; height: 26px; }
 .edu-hero-text h1 {
   font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
-  color: #edf0f8; margin-bottom: 4px;
+  color: #EFE8DF; margin-bottom: 4px;
 }
 .edu-hero-text p {
-  font-size: 13.5px; color: rgba(237,240,248,0.55); line-height: 1.5;
+  font-size: 13.5px; color: rgba(243, 234, 226,0.55); line-height: 1.5;
   max-width: 56ch;
 }
 
@@ -74,11 +74,11 @@
   transition: all 0.2s;
   white-space: nowrap;
 }
-.edu-tab:hover { color: var(--app-text); background: rgba(30,45,100,0.04); }
+.edu-tab:hover { color: var(--app-text); background: rgba(74, 47, 40,0.04); }
 .edu-tab.active {
   background: var(--app-navy);
   color: var(--app-gold-l);
-  box-shadow: 0 4px 12px rgba(15,23,41,0.22);
+  box-shadow: 0 4px 12px rgba(43, 27, 23,0.22);
 }
 
 /* ── SECTION BASE ── */
@@ -98,12 +98,12 @@
   padding: 26px 28px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-hero-card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent 10%, rgba(196,154,60,0.45) 50%, transparent 90%);
+  background: linear-gradient(90deg, transparent 10%, rgba(232, 148, 106,0.45) 50%, transparent 90%);
 }
 .edu-page .tea-hero-card h3 {
   font-size: 19px; font-weight: 800; letter-spacing: -0.4px;
@@ -111,14 +111,14 @@
   color: var(--app-text); margin-bottom: 8px;
 }
 .edu-page .tea-hero-card p { font-size: 14px; color: var(--app-muted); line-height: 1.65; max-width: 68ch; }
-.edu-page .tea-hero-card.warning::before { background: linear-gradient(90deg, transparent 10%, rgba(217,119,6,0.50) 50%, transparent 90%); }
+.edu-page .tea-hero-card.warning::before { background: linear-gradient(90deg, transparent 10%, rgba(194, 122, 30,0.50) 50%, transparent 90%); }
 .edu-page .tea-hero-card.gold::before    { background: linear-gradient(90deg, var(--app-gold-d), var(--app-gold-l), var(--app-gold-d)); }
 
 /* ── ANALOGÍA ── */
 .edu-page .tea-analogy {
   display: flex; gap: 14px; align-items: flex-start;
-  background: rgba(196,154,60,0.06);
-  border: 1px solid rgba(196,154,60,0.20);
+  background: rgba(232, 148, 106,0.06);
+  border: 1px solid rgba(232, 148, 106,0.20);
   border-radius: 14px;
   padding: 16px 18px;
 }
@@ -133,7 +133,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-simulator h4 {
   font-size: 14px; font-weight: 800; color: var(--app-text);
@@ -151,7 +151,7 @@
 .edu-page .tea-slider {
   flex: 1; height: 5px; border-radius: 99px;
   appearance: none; -webkit-appearance: none;
-  background: rgba(30,45,100,0.10);
+  background: rgba(74, 47, 40,0.10);
   outline: none;
   cursor: pointer;
 }
@@ -160,14 +160,14 @@
   width: 18px; height: 18px; border-radius: 50%;
   background: linear-gradient(135deg, var(--app-gold-l), var(--app-gold));
   border: 2.5px solid #fff;
-  box-shadow: 0 2px 8px rgba(196,154,60,0.45);
+  box-shadow: 0 2px 8px rgba(232, 148, 106,0.45);
   cursor: grab;
 }
 .edu-page .tea-slider::-moz-range-thumb {
   width: 18px; height: 18px; border-radius: 50%;
   background: linear-gradient(135deg, var(--app-gold-l), var(--app-gold));
   border: 2.5px solid #fff;
-  box-shadow: 0 2px 8px rgba(196,154,60,0.45);
+  box-shadow: 0 2px 8px rgba(232, 148, 106,0.45);
   cursor: grab;
 }
 .edu-page .tea-slider-value {
@@ -195,7 +195,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-market h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 14px; }
 .edu-page .tea-market-list { display: flex; flex-direction: column; gap: 8px; }
@@ -218,16 +218,16 @@
   border: 1px solid var(--app-border);
   border-radius: 16px;
   padding: 20px 22px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
-.edu-page .tcea-def-card.tcea-side { border-color: rgba(196,154,60,0.35); }
+.edu-page .tcea-def-card.tcea-side { border-color: rgba(232, 148, 106,0.35); }
 .edu-page .tcea-def-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .edu-page .tcea-def-badge {
   font-size: 11px; font-weight: 800; letter-spacing: 1px;
   padding: 4px 10px; border-radius: 8px;
 }
-.edu-page .tcea-def-badge.tea  { background: rgba(30,45,100,0.08);  color: var(--app-muted); }
-.edu-page .tcea-def-badge.tcea { background: rgba(196,154,60,0.12); color: var(--app-gold-d); border: 1px solid rgba(196,154,60,0.30); }
+.edu-page .tcea-def-badge.tea  { background: rgba(74, 47, 40,0.08);  color: var(--app-muted); }
+.edu-page .tcea-def-badge.tcea { background: rgba(232, 148, 106,0.12); color: var(--app-gold-d); border: 1px solid rgba(232, 148, 106,0.30); }
 .edu-page .tcea-def-header h4 { font-size: 13.5px; font-weight: 800; color: var(--app-text); }
 .edu-page .tcea-def-card > p { font-size: 13px; color: var(--app-muted); line-height: 1.6; margin-bottom: 12px; }
 .edu-page .tcea-def-includes { display: flex; flex-direction: column; gap: 6px; }
@@ -238,9 +238,9 @@
 .edu-page .tcea-include::before {
   content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
 }
-.edu-page .tcea-include.yes { background: rgba(29,154,108,0.07); color: #157a55; }
+.edu-page .tcea-include.yes { background: rgba(62, 107, 87,0.07); color: #2F4A3E; }
 .edu-page .tcea-include.yes::before { background: var(--app-green); }
-.edu-page .tcea-include.no  { background: rgba(30,45,100,0.04); color: var(--app-dim); }
+.edu-page .tcea-include.no  { background: rgba(74, 47, 40,0.04); color: var(--app-dim); }
 .edu-page .tcea-include.no::before { background: var(--app-dim); }
 
 /* ── TCEA: ejemplo/breakdown ── */
@@ -249,7 +249,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tcea-example h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 4px; }
 .edu-page .tcea-example-sub { font-size: 12.5px; color: var(--app-dim); margin-bottom: 16px; }
@@ -260,11 +260,11 @@
 }
 .edu-page .tcea-breakdown-label { font-size: 12.5px; color: var(--app-muted); font-weight: 600; }
 .edu-page .tcea-breakdown-bar-wrap {
-  height: 8px; border-radius: 99px; background: rgba(30,45,100,0.06); overflow: hidden;
+  height: 8px; border-radius: 99px; background: rgba(74, 47, 40,0.06); overflow: hidden;
 }
 .edu-page .tcea-breakdown-bar { height: 100%; border-radius: 99px; }
 .edu-page .tcea-breakdown-bar.tea       { background: linear-gradient(90deg, var(--app-gold-l), var(--app-gold)); }
-.edu-page .tcea-breakdown-bar.seguro    { background: rgba(92,100,128,0.55); }
+.edu-page .tcea-breakdown-bar.seguro    { background: rgba(107, 81, 72,0.55); }
 .edu-page .tcea-breakdown-bar.membresia { background: rgba(154,164,192,0.55); }
 .edu-page .tcea-breakdown-value {
   font-size: 12.5px; font-weight: 700; color: var(--app-text);
@@ -300,7 +300,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-monthly-example h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 4px; }
 .edu-page .tea-example-sub { font-size: 12.5px; color: var(--app-dim); margin-bottom: 16px; }
@@ -311,7 +311,7 @@
 }
 .edu-page .tea-month-num { font-size: 12.5px; font-weight: 800; color: var(--app-muted); }
 .edu-page .tea-month-bar-wrap {
-  height: 9px; border-radius: 99px; background: rgba(30,45,100,0.06); overflow: hidden;
+  height: 9px; border-radius: 99px; background: rgba(74, 47, 40,0.06); overflow: hidden;
 }
 .edu-page .tea-month-bar {
   height: 100%; border-radius: 99px;
@@ -329,7 +329,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-comparison-dramatic h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 16px; }
 .edu-page .tea-compare-cards {
@@ -341,8 +341,8 @@
   border: 1px solid var(--app-border);
   display: flex; flex-direction: column; gap: 10px;
 }
-.edu-page .tea-compare-card.bad  { background: rgba(220,38,38,0.04);  border-color: rgba(220,38,38,0.18); }
-.edu-page .tea-compare-card.good { background: rgba(29,154,108,0.05); border-color: rgba(29,154,108,0.22); }
+.edu-page .tea-compare-card.bad  { background: rgba(194, 70, 42,0.04);  border-color: rgba(194, 70, 42,0.18); }
+.edu-page .tea-compare-card.good { background: rgba(62, 107, 87,0.05); border-color: rgba(62, 107, 87,0.22); }
 .edu-page .tea-compare-header strong { font-size: 14px; font-weight: 800; color: var(--app-text); }
 .edu-page .tea-compare-stat {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -368,9 +368,9 @@
 .edu-page .tea-saving-badge {
   margin-top: 16px;
   text-align: center;
-  font-size: 13.5px; font-weight: 800; color: #157a55;
-  background: rgba(29,154,108,0.08);
-  border: 1px solid rgba(29,154,108,0.25);
+  font-size: 13.5px; font-weight: 800; color: #2F4A3E;
+  background: rgba(62, 107, 87,0.08);
+  border: 1px solid rgba(62, 107, 87,0.25);
   border-radius: 12px;
   padding: 12px;
 }
@@ -395,7 +395,7 @@
   border: 1px solid var(--app-border);
   border-radius: 16px;
   padding: 20px 22px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
   position: relative;
   overflow: hidden;
 }
@@ -411,9 +411,9 @@
   font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
   padding: 3px 9px; border-radius: 99px;
 }
-.edu-page .tea-payment-badge.best { background: rgba(29,154,108,0.10); color: #157a55; }
-.edu-page .tea-payment-badge.ok   { background: rgba(217,119,6,0.10);  color: var(--app-amber); }
-.edu-page .tea-payment-badge.bad  { background: rgba(220,38,38,0.08);  color: var(--app-red); }
+.edu-page .tea-payment-badge.best { background: rgba(62, 107, 87,0.10); color: #2F4A3E; }
+.edu-page .tea-payment-badge.ok   { background: rgba(194, 122, 30,0.10);  color: var(--app-amber); }
+.edu-page .tea-payment-badge.bad  { background: rgba(194, 70, 42,0.08);  color: var(--app-red); }
 .edu-page .tea-payment-top p { font-size: 13px; color: var(--app-muted); }
 .edu-page .tea-payment-benefits {
   display: flex; flex-wrap: wrap; gap: 8px;
@@ -425,11 +425,11 @@
   display: inline-flex; align-items: center; gap: 6px;
 }
 .edu-page .tea-benefit::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
-.edu-page .tea-benefit.good   { background: rgba(29,154,108,0.08); color: #157a55; }
+.edu-page .tea-benefit.good   { background: rgba(62, 107, 87,0.08); color: #2F4A3E; }
 .edu-page .tea-benefit.good::before { background: var(--app-green); }
-.edu-page .tea-benefit.warn   { background: rgba(217,119,6,0.08); color: var(--app-amber); }
+.edu-page .tea-benefit.warn   { background: rgba(194, 122, 30,0.08); color: var(--app-amber); }
 .edu-page .tea-benefit.warn::before { background: var(--app-amber); }
-.edu-page .tea-benefit.danger { background: rgba(220,38,38,0.06); color: var(--app-red); }
+.edu-page .tea-benefit.danger { background: rgba(194, 70, 42,0.06); color: var(--app-red); }
 .edu-page .tea-benefit.danger::before { background: var(--app-red); }
 .edu-page .tea-payment-tip {
   font-size: 12.5px; color: var(--app-muted); font-style: italic;
@@ -443,15 +443,15 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-minimum-explainer h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 16px; }
 .edu-page .tea-formula { display: flex; flex-direction: column; gap: 10px; }
 .edu-page .tea-formula-item { display: flex; gap: 12px; align-items: flex-start; }
 .edu-page .tea-formula-icon {
   width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
-  background: rgba(196,154,60,0.10);
-  border: 1px solid rgba(196,154,60,0.25);
+  background: rgba(232, 148, 106,0.10);
+  border: 1px solid rgba(232, 148, 106,0.25);
   color: var(--app-gold-d);
   font-weight: 800; font-size: 14px;
   display: flex; align-items: center; justify-content: center;
@@ -476,7 +476,7 @@
   border: 1px solid var(--app-border);
   border-radius: 16px;
   padding: 22px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
   position: relative;
   overflow: hidden;
 }
@@ -499,8 +499,8 @@
   font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
   padding: 4px 10px; border-radius: 99px;
 }
-.edu-page .regla-tag.good { background: rgba(29,154,108,0.10); color: #157a55; }
-.edu-page .regla-tag.warn { background: rgba(217,119,6,0.10);  color: var(--app-amber); }
+.edu-page .regla-tag.good { background: rgba(62, 107, 87,0.10); color: #2F4A3E; }
+.edu-page .regla-tag.warn { background: rgba(194, 122, 30,0.10);  color: var(--app-amber); }
 .edu-page .regla-card h3 { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; text-transform: none; color: var(--app-text); margin-bottom: 6px; }
 .edu-page .regla-card p  { font-size: 13px; color: var(--app-muted); line-height: 1.6; margin-bottom: 12px; }
 .edu-page .regla-example {
@@ -518,7 +518,7 @@
   border: 1px solid var(--app-border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .regla-why h4,
 .edu-page .regla-tips h4 { font-size: 14px; font-weight: 800; color: var(--app-text); margin-bottom: 14px; }
@@ -543,8 +543,8 @@
 }
 .edu-page .tip-num {
   width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
-  background: rgba(196,154,60,0.12);
-  border: 1px solid rgba(196,154,60,0.28);
+  background: rgba(232, 148, 106,0.12);
+  border: 1px solid rgba(232, 148, 106,0.28);
   color: var(--app-gold-d);
   font-size: 12px; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
@@ -560,7 +560,7 @@
   border: 1px solid var(--app-border);
   border-radius: 16px;
   padding: 20px 22px;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.05);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.05);
 }
 .edu-page .tea-rule-number {
   font-size: 15px; font-weight: 900; color: var(--app-gold);
@@ -573,7 +573,7 @@
 .edu-page .tea-rule-example { margin-top: 12px; }
 .edu-page .tea-rule-bar-wrap {
   height: 26px; border-radius: 99px;
-  background: rgba(30,45,100,0.06);
+  background: rgba(74, 47, 40,0.06);
   overflow: hidden;
 }
 .edu-page .tea-rule-bar {
@@ -586,8 +586,8 @@
 .edu-page .tea-rule-bar span { font-size: 10.5px; font-weight: 800; color: var(--app-navy); white-space: nowrap; }
 .edu-page .tea-rule-example-calc {
   font-size: 12.5px; font-weight: 700; color: var(--app-gold-d);
-  background: rgba(196,154,60,0.07);
-  border: 1px solid rgba(196,154,60,0.22);
+  background: rgba(232, 148, 106,0.07);
+  border: 1px solid rgba(232, 148, 106,0.22);
   border-radius: 10px;
   padding: 10px 14px;
   display: inline-block;
@@ -612,14 +612,14 @@
 }
 .edu-page .tea-summary-box::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196,154,60,0.50), transparent);
+  background: linear-gradient(90deg, transparent, rgba(232, 148, 106,0.50), transparent);
 }
 .edu-page .tea-summary-box h4 {
   font-size: 14px; font-weight: 800; color: var(--app-gold-l); margin-bottom: 14px;
 }
 .edu-page .tea-summary-list { list-style: none; display: flex; flex-direction: column; gap: 9px; padding: 0; }
 .edu-page .tea-summary-list li {
-  font-size: 13px; color: rgba(237,240,248,0.75); line-height: 1.5;
+  font-size: 13px; color: rgba(243, 234, 226,0.75); line-height: 1.5;
   padding-left: 20px; position: relative;
 }
 .edu-page .tea-summary-list li::before {

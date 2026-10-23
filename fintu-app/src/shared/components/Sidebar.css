@@ -11,8 +11,8 @@
 ============================================================ */
 
 .sidebar {
-  --app-gold:    #c49a3c;
-  --app-sidebar: #0c1425;
+  --app-gold:    #E8946A;
+  --app-sidebar: #22150F;
 
   width: 260px; flex-shrink: 0;
   height: 100vh; position: sticky; top: 0;
@@ -25,7 +25,7 @@
 .sidebar::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200,168,112,0.40), transparent);
+  background: linear-gradient(90deg, transparent, rgba(241, 182, 140,0.40), transparent);
 }
 
 .sidebar-header {
@@ -35,7 +35,7 @@
 .sidebar-brand { align-items: flex-start; color: var(--app-gold); cursor: pointer; }
 .sidebar-brand-icon {
   width: 32px; height: 32px; border-radius: 8px;
-  background: rgba(200,168,112,0.15); border: 1px solid rgba(200,168,112,0.25);
+  background: rgba(241, 182, 140,0.15); border: 1px solid rgba(241, 182, 140,0.25);
   display: flex; align-items: center; justify-content: center;
   color: var(--app-gold); flex-shrink: 0;
 }
@@ -65,18 +65,18 @@
   transition: background 0.2s, border-color 0.2s;
 }
 .sidebar-user:hover {
-  background: rgba(200,168,112,0.08);
-  border-color: rgba(200,168,112,0.25);
+  background: rgba(241, 182, 140,0.08);
+  border-color: rgba(241, 182, 140,0.25);
 }
 .sidebar-user:focus-visible { outline: 2px solid var(--app-gold); outline-offset: 2px; }
 .sidebar-user-avatar {
   width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
-  background: rgba(200,168,112,0.20); border: 1px solid rgba(200,168,112,0.28);
+  background: rgba(241, 182, 140,0.20); border: 1px solid rgba(241, 182, 140,0.28);
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 800; color: var(--app-gold); letter-spacing: -0.3px;
 }
 .sidebar-user-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
-.sidebar-user-name  { font-size: 13px; font-weight: 700; color: #edf0f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-name  { font-size: 13px; font-weight: 700; color: #EFE8DF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-user-plan  { font-size: 9.5px; font-weight: 600; color: var(--app-gold); letter-spacing: 0.5px; }
 .sidebar-logout {
   width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
@@ -86,9 +86,9 @@
   transition: all 0.2s;
 }
 .sidebar-logout:hover {
-  background: rgba(220,38,38,0.12);
-  border-color: rgba(220,38,38,0.40);
-  color: #f87171;
+  background: rgba(194, 70, 42,0.12);
+  border-color: rgba(194, 70, 42,0.40);
+  color: #EC8A6E;
 }
 
 /* ── Navegación ── */
@@ -102,11 +102,11 @@
   text-align: left; font-family: 'DM Sans', inherit; position: relative; overflow: hidden;
 }
 .nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
-.nav-item.active { background: rgba(200,168,112,0.12); color: #c49a3c; }
+.nav-item.active { background: rgba(241, 182, 140,0.12); color: #E8946A; }
 .nav-item.active::before {
   content: ''; position: absolute; left: 0; top: 18%; bottom: 18%;
   width: 2.5px; border-radius: 999px;
-  background: #c49a3c; box-shadow: 0 0 8px rgba(200,168,112,0.60);
+  background: #E8946A; box-shadow: 0 0 8px rgba(241, 182, 140,0.60);
 }
 .nav-item--coming { opacity: 0.38; cursor: not-allowed; }
 .nav-item--coming:hover { background: transparent; color: rgba(255,255,255,0.38); }
@@ -117,13 +117,13 @@
 .nav-label { font-size: 13px; font-weight: 500; flex: 1; }
 .nav-soon {
   font-size: 8px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
-  padding: 2px 6px; background: rgba(200,168,112,0.10);
-  border: 1px solid rgba(200,168,112,0.18); border-radius: 4px; color: #c49a3c;
+  padding: 2px 6px; background: rgba(241, 182, 140,0.10);
+  border: 1px solid rgba(241, 182, 140,0.18); border-radius: 4px; color: #E8946A;
 }
 .nav-divider {
   display: flex; align-items: center; gap: 10px;
   margin: 14px 4px 6px; font-size: 9px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.20);
+  text-transform: uppercase; letter-spacing: 2px; color: rgba(247, 243, 237,0.45);
 }
 .nav-divider::before, .nav-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
 .nav-divider span { white-space: nowrap; }
@@ -131,7 +131,7 @@
 .sidebar-footer {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.06);
-  font-size: 10.5px; color: rgba(255,255,255,0.22); font-weight: 500; flex-shrink: 0;
+  font-size: 10.5px; color: rgba(247, 243, 237,0.45); font-weight: 500; flex-shrink: 0;
 }
 .sidebar-footer-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.22); }
 
@@ -142,10 +142,10 @@
    hoja de ninguna de ellas. Declara sus tokens por lo mismo. */
 .menu-toggle {
   --app-surface:  #ffffff;
-  --app-surface2: #f7f9ff;
-  --app-text:     #1a1d2e;
-  --app-border:   rgba(30,45,100,0.08);
-  --app-border-h: rgba(30,45,100,0.16);
+  --app-surface2: #FAF7F2;
+  --app-text:     #2B1B17;
+  --app-border:   rgba(74, 47, 40,0.08);
+  --app-border-h: rgba(74, 47, 40,0.16);
 
   background: var(--app-surface);
   border: 1px solid var(--app-border);
@@ -153,7 +153,7 @@
   width: 36px; height: 36px; border-radius: 9px;
   cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 1px 3px rgba(30,45,100,0.07);
+  box-shadow: 0 1px 3px rgba(74, 47, 40,0.07);
 }
 .menu-toggle:hover { background: var(--app-surface2); border-color: var(--app-border-h); }
 

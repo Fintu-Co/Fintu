@@ -58,7 +58,7 @@ function CardHero({ tarjeta, simboloMoneda }) {
       // Background ring
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'rgba(30, 45, 100, 0.08)';
+      ctx.strokeStyle = 'rgba(74, 47, 40, 0.08)';
       ctx.lineWidth = 12;
       ctx.stroke();
 
@@ -67,16 +67,16 @@ function CardHero({ tarjeta, simboloMoneda }) {
       const endAngle = startAngle + (2 * Math.PI * porcentajeUso / 100);
 
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, '#dbb96a');
-      gradient.addColorStop(0.5, '#c49a3c');
-      gradient.addColorStop(1, '#9a7628');
+      gradient.addColorStop(0, '#F1B68C');
+      gradient.addColorStop(0.5, '#E8946A');
+      gradient.addColorStop(1, '#A5562F');
 
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.strokeStyle = gradient;
       ctx.lineWidth = 12;
       ctx.lineCap = 'round';
-      ctx.shadowColor = 'rgba(196, 154, 60, 0.35)';
+      ctx.shadowColor = 'rgba(232, 148, 106, 0.35)';
       ctx.shadowBlur = 12;
       ctx.stroke();
       ctx.shadowBlur = 0;
@@ -97,7 +97,7 @@ function CardHero({ tarjeta, simboloMoneda }) {
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.strokeStyle = 'rgba(196, 154, 60, 0.45)';
+        ctx.strokeStyle = 'rgba(232, 148, 106, 0.45)';
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
         ctx.stroke();
@@ -125,21 +125,21 @@ function CardHero({ tarjeta, simboloMoneda }) {
         if (isActive) {
           const dotGradient = ctx.createRadialGradient(x, y, 0, x, y, pointRadius * pulse);
           dotGradient.addColorStop(0, '#f4e3bd');
-          dotGradient.addColorStop(0.4, '#c49a3c');
-          dotGradient.addColorStop(1, '#9a7628');
+          dotGradient.addColorStop(0.4, '#E8946A');
+          dotGradient.addColorStop(1, '#A5562F');
           ctx.fillStyle = dotGradient;
-          ctx.shadowColor = 'rgba(196, 154, 60, 0.45)';
+          ctx.shadowColor = 'rgba(232, 148, 106, 0.45)';
           ctx.shadowBlur = 8;
           ctx.fill();
           ctx.shadowBlur = 0;
 
           ctx.beginPath();
           ctx.arc(x, y, (pointRadius + 4) * pulse, 0, 2 * Math.PI);
-          ctx.strokeStyle = `rgba(196, 154, 60, ${0.5 - pulse * 0.2})`;
+          ctx.strokeStyle = `rgba(232, 148, 106, ${0.5 - pulse * 0.2})`;
           ctx.lineWidth = 2;
           ctx.stroke();
         } else {
-          ctx.fillStyle = 'rgba(30, 45, 100, 0.10)';
+          ctx.fillStyle = 'rgba(74, 47, 40, 0.10)';
           ctx.fill();
         }
       }
@@ -154,8 +154,8 @@ function CardHero({ tarjeta, simboloMoneda }) {
 
         ctx.beginPath();
         ctx.arc(px, py, 2, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(196, 154, 60, ${0.35 + Math.sin(particleTime + i) * 0.2})`;
-        ctx.shadowColor = 'rgba(196, 154, 60, 0.5)';
+        ctx.fillStyle = `rgba(232, 148, 106, ${0.35 + Math.sin(particleTime + i) * 0.2})`;
+        ctx.shadowColor = 'rgba(232, 148, 106, 0.5)';
         ctx.shadowBlur = 6;
         ctx.fill();
         ctx.shadowBlur = 0;

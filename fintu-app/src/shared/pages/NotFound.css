@@ -12,7 +12,7 @@
   position: absolute;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(212, 165, 116, 0.07), transparent 70%);
+  background: radial-gradient(circle, rgba(232, 148, 106, 0.07), transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -32,26 +32,26 @@
   font-weight: 900;
   letter-spacing: -8px;
   line-height: 1;
-  background: linear-gradient(180deg, #fff 0%, #d4a574 50%, rgba(212,165,116,0.3) 100%);
+  background: linear-gradient(180deg, #fff 0%, #E8946A 50%, rgba(232, 148, 106,0.3) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 40px rgba(212, 165, 116, 0.3));
+  filter: drop-shadow(0 0 40px rgba(232, 148, 106, 0.3));
   margin-bottom: 24px;
 }
 
 .notfound-title {
   font-size: clamp(20px, 4vw, 28px);
   font-weight: 700;
-  color: #f0f0f0;
+  color: #F1EBE3;
   margin: 0 0 12px;
   letter-spacing: -0.5px;
 }
 
 .notfound-desc {
   font-size: 15px;
-  color: #6a6a82;
+  color: #7A6258;
   line-height: 1.7;
   margin: 0 0 36px;
 }
@@ -77,21 +77,21 @@
 }
 
 .notfound-btn.primary {
-  background: linear-gradient(135deg, rgba(212,165,116,0.2), rgba(212,165,116,0.08));
-  border-color: rgba(212,165,116,0.4);
-  color: #d4a574;
+  background: linear-gradient(135deg, rgba(232, 148, 106,0.2), rgba(232, 148, 106,0.08));
+  border-color: rgba(232, 148, 106,0.4);
+  color: #E8946A;
 }
 .notfound-btn.primary:hover {
-  background: linear-gradient(135deg, rgba(212,165,116,0.3), rgba(212,165,116,0.15));
-  border-color: rgba(212,165,116,0.7);
+  background: linear-gradient(135deg, rgba(232, 148, 106,0.3), rgba(232, 148, 106,0.15));
+  border-color: rgba(232, 148, 106,0.7);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(212,165,116,0.2);
+  box-shadow: 0 8px 20px rgba(232, 148, 106,0.2);
 }
 
 .notfound-btn.secondary {
   background: rgba(255,255,255,0.03);
   border-color: rgba(255,255,255,0.08);
-  color: #6a6a82;
+  color: #7A6258;
 }
 .notfound-btn.secondary:hover {
   background: rgba(255,255,255,0.06);

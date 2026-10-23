@@ -9,24 +9,24 @@
   padding: 24px;
   background: #ffffff;
   border-radius: 18px;
-  border: 1px solid rgba(30,45,100,0.08);
+  border: 1px solid rgba(74, 47, 40,0.08);
   position: relative;
   overflow: hidden;
   transition: all 0.35s ease;
-  box-shadow: 0 2px 12px rgba(30,45,100,0.06);
+  box-shadow: 0 2px 12px rgba(74, 47, 40,0.06);
 }
 
 .card-calendar-enhanced::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent 10%, rgba(196,154,60,0.28) 50%, transparent 90%);
+  background: linear-gradient(90deg, transparent 10%, rgba(232, 148, 106,0.28) 50%, transparent 90%);
   pointer-events: none;
 }
 
 .card-calendar-enhanced:hover {
-  border-color: rgba(30,45,100,0.16);
-  box-shadow: 0 6px 22px rgba(30,45,100,0.10);
+  border-color: rgba(74, 47, 40,0.16);
+  box-shadow: 0 6px 22px rgba(74, 47, 40,0.10);
 }
 
 .card-calendar-enhanced:hover::before {
@@ -43,7 +43,7 @@
   padding: 20px;
   border-radius: 14px;
   border: 2px solid;
-  background: #f7f9ff;
+  background: #FAF7F2;
   animation: slideInEvent 0.5s ease;
 }
 
@@ -59,28 +59,28 @@
 }
 
 .proximo-evento-card.normal {
-  border-color: rgba(196, 154, 60, 0.35);
-  background: rgba(196,154,60,0.05);
+  border-color: rgba(232, 148, 106, 0.35);
+  background: rgba(232, 148, 106,0.05);
 }
 
 .proximo-evento-card.warning {
-  border-color: rgba(217,119,6, 0.5);
+  border-color: rgba(194, 122, 30, 0.5);
   animation: slideInEvent 0.5s ease, pulseWarningEvent 3s ease-in-out infinite;
 }
 
 .proximo-evento-card.critical {
-  border-color: rgba(239, 68, 68, 0.6);
+  border-color: rgba(226, 96, 63, 0.6);
   animation: slideInEvent 0.5s ease, pulseCriticalEvent 2s ease-in-out infinite;
 }
 
 @keyframes pulseWarningEvent {
-  0%, 100% { box-shadow: 0 0 15px rgba(217,119,6, 0.3); }
-  50% { box-shadow: 0 0 25px rgba(217,119,6, 0.5); }
+  0%, 100% { box-shadow: 0 0 15px rgba(194, 122, 30, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(194, 122, 30, 0.5); }
 }
 
 @keyframes pulseCriticalEvent {
-  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
-  50% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); }
+  0%, 100% { box-shadow: 0 0 20px rgba(226, 96, 63, 0.4); }
+  50% { box-shadow: 0 0 35px rgba(226, 96, 63, 0.7); }
 }
 
 .evento-icon {
@@ -93,9 +93,9 @@
   flex-shrink: 0;
 }
 .cc-evt-icon svg { width: 26px; height: 26px; }
-.proximo-evento-card.normal  .cc-evt-icon { background: rgba(196,154,60,0.12); color: #c49a3c; }
-.proximo-evento-card.warning .cc-evt-icon { background: rgba(217,119,6,0.12);  color: #d97706; }
-.proximo-evento-card.critical .cc-evt-icon { background: rgba(239,68,68,0.12); color: #f87171; }
+.proximo-evento-card.normal  .cc-evt-icon { background: rgba(232, 148, 106,0.12); color: #E8946A; }
+.proximo-evento-card.warning .cc-evt-icon { background: rgba(194, 122, 30,0.12);  color: #C27A1E; }
+.proximo-evento-card.critical .cc-evt-icon { background: rgba(226, 96, 63,0.12); color: #EC8A6E; }
 
 .evento-content {
   display: flex;
@@ -106,7 +106,7 @@
 
 .evento-label {
   font-size: 11px;
-  color: #9aa4c0;
+  color: #8A746A;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -115,7 +115,7 @@
 .evento-nombre {
   font-size: 16px;
   font-weight: 800;
-  color: #1a1d2e;
+  color: #2B1B17;
 }
 
 .evento-countdown {
@@ -128,7 +128,7 @@
 .countdown-numero {
   font-size: 32px;
   font-weight: 900;
-  background: linear-gradient(135deg, #dbb96a, #c49a3c);
+  background: linear-gradient(135deg, #F1B68C, #E8946A);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -138,13 +138,13 @@
 
 .countdown-texto {
   font-size: 14px;
-  color: #9aa4c0;
+  color: #8A746A;
   font-weight: 600;
 }
 
 .evento-fecha {
   font-size: 12px;
-  color: #c49a3c;
+  color: #E8946A;
   font-weight: 700;
 }
 
@@ -157,7 +157,7 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(214, 162, 95, 0.15);
+  border-bottom: 1px solid rgba(232, 148, 106, 0.15);
 }
 
 .calendar-navigation-enhanced {
@@ -169,10 +169,10 @@
 .nav-btn-calendar {
   width: 32px;
   height: 32px;
-  background: #f7f9ff;
-  border: 1px solid rgba(30,45,100,0.10);
+  background: #FAF7F2;
+  border: 1px solid rgba(74, 47, 40,0.10);
   border-radius: 8px;
-  color: #9aa4c0;
+  color: #8A746A;
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -182,9 +182,9 @@
 .nav-btn-calendar svg { width: 16px; height: 16px; }
 
 .nav-btn-calendar:hover {
-  background: rgba(212, 165, 116, 0.1);
-  border-color: rgba(212, 165, 116, 0.3);
-  color: #d4a574;
+  background: rgba(232, 148, 106, 0.1);
+  border-color: rgba(232, 148, 106, 0.3);
+  color: #E8946A;
   transform: scale(1.1);
 }
 
@@ -192,7 +192,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #1a1d2e;
+  color: #2B1B17;
   letter-spacing: 0.5px;
 }
 
@@ -201,10 +201,10 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(196,154,60,0.09);
-  border: 1.5px solid rgba(196,154,60,0.28);
+  background: rgba(232, 148, 106,0.09);
+  border: 1.5px solid rgba(232, 148, 106,0.28);
   border-radius: 10px;
-  color: #c49a3c;
+  color: #E8946A;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -213,14 +213,14 @@
 }
 
 .btn-expand-calendar-enhanced:hover {
-  background: rgba(196,154,60,0.16);
-  border-color: rgba(196,154,60,0.50);
+  background: rgba(232, 148, 106,0.16);
+  border-color: rgba(232, 148, 106,0.50);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(196,154,60,0.18);
+  box-shadow: 0 4px 12px rgba(232, 148, 106,0.18);
 }
 
 .expand-icon { }
-.expand-icon.cc-svg-icon { color: #d4a574; }
+.expand-icon.cc-svg-icon { color: #E8946A; }
 .expand-icon.cc-svg-icon svg { width: 15px; height: 15px; }
 
 /* ===============================
@@ -238,7 +238,7 @@
   text-align: center;
   font-size: 11px;
   font-weight: 700;
-  color: #9aa4c0;
+  color: #8A746A;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 8px 0;
@@ -280,20 +280,20 @@
 
 /* Estado de hoy */
 .calendar-day-enhanced.hoy {
-  border: 2px solid #d4a574;
-  background: rgba(212, 165, 116, 0.1);
+  border: 2px solid #E8946A;
+  background: rgba(232, 148, 106, 0.1);
   animation: pulseToday 2s ease-in-out infinite;
 }
 
 @keyframes pulseToday {
-  0%, 100% { box-shadow: 0 0 10px rgba(212, 165, 116, 0.4); }
-  50% { box-shadow: 0 0 20px rgba(212, 165, 116, 0.6); }
+  0%, 100% { box-shadow: 0 0 10px rgba(232, 148, 106, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(232, 148, 106, 0.6); }
 }
 
 .today-ring {
   position: absolute;
   inset: -4px;
-  border: 2px solid #d4a574;
+  border: 2px solid #E8946A;
   border-radius: 12px;
   animation: ringPulse 2s ease-in-out infinite;
 }
@@ -305,27 +305,27 @@
 
 /* Días importantes */
 .calendar-day-enhanced.inicio {
-  background: linear-gradient(135deg, rgba(29,154,108, 0.2), rgba(29,154,108, 0.1));
-  border-color: rgba(29,154,108, 0.3);
+  background: linear-gradient(135deg, rgba(62, 107, 87, 0.2), rgba(62, 107, 87, 0.1));
+  border-color: rgba(62, 107, 87, 0.3);
 }
 
 .calendar-day-enhanced.cierre {
-  background: linear-gradient(135deg, rgba(217,119,6, 0.2), rgba(217,119,6, 0.1));
-  border-color: rgba(217,119,6, 0.3);
+  background: linear-gradient(135deg, rgba(194, 122, 30, 0.2), rgba(194, 122, 30, 0.1));
+  border-color: rgba(194, 122, 30, 0.3);
 }
 
 .calendar-day-enhanced.pago {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, rgba(226, 96, 63, 0.2), rgba(226, 96, 63, 0.1));
+  border-color: rgba(226, 96, 63, 0.3);
 }
 
 /* Períodos del ciclo */
 .calendar-day-enhanced.periodo-compras {
-  background: rgba(77,124,193, 0.05);
+  background: rgba(94, 131, 146, 0.05);
 }
 
 .calendar-day-enhanced.periodo-gracia {
-  background: rgba(217,119,6, 0.05);
+  background: rgba(194, 122, 30, 0.05);
 }
 
 /* Urgencias */
@@ -335,22 +335,22 @@
 
 @keyframes urgencyCritical {
   0%, 100% { 
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 15px rgba(226, 96, 63, 0.4);
     transform: scale(1);
   }
   50% { 
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+    box-shadow: 0 0 25px rgba(226, 96, 63, 0.6);
     transform: scale(1.05);
   }
 }
 
 .calendar-day-enhanced.urgencia-warning {
-  box-shadow: 0 0 10px rgba(217,119,6, 0.3);
+  box-shadow: 0 0 10px rgba(194, 122, 30, 0.3);
 }
 
 .day-number-enhanced {
   font-weight: 700;
-  color: #1a1d2e;
+  color: #2B1B17;
   z-index: 2;
 }
 
@@ -366,9 +366,9 @@
   border-radius: 3px;
 }
 .cc-badge svg { width: 10px; height: 10px; }
-.cc-badge.inicio { color: #1d9a6c; }
-.cc-badge.cierre { color: #d97706; }
-.cc-badge.pago   { color: #f87171; }
+.cc-badge.inicio { color: #3E6B57; }
+.cc-badge.cierre { color: #C27A1E; }
+.cc-badge.pago   { color: #EC8A6E; }
 
 /* ===============================
    LEYENDA
@@ -379,7 +379,7 @@
   justify-content: center;
   gap: 20px;
   padding-top: 16px;
-  border-top: 1px solid rgba(214, 162, 95, 0.15);
+  border-top: 1px solid rgba(232, 148, 106, 0.15);
 }
 
 .legend-item-enhanced {
@@ -387,7 +387,7 @@
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #5c6480;
+  color: #6B5148;
   font-weight: 600;
 }
 
@@ -398,9 +398,9 @@
   border-radius: 5px;
 }
 .cc-leg svg { width: 13px; height: 13px; }
-.cc-leg.inicio { background: rgba(29,154,108,0.12);  color: #1d9a6c; }
-.cc-leg.cierre { background: rgba(217,119,6,0.12); color: #d97706; }
-.cc-leg.pago   { background: rgba(239,68,68,0.12);  color: #f87171; }
+.cc-leg.inicio { background: rgba(62, 107, 87,0.12);  color: #3E6B57; }
+.cc-leg.cierre { background: rgba(194, 122, 30,0.12); color: #C27A1E; }
+.cc-leg.pago   { background: rgba(226, 96, 63,0.12);  color: #EC8A6E; }
 
 /* ===============================
    TIP EDUCATIVO
@@ -411,8 +411,8 @@
   align-items: flex-start;
   gap: 10px;
   padding: 14px 16px;
-  background: rgba(196,154,60,0.06);
-  border: 1px solid rgba(196,154,60,0.18);
+  background: rgba(232, 148, 106,0.06);
+  border: 1px solid rgba(232, 148, 106,0.18);
   border-radius: 10px;
 }
 
@@ -422,12 +422,12 @@
   align-items: center;
   justify-content: center;
 }
-.tip-icon-cal.cc-svg-icon { color: #d4a574; }
+.tip-icon-cal.cc-svg-icon { color: #E8946A; }
 .tip-icon-cal.cc-svg-icon svg { width: 15px; height: 15px; }
 
 .tip-text-cal {
   font-size: 12px;
-  color: #5c6480;
+  color: #6B5148;
   line-height: 1.6;
 }
 
@@ -437,7 +437,7 @@
 
 .calendar-modal-overlay-enhanced {
   position: fixed; inset: 0;
-  background: rgba(15,23,41,0.55);
+  background: rgba(43, 27, 23,0.55);
   backdrop-filter: blur(10px);
   display: flex; align-items: center; justify-content: center;
   z-index: 9999; padding: 20px;
@@ -446,11 +446,11 @@
 
 .calendar-modal-content-enhanced {
   background: #ffffff;
-  border: 1px solid rgba(30,45,100,0.10);
+  border: 1px solid rgba(74, 47, 40,0.10);
   border-radius: 20px;
   width: 100%; max-width: 1200px; max-height: 90vh;
   display: flex; flex-direction: column;
-  box-shadow: 0 24px 60px rgba(15,23,41,0.22);
+  box-shadow: 0 24px 60px rgba(43, 27, 23,0.22);
   animation: slideUpModal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: 'DM Sans', system-ui, sans-serif;
 }
@@ -469,17 +469,17 @@
 .modal-header-enhanced {
   display: flex; justify-content: space-between; align-items: center;
   padding: 22px 28px;
-  background: #0f1729;
-  border-bottom: 1px solid rgba(196,154,60,0.18);
+  background: #2B1B17;
+  border-bottom: 1px solid rgba(232, 148, 106,0.18);
   flex-shrink: 0;
   position: relative; overflow: hidden;
 }
 .modal-header-enhanced::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196,154,60,0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(232, 148, 106,0.45), transparent);
 }
-.modal-header-enhanced h3 { margin: 0; font-size: 20px; font-weight: 800; color: #edf0f8; }
+.modal-header-enhanced h3 { margin: 0; font-size: 20px; font-weight: 800; color: #EFE8DF; }
 
 .modal-close-btn-enhanced {
   width: 36px; height: 36px;
@@ -490,19 +490,19 @@
 .cc-close-btn svg { width: 15px; height: 15px; }
 
 .modal-close-btn-enhanced:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: #ef4444;
-  color: #ef4444;
+  background: rgba(226, 96, 63, 0.15);
+  border-color: #E2603F;
+  color: #E2603F;
   transform: rotate(90deg);
 }
 
 .modal-body-enhanced {
-  flex: 1; overflow-y: auto; padding: 24px 28px; background: #f7f9ff;
+  flex: 1; overflow-y: auto; padding: 24px 28px; background: #FAF7F2;
 }
 .modal-body-enhanced::-webkit-scrollbar { width: 6px; }
-.modal-body-enhanced::-webkit-scrollbar-track { background: #f0f3fb; }
-.modal-body-enhanced::-webkit-scrollbar-thumb { background: rgba(196,154,60,0.35); border-radius: 10px; }
-.modal-body-enhanced::-webkit-scrollbar-thumb:hover { background: #c49a3c; }
+.modal-body-enhanced::-webkit-scrollbar-track { background: #F3EDE5; }
+.modal-body-enhanced::-webkit-scrollbar-thumb { background: rgba(232, 148, 106,0.35); border-radius: 10px; }
+.modal-body-enhanced::-webkit-scrollbar-thumb:hover { background: #E8946A; }
 
 /* Grid de 3 meses */
 .triple-month-grid {
@@ -522,10 +522,10 @@
   margin: 0;
   font-size: 15px;
   font-weight: 700;
-  color: #d4a574;
+  color: #E8946A;
   text-align: center;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(214, 162, 95, 0.2);
+  border-bottom: 1px solid rgba(232, 148, 106, 0.2);
 }
 
 .modal-weekdays {
@@ -534,7 +534,7 @@
   gap: 4px;
 }
 
-.modal-weekday { text-align: center; font-size: 10px; color: #9aa4c0; font-weight: 600; }
+.modal-weekday { text-align: center; font-size: 10px; color: #8A746A; font-weight: 600; }
 
 .modal-calendar-grid {
   display: grid;
@@ -547,12 +547,12 @@
   display: flex; align-items: center; justify-content: center;
   position: relative; font-size: 11px;
   background: #ffffff;
-  border: 1px solid rgba(30,45,100,0.08);
+  border: 1px solid rgba(74, 47, 40,0.08);
   transition: all 0.2s;
 }
 
 .modal-day:not(.empty):hover {
-  background: rgba(212, 165, 116, 0.1);
+  background: rgba(232, 148, 106, 0.1);
   transform: scale(1.1);
 }
 
@@ -561,26 +561,26 @@
 }
 
 .modal-day.hoy {
-  border: 2px solid #d4a574;
-  background: rgba(212, 165, 116, 0.15);
+  border: 2px solid #E8946A;
+  background: rgba(232, 148, 106, 0.15);
 }
 
 .modal-day.inicio {
-  background: rgba(29,154,108, 0.15);
-  border-color: rgba(29,154,108, 0.3);
+  background: rgba(62, 107, 87, 0.15);
+  border-color: rgba(62, 107, 87, 0.3);
 }
 
 .modal-day.cierre {
-  background: rgba(217,119,6, 0.15);
-  border-color: rgba(217,119,6, 0.3);
+  background: rgba(194, 122, 30, 0.15);
+  border-color: rgba(194, 122, 30, 0.3);
 }
 
 .modal-day.pago {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(226, 96, 63, 0.15);
+  border-color: rgba(226, 96, 63, 0.3);
 }
 
-.modal-day-number { font-weight: 600; color: #1a1d2e; z-index: 2; }
+.modal-day-number { font-weight: 600; color: #2B1B17; z-index: 2; }
 
 .modal-badge {
   position: absolute;
@@ -601,7 +601,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 800;
-  color: #d4a574;
+  color: #E8946A;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -616,7 +616,7 @@
   display: flex; gap: 12px; padding: 16px; border-radius: 12px; border: 1px solid;
   background: #ffffff;
   transition: all 0.3s;
-  box-shadow: 0 1px 6px rgba(30,45,100,0.04);
+  box-shadow: 0 1px 6px rgba(74, 47, 40,0.04);
 }
 
 .info-card:hover {
@@ -625,15 +625,15 @@
 }
 
 .info-card.inicio {
-  border-color: rgba(29,154,108, 0.3);
+  border-color: rgba(62, 107, 87, 0.3);
 }
 
 .info-card.cierre {
-  border-color: rgba(217,119,6, 0.3);
+  border-color: rgba(194, 122, 30, 0.3);
 }
 
 .info-card.pago {
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(226, 96, 63, 0.3);
 }
 
 .info-icon { flex-shrink: 0; }
@@ -644,36 +644,36 @@
   flex-shrink: 0;
 }
 .cc-info-icon svg { width: 20px; height: 20px; }
-.cc-info-icon.inicio { background: rgba(29,154,108,0.12);  color: #1d9a6c; }
-.cc-info-icon.cierre { background: rgba(217,119,6,0.12); color: #d97706; }
-.cc-info-icon.pago   { background: rgba(239,68,68,0.12);  color: #f87171; }
+.cc-info-icon.inicio { background: rgba(62, 107, 87,0.12);  color: #3E6B57; }
+.cc-info-icon.cierre { background: rgba(194, 122, 30,0.12); color: #C27A1E; }
+.cc-info-icon.pago   { background: rgba(226, 96, 63,0.12);  color: #EC8A6E; }
 
-.info-content strong { display: block; font-size: 13px; color: #1a1d2e; margin-bottom: 6px; font-weight: 700; }
-.info-content p      { margin: 0; font-size: 12px; color: #5c6480; line-height: 1.5; }
+.info-content strong { display: block; font-size: 13px; color: #2B1B17; margin-bottom: 6px; font-weight: 700; }
+.info-content p      { margin: 0; font-size: 12px; color: #6B5148; line-height: 1.5; }
 
 /* Pro Tip */
 .pro-tip-modal {
   display: flex;
   gap: 12px;
   padding: 18px 20px;
-  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15), rgba(212, 165, 116, 0.08));
-  border: 2px solid rgba(212, 165, 116, 0.3);
+  background: linear-gradient(135deg, rgba(232, 148, 106, 0.15), rgba(232, 148, 106, 0.08));
+  border: 2px solid rgba(232, 148, 106, 0.3);
   border-radius: 12px;
 }
 
 .pro-tip-icon { flex-shrink: 0; }
-.pro-tip-icon.cc-svg-icon { color: #d4a574; }
+.pro-tip-icon.cc-svg-icon { color: #E8946A; }
 .pro-tip-icon.cc-svg-icon svg { width: 22px; height: 22px; }
 
 .pro-tip-content strong {
   display: block;
   font-size: 14px;
-  color: #d4a574;
+  color: #E8946A;
   margin-bottom: 6px;
   font-weight: 800;
 }
 
-.pro-tip-content p { margin: 0; font-size: 13px; color: #5c6480; line-height: 1.6; }
+.pro-tip-content p { margin: 0; font-size: 13px; color: #6B5148; line-height: 1.6; }
 
 /* ===============================
    MODAL - HEADER REDISEÑADO
@@ -691,16 +691,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(212, 165, 116, 0.12);
-  border: 1px solid rgba(212, 165, 116, 0.25);
+  background: rgba(232, 148, 106, 0.12);
+  border: 1px solid rgba(232, 148, 106, 0.25);
   border-radius: 12px;
-  color: #d4a574;
+  color: #E8946A;
   flex-shrink: 0;
 }
 .modal-header-icon svg { width: 22px; height: 22px; }
 
-.modal-header-title { margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #edf0f8; letter-spacing: -0.3px; }
-.modal-header-sub   { margin: 0; font-size: 12px; color: rgba(196,154,60,0.65); font-weight: 600; }
+.modal-header-title { margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #EFE8DF; letter-spacing: -0.3px; }
+.modal-header-sub   { margin: 0; font-size: 12px; color: rgba(232, 148, 106,0.65); font-weight: 600; }
 
 /* ===============================
    MODAL - LEYENDA DE PERÍODOS
@@ -709,11 +709,11 @@
 .modal-leyenda {
   display: flex; align-items: center; gap: 20px;
   padding: 11px 28px;
-  background: #f7f9ff;
-  border-bottom: 1px solid rgba(30,45,100,0.08);
+  background: #FAF7F2;
+  border-bottom: 1px solid rgba(74, 47, 40,0.08);
   flex-wrap: wrap; flex-shrink: 0;
 }
-.modal-ley-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #5c6480; font-weight: 600; white-space: nowrap; }
+.modal-ley-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #6B5148; font-weight: 600; white-space: nowrap; }
 
 .modal-ley-dot {
   width: 10px;
@@ -721,12 +721,12 @@
   border-radius: 3px;
   flex-shrink: 0;
 }
-.modal-ley-dot.inicio        { background: rgba(29,154,108, 0.85); box-shadow: 0 0 6px rgba(29,154,108, 0.5); }
-.modal-ley-dot.en-compras    { background: rgba(77,124,193, 0.80); box-shadow: 0 0 6px rgba(77,124,193, 0.4); }
-.modal-ley-dot.cierre        { background: rgba(217,119,6, 0.85); box-shadow: 0 0 6px rgba(217,119,6, 0.5); }
-.modal-ley-dot.en-gracia     { background: rgba(168,  85, 247, 0.75); box-shadow: 0 0 6px rgba(168,  85, 247, 0.4); }
-.modal-ley-dot.pago          { background: rgba(239,  68,  68, 0.85); box-shadow: 0 0 6px rgba(239,  68,  68, 0.5); }
-.modal-ley-dot.pago-anterior { background: rgba(251, 146,  60, 0.85); box-shadow: 0 0 6px rgba(251, 146,  60, 0.5); }
+.modal-ley-dot.inicio        { background: rgba(62, 107, 87, 0.85); box-shadow: 0 0 6px rgba(62, 107, 87, 0.5); }
+.modal-ley-dot.en-compras    { background: rgba(94, 131, 146, 0.80); box-shadow: 0 0 6px rgba(94, 131, 146, 0.4); }
+.modal-ley-dot.cierre        { background: rgba(194, 122, 30, 0.85); box-shadow: 0 0 6px rgba(194, 122, 30, 0.5); }
+.modal-ley-dot.en-gracia     { background: rgba(155, 122, 143, 0.75); box-shadow: 0 0 6px rgba(155, 122, 143, 0.4); }
+.modal-ley-dot.pago          { background: rgba(226, 96, 63, 0.85); box-shadow: 0 0 6px rgba(226, 96, 63, 0.5); }
+.modal-ley-dot.pago-anterior { background: rgba(232, 148, 106, 0.85); box-shadow: 0 0 6px rgba(232, 148, 106, 0.5); }
 
 /* ===============================
    MODAL - CABECERA DE CADA MES
@@ -737,7 +737,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(214, 162, 95, 0.15);
+  border-bottom: 1px solid rgba(232, 148, 106, 0.15);
   margin-bottom: 4px;
 }
 
@@ -750,7 +750,7 @@
   margin: 0;
   font-size: 14px;
   font-weight: 700;
-  color: #d4a574;
+  color: #E8946A;
   text-align: left;
   padding-bottom: 0;
   border-bottom: none;
@@ -759,17 +759,17 @@
 .modal-mes-anio {
   font-size: 11px;
   font-weight: 600;
-  color: #666;
+  color: #7A6258;
 }
 
 .modal-mes-badge {
   padding: 2px 8px;
-  background: rgba(212, 165, 116, 0.15);
-  border: 1px solid rgba(212, 165, 116, 0.35);
+  background: rgba(232, 148, 106, 0.15);
+  border: 1px solid rgba(232, 148, 106, 0.35);
   border-radius: 20px;
   font-size: 10px;
   font-weight: 700;
-  color: #d4a574;
+  color: #E8946A;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -780,8 +780,8 @@
 ================================ */
 
 .mes-actual {
-  background: rgba(196,154,60,0.05);
-  border: 1px solid rgba(196,154,60,0.18);
+  background: rgba(232, 148, 106,0.05);
+  border: 1px solid rgba(232, 148, 106,0.18);
   border-radius: 12px; padding: 14px;
 }
 
@@ -790,22 +790,22 @@
 ================================ */
 
 .modal-day.en-compras {
-  background: rgba(77,124,193, 0.08);
-  border-color: rgba(77,124,193, 0.18);
+  background: rgba(94, 131, 146, 0.08);
+  border-color: rgba(94, 131, 146, 0.18);
 }
 
 .modal-day.en-gracia {
-  background: rgba(168, 85, 247, 0.08);
-  border-color: rgba(168, 85, 247, 0.18);
+  background: rgba(155, 122, 143, 0.08);
+  border-color: rgba(155, 122, 143, 0.18);
 }
 
 /* Pago del ciclo anterior — naranja, borde punteado */
 .modal-day.pago-anterior {
-  background: rgba(251, 146, 60, 0.12);
-  border: 1px dashed rgba(251, 146, 60, 0.5);
+  background: rgba(232, 148, 106, 0.12);
+  border: 1px dashed rgba(232, 148, 106, 0.5);
 }
 .cc-badge.pago-ant {
-  color: #fb923c;
+  color: #E8946A;
 }
 
 /* Aviso de pago anterior pendiente */
@@ -815,14 +815,14 @@
   gap: 12px;
   padding: 14px 18px;
   margin-bottom: 20px;
-  background: rgba(251, 146, 60, 0.08);
-  border: 1px solid rgba(251, 146, 60, 0.35);
+  background: rgba(232, 148, 106, 0.08);
+  border: 1px solid rgba(232, 148, 106, 0.35);
   border-radius: 12px;
   animation: slideInInsight 0.4s ease;
 }
 .aviso-icon {
   flex-shrink: 0;
-  color: #fb923c;
+  color: #E8946A;
   margin-top: 2px;
 }
 .aviso-icon svg { width: 18px; height: 18px; }
@@ -834,25 +834,25 @@
 .aviso-texto strong {
   font-size: 13px;
   font-weight: 800;
-  color: #fb923c;
+  color: #E8946A;
 }
-.aviso-texto p { margin: 0; font-size: 12px; color: #5c6480; line-height: 1.5; }
+.aviso-texto p { margin: 0; font-size: 12px; color: #6B5148; line-height: 1.5; }
 .aviso-texto p strong {
   color: #e8a33d;
 }
 
 /* Los días clave tienen mayor especificidad y no se sobreescriben */
 .modal-day.inicio {
-  background: rgba(29,154,108, 0.15);
-  border-color: rgba(29,154,108, 0.35);
+  background: rgba(62, 107, 87, 0.15);
+  border-color: rgba(62, 107, 87, 0.35);
 }
 .modal-day.cierre {
-  background: rgba(217,119,6, 0.15);
-  border-color: rgba(217,119,6, 0.35);
+  background: rgba(194, 122, 30, 0.15);
+  border-color: rgba(194, 122, 30, 0.35);
 }
 .modal-day.pago {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(226, 96, 63, 0.15);
+  border-color: rgba(226, 96, 63, 0.35);
 }
 
 /* ===============================
@@ -867,9 +867,9 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #d4a574;
+  background: #E8946A;
   z-index: 3;
-  box-shadow: 0 0 4px rgba(212, 165, 116, 0.8);
+  box-shadow: 0 0 4px rgba(232, 148, 106, 0.8);
 }
 
 /* ===============================
@@ -883,12 +883,12 @@
   margin: 0;
   font-size: 16px;
   font-weight: 800;
-  color: #d4a574;
+  color: #E8946A;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 .cc-guide-title .cc-svg-icon {
-  color: #d4a574;
+  color: #E8946A;
 }
 .cc-guide-title .cc-svg-icon svg {
   width: 16px;

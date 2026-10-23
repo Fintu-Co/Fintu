@@ -167,11 +167,11 @@ function UsageBarChart({ tarjetas }) {
   const allZero = usageData.every(v => v === 0);
   const displayData = allZero ? activas.map(() => 100) : usageData;
   const bgColors = allZero
-    ? activas.map(() => 'rgba(29,154,108,0.20)')
+    ? activas.map(() => 'rgba(62, 107, 87,0.20)')
     : usageData.map(v =>
-        v >= 70 ? 'rgba(220,38,38,0.80)' :
-        v >= 30 ? 'rgba(217,119,6,0.80)' :
-                  'rgba(29,154,108,0.80)'
+        v >= 70 ? 'rgba(194, 70, 42,0.80)' :
+        v >= 30 ? 'rgba(194, 122, 30,0.80)' :
+                  'rgba(62, 107, 87,0.80)'
       );
 
   const data = {
@@ -191,8 +191,8 @@ function UsageBarChart({ tarjetas }) {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#fff', titleColor: '#1a1d2e', bodyColor: '#5c6480',
-        borderColor: 'rgba(30,45,100,0.10)', borderWidth: 1,
+        backgroundColor: '#fff', titleColor: '#2B1B17', bodyColor: '#6B5148',
+        borderColor: 'rgba(74, 47, 40,0.10)', borderWidth: 1,
         padding: 12, cornerRadius: 10,
         callbacks: {
           label: ctx => allZero
@@ -212,14 +212,14 @@ function UsageBarChart({ tarjetas }) {
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: '#9aa4c0', font: { size: 12, family: "'DM Sans', sans-serif" } },
+        ticks: { color: '#8A746A', font: { size: 12, family: "'DM Sans', sans-serif" } },
         border: { display: false },
       },
       y: {
         min: 0, max: 100,
-        grid: { color: 'rgba(30,45,100,0.06)', drawTicks: false },
+        grid: { color: 'rgba(74, 47, 40,0.06)', drawTicks: false },
         ticks: {
-          color: '#9aa4c0', font: { size: 11, family: "'DM Sans', sans-serif" },
+          color: '#8A746A', font: { size: 11, family: "'DM Sans', sans-serif" },
           callback: v => v + '%', stepSize: 25, padding: 8,
         },
         border: { display: false },
@@ -480,10 +480,10 @@ function Dashboard() {
                         <div className="cv-top">
                           <div className="cv-chip">
                             <svg width="32" height="26" viewBox="0 0 32 26" fill="none">
-                              <rect width="32" height="26" rx="4" fill="rgba(212,165,116,0.25)"/>
-                              <rect x="3" y="7" width="26" height="12" rx="2" fill="rgba(212,165,116,0.1)" stroke="rgba(212,165,116,0.35)" strokeWidth="0.8"/>
-                              <line x1="16" y1="7" x2="16" y2="19" stroke="rgba(212,165,116,0.35)" strokeWidth="0.8"/>
-                              <line x1="3" y1="13" x2="29" y2="13" stroke="rgba(212,165,116,0.35)" strokeWidth="0.8"/>
+                              <rect width="32" height="26" rx="4" fill="rgba(232, 148, 106,0.25)"/>
+                              <rect x="3" y="7" width="26" height="12" rx="2" fill="rgba(232, 148, 106,0.1)" stroke="rgba(232, 148, 106,0.35)" strokeWidth="0.8"/>
+                              <line x1="16" y1="7" x2="16" y2="19" stroke="rgba(232, 148, 106,0.35)" strokeWidth="0.8"/>
+                              <line x1="3" y1="13" x2="29" y2="13" stroke="rgba(232, 148, 106,0.35)" strokeWidth="0.8"/>
                             </svg>
                           </div>
                           <svg className="cv-wifi" width="20" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2">

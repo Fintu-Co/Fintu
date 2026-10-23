@@ -563,7 +563,7 @@ function Goals() {
                     {completedGoals.length > 0 ? (
                       <>
                         {completedGoals.length} meta{completedGoals.length > 1 ? 's' : ''} cumplida{completedGoals.length > 1 ? 's' : ''}&nbsp;
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7fa8d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginBottom: '2px' }}>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8AAAB6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginBottom: '2px' }}>
                           <path d="M6 9H3V4h18v5h-3"/>
                           <path d="M6 4v9a6 6 0 0012 0V4"/>
                           <path d="M12 19v3"/>
@@ -577,7 +577,7 @@ function Goals() {
                 {healthScore !== null && (() => {
                   const R = 34; const circ = +(2 * Math.PI * R).toFixed(2);
                   const offset = +(circ * (1 - healthScore / 100)).toFixed(2);
-                  const color = '#7fa8d9';
+                  const color = '#8AAAB6';
                   const label = healthScore >= 75 ? 'Excelente' : healthScore >= 50 ? 'En progreso' : 'Mejorar';
                   return (
                     <div className="goals-hero-score">

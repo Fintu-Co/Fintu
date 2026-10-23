@@ -11,23 +11,23 @@
    VARIABLES GLOBALES
 ================================ */
 :root {
-  --bg-main: #0b0b0c;
+  --bg-main: #2B1B17;
   --bg-card: #151515;
   --bg-card-soft: #101010;
 
-  --accent-gold: #d4a574;
-  --accent-gold-strong: #f6c177;
-  --accent-gold-soft: #b89363;
+  --accent-gold: #E8946A;
+  --accent-gold-strong: #F5C9A6;
+  --accent-gold-soft: #C9764F;
 
-  --text-main: #e5e5e5;
+  --text-main: #E9E3DA;
   --text-muted: #8b8b8b;
   --text-soft: #aaaaaa;
 
   --border-soft: rgba(255,255,255,0.08);
-  --border-gold-soft: rgba(214,162,95,0.25);
+  --border-gold-soft: rgba(232, 148, 106,0.25);
 
-  --shadow-gold-soft: 0 0 28px rgba(214,162,95,0.18);
-  --shadow-gold-strong: 0 0 32px rgba(214,162,95,0.25);
+  --shadow-gold-soft: 0 0 28px rgba(232, 148, 106,0.18);
+  --shadow-gold-strong: 0 0 32px rgba(232, 148, 106,0.25);
 
   --radius-lg: 18px;
   --radius-md: 14px;
@@ -48,16 +48,12 @@ body {
   padding: 0;
   min-height: 100vh;
 
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
 
-  color: var(--text-main);
+  color: #2B1B17;
 
-  /* Fondo moderno */
-  background: radial-gradient(
-    circle at 20% 10%,
-    #1a140f,
-    #0b0b0c 60%
-  );
+  /* Fondo arena de la marca */
+  background: #E9E3DA;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -66,17 +62,14 @@ body {
    SISTEMA TIPOGRÁFICO
 ================================ */
 
-h1, .h1 {
-  font-size: 40px;
-  font-weight: 600;
-  letter-spacing: 1px;
+/* Títulos en Fraunces, igual que el landing (cada pantalla define su tamaño) */
+h1, .h1, h2, .h2 {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
-
-h2, .h2 {
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
+h1, .h1 { font-size: 40px; }
+h2, .h2 { font-size: 22px; }
 
 h3, .h3 {
   font-size: 16px;
@@ -149,7 +142,7 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0b0c;
+  background: #2B1B17;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -158,5 +151,5 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: #4A2F28;
 }

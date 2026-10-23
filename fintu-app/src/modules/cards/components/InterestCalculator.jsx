@@ -119,9 +119,9 @@ function InterestCalculator({ tarjeta, simboloMoneda, onClose }) {
   const chartData = {
     labels: Array.from({ length: maxL }, (_, i) => i === 0 ? 'Hoy' : `M${i}`),
     datasets: [
-      { label: `Mínimo · ${simbolo}${pagoMinimo.toFixed(0)}/mes`, data: pad(pMin), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.07)', fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2, borderDash: [6,3] },
-      ...(pDob  ? [{ label: `×2 · ${simbolo}${(pagoMinimo*2).toFixed(0)}/mes`, data: pad(pDob), borderColor: '#f59e0b', backgroundColor: 'transparent', fill: false, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2 }] : []),
-      ...(pUser ? [{ label: `Tu pago · ${simbolo}${pUsr.toFixed(0)}/mes`, data: pad(pUser), borderColor: '#d4a574', backgroundColor: 'rgba(212,165,116,0.1)', fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 3 }] : []),
+      { label: `Mínimo · ${simbolo}${pagoMinimo.toFixed(0)}/mes`, data: pad(pMin), borderColor: '#E2603F', backgroundColor: 'rgba(226, 96, 63,0.07)', fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2, borderDash: [6,3] },
+      ...(pDob  ? [{ label: `×2 · ${simbolo}${(pagoMinimo*2).toFixed(0)}/mes`, data: pad(pDob), borderColor: '#E0A23A', backgroundColor: 'transparent', fill: false, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2 }] : []),
+      ...(pUser ? [{ label: `Tu pago · ${simbolo}${pUsr.toFixed(0)}/mes`, data: pad(pUser), borderColor: '#E8946A', backgroundColor: 'rgba(232, 148, 106,0.1)', fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 3 }] : []),
     ],
   };
   const chartOpts = {
@@ -129,8 +129,8 @@ function InterestCalculator({ tarjeta, simboloMoneda, onClose }) {
     plugins: {
       legend: { display: true, position: 'bottom', labels: { color: '#777', font: { size: 11, weight: '600' }, padding: 12, usePointStyle: true, pointStyle: 'line' } },
       tooltip: {
-        backgroundColor: 'rgba(10,10,10,0.96)', titleColor: '#d4a574', bodyColor: '#e5e5e5',
-        borderColor: 'rgba(212,165,116,0.2)', borderWidth: 1, padding: 10,
+        backgroundColor: 'rgba(10,10,10,0.96)', titleColor: '#E8946A', bodyColor: '#E9E3DA',
+        borderColor: 'rgba(232, 148, 106,0.2)', borderWidth: 1, padding: 10,
         callbacks: {
           title: items => `Mes ${items[0].dataIndex}`,
           label: ctx => `${ctx.dataset.label.split('·')[0].trim()}: ${simbolo} ${ctx.parsed.y.toLocaleString('es-PE', { minimumFractionDigits: 0 })}`,
@@ -138,8 +138,8 @@ function InterestCalculator({ tarjeta, simboloMoneda, onClose }) {
       },
     },
     scales: {
-      x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
-      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => v >= 1000 ? `${simbolo}${(v/1000).toFixed(1)}k` : `${simbolo}${v}` } },
+      x: { grid: { display: false }, ticks: { color: '#6B5148', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6B5148', font: { size: 10 }, callback: v => v >= 1000 ? `${simbolo}${(v/1000).toFixed(1)}k` : `${simbolo}${v}` } },
     },
     interaction: { mode: 'index', intersect: false },
   };

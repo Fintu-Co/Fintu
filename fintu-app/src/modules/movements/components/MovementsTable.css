@@ -17,25 +17,25 @@
   text-align: left;
   font-size: 11px;
   font-weight: 800;
-  color: #9aa4c0;
+  color: #8A746A;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   padding: 0 12px 14px;
-  border-bottom: 1px solid rgba(30,45,100,0.08);
+  border-bottom: 1px solid rgba(74, 47, 40,0.08);
 }
 .mtb-table tbody td {
   padding: 14px 12px;
   font-size: 14px;
-  color: #1a1d2e;
-  border-bottom: 1px solid rgba(30,45,100,0.06);
+  color: #2B1B17;
+  border-bottom: 1px solid rgba(74, 47, 40,0.06);
   vertical-align: middle;
 }
 .mtb-table tbody tr:last-child td { border-bottom: none; }
 .mtb-table tbody tr { transition: background 0.15s; }
-.mtb-table tbody tr:hover td { background: #f7f9ff; }
+.mtb-table tbody tr:hover td { background: #FAF7F2; }
 
 .mtb-right { text-align: right; }
-.mtb-muted { color: #9aa4c0; font-weight: 600; }
+.mtb-muted { color: #8A746A; font-weight: 600; }
 
 .mtb-concept {
   display: flex;
@@ -50,8 +50,8 @@
   flex-shrink: 0;
 }
 .mtb-ic svg { width: 18px; height: 18px; }
-.mtb-ic.buy { background: rgba(77,124,193,0.12); color: #4d7cc1; }
-.mtb-ic.pay { background: rgba(21,122,85,0.12); color: #157a55; }
+.mtb-ic.buy { background: rgba(94, 131, 146,0.12); color: #5E8392; }
+.mtb-ic.pay { background: rgba(47, 74, 62,0.12); color: #2F4A3E; }
 .mtb-desc { min-width: 0; }
 
 .mtb-amount {
@@ -59,8 +59,8 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.mtb-amount.buy { color: #dc2626; }
-.mtb-amount.pay { color: #157a55; }
+.mtb-amount.buy { color: #C2462A; }
+.mtb-amount.pay { color: #2F4A3E; }
 
 .mtb-badge {
   font-size: 11px;
@@ -71,21 +71,21 @@
   letter-spacing: 0.5px;
   white-space: nowrap;
 }
-.mtb-badge.buy { background: rgba(77,124,193,0.12); color: #4d7cc1; }
-.mtb-badge.pay { background: rgba(21,122,85,0.12); color: #157a55; }
+.mtb-badge.buy { background: rgba(94, 131, 146,0.12); color: #5E8392; }
+.mtb-badge.pay { background: rgba(47, 74, 62,0.12); color: #2F4A3E; }
 
 /* Columna de acciones (⋮) */
 .mtb-menu-col { width: 44px; text-align: center; padding-left: 0 !important; padding-right: 8px !important; }
 .mtb-dots {
   width: 30px; height: 30px;
   border-radius: 8px; border: none;
-  background: transparent; color: #9aa4c0;
+  background: transparent; color: #8A746A;
   cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
   transition: background 0.15s, color 0.15s;
 }
 .mtb-dots svg { width: 16px; height: 16px; }
-.mtb-dots:hover, .mtb-dots.active { background: rgba(30,45,100,0.07); color: #1a1d2e; }
+.mtb-dots:hover, .mtb-dots.active { background: rgba(74, 47, 40,0.07); color: #2B1B17; }
 .mtb-row-deleting { opacity: 0.45; pointer-events: none; }
 
 /* Menú desplegable (renderizado por portal → position: fixed) */
@@ -94,9 +94,9 @@
   z-index: 3000;
   min-width: 168px;
   background: #fff;
-  border: 1px solid rgba(30,45,100,0.10);
+  border: 1px solid rgba(74, 47, 40,0.10);
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(15,23,41,0.18);
+  box-shadow: 0 12px 32px rgba(43, 27, 23,0.18);
   padding: 6px;
   animation: mtb-menu-in 0.12s ease;
 }
@@ -111,14 +111,14 @@
   border: none; background: transparent;
   border-radius: 8px;
   font-family: inherit; font-size: 13px; font-weight: 600;
-  color: #1a1d2e; cursor: pointer;
+  color: #2B1B17; cursor: pointer;
   transition: background 0.15s;
   text-align: left;
 }
 .mtb-menu-item svg { width: 15px; height: 15px; flex-shrink: 0; }
-.mtb-menu-item:hover { background: #f7f9ff; }
-.mtb-menu-item.danger { color: #dc2626; }
-.mtb-menu-item.danger:hover { background: rgba(220,38,38,0.08); }
+.mtb-menu-item:hover { background: #FAF7F2; }
+.mtb-menu-item.danger { color: #C2462A; }
+.mtb-menu-item.danger:hover { background: rgba(194, 70, 42,0.08); }
 
 /* Estados: loading / empty */
 .mtb-state {
@@ -133,24 +133,24 @@
 }
 .mtb-spinner {
   width: 30px; height: 30px;
-  border: 3px solid rgba(30,45,100,0.12);
-  border-top-color: #c49a3c;
+  border: 3px solid rgba(74, 47, 40,0.12);
+  border-top-color: #E8946A;
   border-radius: 50%;
   animation: mtb-spin 0.8s linear infinite;
 }
 @keyframes mtb-spin { to { transform: rotate(360deg); } }
-.mtb-state > span { font-size: 13px; color: #9aa4c0; font-weight: 600; }
+.mtb-state > span { font-size: 13px; color: #8A746A; font-weight: 600; }
 .mtb-empty-ic {
   width: 52px; height: 52px;
   border-radius: 15px;
-  background: #f7f9ff;
-  border: 1px solid rgba(30,45,100,0.08);
+  background: #FAF7F2;
+  border: 1px solid rgba(74, 47, 40,0.08);
   display: flex; align-items: center; justify-content: center;
-  color: #9aa4c0;
+  color: #8A746A;
 }
 .mtb-empty-ic svg { width: 26px; height: 26px; }
-.mtb-empty-title { margin: 6px 0 0; font-size: 15px; font-weight: 800; color: #1a1d2e; }
-.mtb-empty-hint { font-size: 13px; color: #9aa4c0; font-weight: 500; max-width: 320px; line-height: 1.5; }
+.mtb-empty-title { margin: 6px 0 0; font-size: 15px; font-weight: 800; color: #2B1B17; }
+.mtb-empty-hint { font-size: 13px; color: #8A746A; font-weight: 500; max-width: 320px; line-height: 1.5; }
 .mtb-empty-btn {
   display: inline-flex;
   align-items: center;
@@ -158,8 +158,8 @@
   margin-top: 6px;
   padding: 10px 18px;
   border-radius: 11px;
-  background: #0f1729;
-  border: 1px solid #0f1729;
+  background: #2B1B17;
+  border: 1px solid #2B1B17;
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -168,4 +168,4 @@
   transition: all 0.2s;
 }
 .mtb-empty-btn svg { width: 15px; height: 15px; }
-.mtb-empty-btn:hover { background: #16203a; }
+.mtb-empty-btn:hover { background: #4A2F28; }

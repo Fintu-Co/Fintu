@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(9, 14, 26, 0.62);
+  background: rgba(34, 21, 15, 0.62);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   animation: cig-fade 0.25s ease;
@@ -40,7 +40,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 20px 22px;
-  background: linear-gradient(135deg, #0f1729, #0c1425);
+  background: linear-gradient(135deg, #2B1B17, #22150F);
   color: #fff;
 }
 .cig-head-eyebrow {
@@ -48,7 +48,7 @@
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
-  color: #d4a574;
+  color: #E8946A;
 }
 .cig-head-title {
   margin: 4px 0 0;
@@ -87,9 +87,9 @@
   justify-content: center;
   width: 48px; height: 48px;
   border-radius: 14px;
-  background: rgba(196, 154, 60, 0.1);
-  border: 1px solid rgba(196, 154, 60, 0.22);
-  color: #c49a3c;
+  background: rgba(232, 148, 106, 0.1);
+  border: 1px solid rgba(232, 148, 106, 0.22);
+  color: #E8946A;
   margin-bottom: 14px;
 }
 .cig-step-icon svg { width: 24px; height: 24px; }
@@ -99,13 +99,13 @@
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #9aa4c0;
+  color: #8A746A;
 }
 .cig-title {
   margin: 6px 0 8px;
   font-size: 19px;
   font-weight: 800;
-  color: #1a1d2e;
+  color: #2B1B17;
   letter-spacing: -0.3px;
   line-height: 1.25;
 }
@@ -113,7 +113,7 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.6;
-  color: #454b63;
+  color: #5A463F;
 }
 
 .cig-tip {
@@ -122,11 +122,11 @@
   gap: 9px;
   margin-top: 16px;
   padding: 12px 14px;
-  background: rgba(196, 154, 60, 0.07);
-  border: 1px solid rgba(196, 154, 60, 0.18);
+  background: rgba(232, 148, 106, 0.07);
+  border: 1px solid rgba(232, 148, 106, 0.18);
   border-radius: 12px;
 }
-.cig-tip svg { width: 15px; height: 15px; color: #c49a3c; flex-shrink: 0; margin-top: 1px; }
+.cig-tip svg { width: 15px; height: 15px; color: #E8946A; flex-shrink: 0; margin-top: 1px; }
 .cig-tip p {
   margin: 0;
   font-size: 12.5px;
@@ -145,13 +145,13 @@
 .cig-dot {
   width: 7px; height: 7px;
   border-radius: 999px;
-  background: rgba(30, 45, 100, 0.15);
+  background: rgba(74, 47, 40, 0.15);
   cursor: pointer;
   transition: all 0.25s;
 }
 .cig-dot.on {
   width: 22px;
-  background: #c49a3c;
+  background: #E8946A;
 }
 
 /* ── Footer ── */
@@ -165,7 +165,7 @@
 .cig-count {
   font-size: 12px;
   font-weight: 700;
-  color: #9aa4c0;
+  color: #8A746A;
 }
 .cig-btn-ghost,
 .cig-btn-navy {
@@ -182,17 +182,17 @@
 }
 .cig-btn-ghost {
   background: transparent;
-  border: 1px solid rgba(30, 45, 100, 0.14);
-  color: #6b7490;
+  border: 1px solid rgba(74, 47, 40, 0.14);
+  color: #7A6258;
 }
-.cig-btn-ghost:hover { border-color: rgba(30, 45, 100, 0.28); color: #1a1d2e; }
+.cig-btn-ghost:hover { border-color: rgba(74, 47, 40, 0.28); color: #2B1B17; }
 .cig-btn-navy {
-  background: #0f1729;
-  border: 1px solid #0f1729;
+  background: #2B1B17;
+  border: 1px solid #2B1B17;
   color: #fff;
-  box-shadow: 0 3px 10px rgba(15, 23, 41, 0.28);
+  box-shadow: 0 3px 10px rgba(43, 27, 23, 0.28);
 }
-.cig-btn-navy:hover { background: #16203a; }
+.cig-btn-navy:hover { background: #4A2F28; }
 
 @media (max-width: 480px) {
   .cig-modal { max-width: 100%; }

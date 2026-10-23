@@ -26,10 +26,10 @@ const actionIconMap = { card: IcCard, money: IcMoney, star: IcStar };
 const factorIconMap = { card: IcCard, check: IcCheck, money: IcMoney };
 
 const NIVEL_HEX = {
-  excellent: '#1d9a6c',
-  good:      '#4d7cc1',
-  warning:   '#d97706',
-  danger:    '#ef4444',
+  excellent: '#3E6B57',
+  good:      '#5E8392',
+  warning:   '#C27A1E',
+  danger:    '#E2603F',
 };
 
 /* ── Gauge needle position ──
@@ -170,7 +170,7 @@ function FinancialHealthModal({ tarjetaId, simboloMoneda, tarjetaData, onClose }
   if (!healthData) return null;
 
   /* ── Gauge needle ── */
-  const scoreHex   = NIVEL_HEX[healthData.nivelColor] || '#d4a574';
+  const scoreHex   = NIVEL_HEX[healthData.nivelColor] || '#E8946A';
   const needle     = gaugePoint(healthData.scoreTotal);
   const tickScores = [0, 25, 50, 75, 100];
 
@@ -235,10 +235,10 @@ function FinancialHealthModal({ tarjetaId, simboloMoneda, tarjetaData, onClose }
               <svg viewBox="0 0 200 200" className="fhm-gauge-svg" aria-hidden="true">
                 <defs>
                   <linearGradient id="fhmGaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stopColor="#ef4444" />
-                    <stop offset="35%"  stopColor="#d97706" />
-                    <stop offset="65%"  stopColor="#4d7cc1" />
-                    <stop offset="100%" stopColor="#1d9a6c" />
+                    <stop offset="0%"   stopColor="#E2603F" />
+                    <stop offset="35%"  stopColor="#C27A1E" />
+                    <stop offset="65%"  stopColor="#5E8392" />
+                    <stop offset="100%" stopColor="#3E6B57" />
                   </linearGradient>
                 </defs>
                 {/* Track */}

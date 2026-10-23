@@ -33,7 +33,7 @@
 .ud-pct span {
   font-size: 9px;
   font-weight: 800;
-  color: #9aa4c0;
+  color: #8A746A;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 2px;
@@ -44,13 +44,13 @@
   margin: 0 0 4px;
   font-size: 14.5px;
   font-weight: 800;
-  color: #1a1d2e;
+  color: #2B1B17;
 }
 .ud-info p {
   margin: 0;
   font-size: 12.5px;
   line-height: 1.5;
-  color: #5c6480;
+  color: #6B5148;
 }
 .ud-tag {
   display: inline-block;
@@ -60,9 +60,9 @@
   padding: 3px 9px;
   border-radius: 6px;
 }
-.ud-tag-good { background: rgba(21,122,85,0.12); color: #157a55; }
-.ud-tag-warn { background: rgba(217,119,6,0.12); color: #d97706; }
-.ud-tag-bad  { background: rgba(220,38,38,0.12); color: #dc2626; }
+.ud-tag-good { background: rgba(47, 74, 62,0.12); color: #2F4A3E; }
+.ud-tag-warn { background: rgba(194, 122, 30,0.12); color: #C27A1E; }
+.ud-tag-bad  { background: rgba(194, 70, 42,0.12); color: #C2462A; }
 
 .ud-btn {
   display: flex;
@@ -72,14 +72,14 @@
   padding: 0;
   background: none;
   border: none;
-  color: #9a7628;
+  color: #A5562F;
   font-size: 12.5px;
   font-weight: 800;
   cursor: pointer;
   font-family: inherit;
   transition: gap 0.2s;
 }
-.ud-btn:hover { gap: 9px; color: #c49a3c; }
+.ud-btn:hover { gap: 9px; color: #E8946A; }
 
 @media (max-width: 480px) {
   .ud-wrap { gap: 14px; }

@@ -18,8 +18,8 @@ function UsageMeter({ porcentajeUso, deudaActual, lineaCredito, simboloMoneda, t
     pct <= 70 ? 'warn' : 'bad';
 
   const colorStroke =
-    nivel === 'good' ? '#1d9a6c' :
-    nivel === 'warn' ? '#f59e0b' : '#ef4444';
+    nivel === 'good' ? '#3E6B57' :
+    nivel === 'warn' ? '#E0A23A' : '#E2603F';
 
   const colorRgb =
     nivel === 'good' ? '29,154,108' :
@@ -91,7 +91,7 @@ function UsageMeter({ porcentajeUso, deudaActual, lineaCredito, simboloMoneda, t
 
             {/* Track */}
             <circle cx={cx} cy={cy} r={R}
-              fill="none" stroke="rgba(30,45,100,0.08)" strokeWidth="14"
+              fill="none" stroke="rgba(74, 47, 40,0.08)" strokeWidth="14"
               strokeDasharray={trackD} strokeLinecap="round" style={rotStyle}
             />
 
@@ -120,22 +120,22 @@ function UsageMeter({ porcentajeUso, deudaActual, lineaCredito, simboloMoneda, t
 
             {/* Marca 30% */}
             <circle cx={mark30.x} cy={mark30.y} r="5"
-              fill={displayPct >= 30 ? '#1d9a6c' : 'rgba(30,45,100,0.10)'}
-              stroke={displayPct >= 30 ? '#157a55' : 'rgba(30,45,100,0.18)'}
+              fill={displayPct >= 30 ? '#3E6B57' : 'rgba(74, 47, 40,0.10)'}
+              stroke={displayPct >= 30 ? '#2F4A3E' : 'rgba(74, 47, 40,0.18)'}
               strokeWidth="1.5" style={{ transition: 'fill 0.4s' }}
             />
             <text x={mark30.x - 14} y={mark30.y - 9}
-              fontSize="8" fontWeight="700" fill="#9aa4c0" textAnchor="middle"
+              fontSize="8" fontWeight="700" fill="#8A746A" textAnchor="middle"
             >30%</text>
 
             {/* Marca 70% */}
             <circle cx={mark70.x} cy={mark70.y} r="5"
-              fill={displayPct >= 70 ? '#dc2626' : 'rgba(30,45,100,0.10)'}
-              stroke={displayPct >= 70 ? '#b91c1c' : 'rgba(30,45,100,0.18)'}
+              fill={displayPct >= 70 ? '#C2462A' : 'rgba(74, 47, 40,0.10)'}
+              stroke={displayPct >= 70 ? '#9E3520' : 'rgba(74, 47, 40,0.18)'}
               strokeWidth="1.5" style={{ transition: 'fill 0.4s' }}
             />
             <text x={mark70.x + 14} y={mark70.y - 9}
-              fontSize="8" fontWeight="700" fill="#9aa4c0" textAnchor="middle"
+              fontSize="8" fontWeight="700" fill="#8A746A" textAnchor="middle"
             >70%</text>
 
             {/* Punto deslizante al final del fill */}
