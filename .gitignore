@@ -4,7 +4,7 @@ dist/
 *.log
 .DS_Store
 
-# Skills de IA locales (no forman parte de la app)
+# Configuración local del editor e IA (no forma parte de la app)
 .agents/
-/.claude/
+.claude/
 skills-lock.json

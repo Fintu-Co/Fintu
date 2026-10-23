@@ -1,12 +1,12 @@
 # Despliegue — Fintú & Co.
 
-Monorepo con tres paquetes que se despliegan por separado:
+Tres piezas que se despliegan por separado:
 
 | Paquete | Dónde | Por qué |
 |---|---|---|
-| `fintu-api` | Railway | Necesita proceso persistente |
-| `fintu-app` | Cloudflare Pages (proyecto `fintu-app`) | SPA estática; abre en el login |
-| `fintu-landing` | Cloudflare Pages (proyecto `fintu-co`) | Landing pública |
+| `fintu-api` (este repo) | Railway | Necesita proceso persistente |
+| `fintu-app` (este repo) | Cloudflare Pages (proyecto `fintu-app`) | SPA estática; abre en el login |
+| [`fintu-landing`](https://github.com/Fintu-Co/fintu-landing) (repo aparte) | Cloudflare Pages (proyecto `fintu-co`) | Landing pública |
 
 > **El backend no puede ir en serverless.** Usa un pool de MySQL con `keepAlive`
 > y un `setInterval` diario (limpieza de movimientos). En serverless el pool se
@@ -99,9 +99,8 @@ VITE_LANDING_URL=https://fintu-co.pages.dev        # destino de "Volver al inici
 
 ### 2.2 Landing (proyecto `fintu-co` → `fintu-co.pages.dev`)
 
-```
-Root directory:   fintu-landing
-```
+Conéctalo al repo `Fintu-Co/fintu-landing` y deja el *Root directory* vacío
+(el landing está en la raíz de ese repo).
 
 Variables de entorno:
 
