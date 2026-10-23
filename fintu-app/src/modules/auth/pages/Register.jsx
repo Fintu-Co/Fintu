@@ -1,16 +1,45 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { useToast } from '@/shared/context/ToastContext';
-import registerImg from '@/assets/images/register-hero.jpg';
-import BrandLogo from '@/shared/components/BrandLogo';
-import './Register.css';
-import { goToLanding } from '@/shared/config';
+import AuthLayout from '@/modules/auth/components/AuthLayout';
 
 const initialOptions = {
   clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
   currency: 'USD',
   intent: 'capture',
 };
+
+const ASIDE = {
+  title: 'Un pago. Para siempre.',
+  text: 'Crea tu cuenta y empieza a pagar tus tarjetas a tiempo.',
+  points: [
+    'Ciclos y fechas calculados solos',
+    'El interés, antes de que llegue',
+    'Hasta 4 tarjetas de cualquier banco',
+  ],
+};
+
+const IcShield = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z" />
+  </svg>
+);
+const IcArrow = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+function Field({ id, label, error, ...input }) {
+  return (
+    <div className="au-field">
+      <label htmlFor={id}>{label}</label>
+      <input id={id} className={error ? 'is-error' : ''} aria-invalid={!!error} {...input} />
+      {error && <span className="au-error">{error}</span>}
+    </div>
+  );
+}
 
 function Register() {
   const { showToast } = useToast();
@@ -38,7 +67,8 @@ function Register() {
     return e;
   };
 
-  const handleOpenPayment = () => {
+  const handleOpenPayment = (ev) => {
+    ev.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -82,306 +112,104 @@ function Register() {
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-    <div className="register-page">
-
-      {/* ── PANEL IZQUIERDO — Branding ── */}
-      <div className="register-left">
-        <div className="register-left-img">
-          <img src={registerImg} alt="" aria-hidden="true" />
+      <AuthLayout aside={ASIDE}>
+        <div className="au-head">
+          <h1>Crea tu cuenta</h1>
+          <p>Tus datos y un pago único de <strong>$4 USD</strong>. Nada más.</p>
         </div>
-        <div className="register-left-overlay" />
 
-        <div className="register-left-content">
-          <BrandLogo size="lg" tagline className="register-brand" />
-
-          <div className="register-hero-text">
-            <h2>Empieza hoy.<br/>Un solo pago.</h2>
-            <p>Crea tu cuenta y accede de por vida a todas las herramientas para controlar tu crédito en Perú.</p>
+        <form className="au-form" onSubmit={handleOpenPayment} noValidate>
+          <div className="au-row">
+            <Field id="reg-nombre" label="Nombre" name="nombre" autoComplete="given-name"
+              value={formData.nombre} onChange={handleChange} placeholder="Juan"
+              error={errors.nombre} autoFocus />
+            <Field id="reg-apellido" label="Apellido" name="apellido" autoComplete="family-name"
+              value={formData.apellido} onChange={handleChange} placeholder="Pérez"
+              error={errors.apellido} />
+          </div>
+          <Field id="reg-email" label="Correo electrónico" type="email" name="email" autoComplete="email"
+            value={formData.email} onChange={handleChange} placeholder="tu@email.com"
+            error={errors.email} />
+          <div className="au-row">
+            <Field id="reg-pass" label="Contraseña" type="password" name="password" autoComplete="new-password"
+              value={formData.password} onChange={handleChange} placeholder="Mínimo 6 caracteres"
+              error={errors.password} />
+            <Field id="reg-pass2" label="Confirmar contraseña" type="password" name="confirmPassword" autoComplete="new-password"
+              value={formData.confirmPassword} onChange={handleChange} placeholder="Repite tu contraseña"
+              error={errors.confirmPassword} />
           </div>
 
-          <ul className="register-features">
-            {[
-              'Control total de tus tarjetas de crédito',
-              'Alertas de vencimiento y análisis de deuda',
-              'Comparador de bancos y educación financiera',
-              'Sin pagos mensuales — solo $4 una vez',
-            ].map((text, i) => (
-              <li key={i}>
-                <div className="rf-check">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                </div>
-                <span>{text}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="register-price-badge">
+          <div className="au-pay">
             <div>
-              <div className="rpb-amount">$4 USD</div>
-              <div className="rpb-label">Pago único<br/>Acceso de por vida</div>
+              <strong>$4 USD</strong>
+              <span>Pago único · acceso de por vida</span>
             </div>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{color:'rgba(196,154,60,0.55)'}}>
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
+            <span className="au-pay-tag">Sin renovaciones</span>
           </div>
 
-          <div className="register-left-footer">© {new Date().getFullYear()} Fintú &amp; Co. PE · Perú 🇵🇪</div>
-        </div>
-      </div>
-
-      {/* ── PANEL DERECHO — Formulario ── */}
-      <div className="register-right">
-
-        {/* ── HERO MOBILE ── */}
-        <div className="register-mobile-hero">
-          <img src={registerImg} alt="" aria-hidden="true" />
-          <div className="register-mobile-hero-overlay" />
-
-          {/* Logo arriba */}
-          <BrandLogo size="sm" className="register-mobile-hero-brand" />
-
-          {/* Texto principal */}
-          <div className="register-mobile-hero-text">
-            <div className="rht-eyebrow">
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
-              Acceso de por vida
-            </div>
-            <h2>Empieza hoy.<br/><em>Un solo pago.</em></h2>
-            <div className="rht-price">
-              $4.00 USD <span>pago único · sin renovaciones</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="register-box">
-
-          <button className="register-back" onClick={goToLanding}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <polyline points="15,18 9,12 15,6"/>
-            </svg>
-            Volver al inicio
+          <button type="submit" className="au-btn">
+            Continuar al pago <IcArrow />
           </button>
 
-          <div className="register-header">
-            <h1>Crea tu cuenta</h1>
-            <p>Completa tus datos y realiza el pago único de <strong>$4.00 USD</strong></p>
+          <div className="au-trust">
+            <span><IcShield /> Pago seguro con PayPal</span>
+            <span><IcShield /> Sin datos bancarios</span>
           </div>
+        </form>
 
-          {/* Trust row — solo visible en mobile */}
-          <div className="register-trust-row">
-            <div className="register-trust-item">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-              Sin datos bancarios
-            </div>
-            <div className="register-trust-item">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-              Pago seguro PayPal
-            </div>
-            <div className="register-trust-item">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 12c-2-2.5-4-4-6-4a4 4 0 000 8c2 0 4-1.5 6-4z"/>
-                <path d="M12 12c2 2.5 4 4 6 4a4 4 0 000-8c-2 0-4 1.5-6 4z"/>
-              </svg>
-              Acceso de por vida
-            </div>
-          </div>
-
-          {/* DATOS PERSONALES */}
-          <div className="register-section">
-            <div className="register-section-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              Tus datos
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Nombre</label>
-                <input type="text" name="nombre" value={formData.nombre}
-                  onChange={handleChange} placeholder="Juan"
-                  className={errors.nombre ? 'error' : ''} autoFocus />
-                {errors.nombre && <span className="error-message">{errors.nombre}</span>}
-              </div>
-              <div className="form-group">
-                <label>Apellido</label>
-                <input type="text" name="apellido" value={formData.apellido}
-                  onChange={handleChange} placeholder="Pérez"
-                  className={errors.apellido ? 'error' : ''} />
-                {errors.apellido && <span className="error-message">{errors.apellido}</span>}
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Correo electrónico</label>
-              <div className="input-icon-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-                <input type="email" name="email" value={formData.email}
-                  onChange={handleChange} placeholder="tu@email.com"
-                  className={errors.email ? 'error' : ''} />
-              </div>
-              {errors.email && <span className="error-message">{errors.email}</span>}
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Contraseña</label>
-                <div className="input-icon-wrap">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2"/>
-                    <path d="M7 11V7a5 5 0 0110 0v4"/>
-                  </svg>
-                  <input type="password" name="password" value={formData.password}
-                    onChange={handleChange} placeholder="Mínimo 6 caracteres"
-                    className={errors.password ? 'error' : ''} />
-                </div>
-                {errors.password && <span className="error-message">{errors.password}</span>}
-              </div>
-              <div className="form-group">
-                <label>Confirmar contraseña</label>
-                <div className="input-icon-wrap">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2"/>
-                    <path d="M7 11V7a5 5 0 0110 0v4"/>
-                  </svg>
-                  <input type="password" name="confirmPassword" value={formData.confirmPassword}
-                    onChange={handleChange} placeholder="Repite tu contraseña"
-                    className={errors.confirmPassword ? 'error' : ''} />
-                </div>
-                {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-              </div>
-            </div>
-          </div>
-
-          {/* RESUMEN + BOTÓN DE PAGO */}
-          <div className="register-section register-section--payment">
-            <div className="register-section-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="1" y="4" width="22" height="16" rx="2"/>
-                <line x1="1" y1="10" x2="23" y2="10"/>
-              </svg>
-              Pago único
-            </div>
-
-            <div className="payment-badge">
-              <div>
-                <div className="payment-amount">$4.00 USD</div>
-                <div className="payment-desc">Acceso de por vida · Sin renovaciones</div>
-              </div>
-              <div className="payment-badge-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-              </div>
-            </div>
-
-            <button className="btn-pay" onClick={handleOpenPayment}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="1" y="4" width="22" height="16" rx="2"/>
-                <line x1="1" y1="10" x2="23" y2="10"/>
-              </svg>
-              Continuar al pago
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{marginLeft:'auto'}}>
-                <polyline points="9,18 15,12 9,6"/>
-              </svg>
-            </button>
-
-            <p className="payment-security-note">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-              Pago seguro procesado por PayPal
-            </p>
-          </div>
-
-          <div className="register-footer">
-            <div className="register-divider"><span>o</span></div>
-            <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
-          </div>
-
-        </div>
-      </div>
+        <p className="au-alt">
+          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+        </p>
+      </AuthLayout>
 
       {/* ── MODAL DE PAGO ── */}
       {showModal && (
-        <div className="pay-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
-          <div className="pay-modal">
-
-            {/* Header del modal */}
-            <div className="pay-modal-header">
-              <div className="pay-modal-header-inner">
-                <div className="pay-modal-title">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-                  </svg>
-                  Completa tu pago
-                </div>
-                <button className="pay-modal-close" onClick={() => setShowModal(false)} aria-label="Cerrar">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
-                </button>
-              </div>
+        <div className="au-modal-ov" onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
+          <div className="au-modal" role="dialog" aria-modal="true" aria-label="Completa tu pago">
+            <div className="au-modal-head">
+              <h2>Completa tu pago</h2>
+              <button className="au-modal-x" onClick={() => setShowModal(false)} aria-label="Cerrar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
             </div>
 
-            {/* Resumen del pedido */}
-            <div className="pay-modal-summary">
-              <div className="pay-modal-summary-row">
-                <span>Fintú & Co. PE — Acceso de por vida</span>
-                <span className="pay-modal-price">$4.00</span>
-              </div>
+            <div className="au-modal-sum">
+              <span>Fintú &amp; Co. · acceso de por vida</span>
+              <b>$4.00</b>
             </div>
 
-            {/* Botones PayPal */}
-            <div className="pay-modal-paypal">
-              <PayPalButtons
-                style={{ layout: 'vertical', shape: 'rect', label: 'pay', height: 46 }}
-                createOrder={(data, actions) =>
-                  actions.order.create({
-                    purchase_units: [{
-                      amount: { value: '4.00', currency_code: 'USD' },
-                      description: `Fintú & Co. PE - ${formData.email}`
-                    }]
-                  })
-                }
-                onApprove={handleApprove}
-                onError={() => {
-                  showToast('Error al procesar el pago. Intenta de nuevo.', 'error');
-                  setShowModal(false);
-                }}
-                onCancel={() => {
-                  showToast('Pago cancelado. Puedes intentar cuando quieras.', 'warning');
-                  setShowModal(false);
-                }}
-              />
-            </div>
+            <PayPalButtons
+              style={{ layout: 'vertical', shape: 'pill', label: 'pay', height: 48 }}
+              createOrder={(data, actions) =>
+                actions.order.create({
+                  purchase_units: [{
+                    amount: { value: '4.00', currency_code: 'USD' },
+                    description: `Fintú & Co. PE - ${formData.email}`
+                  }]
+                })
+              }
+              onApprove={handleApprove}
+              onError={() => {
+                showToast('Error al procesar el pago. Intenta de nuevo.', 'error');
+                setShowModal(false);
+              }}
+              onCancel={() => {
+                showToast('Pago cancelado. Puedes intentar cuando quieras.', 'warning');
+                setShowModal(false);
+              }}
+            />
 
             {loading && (
-              <div className="register-loading">
-                <div className="register-spinner" />
-                <span>Procesando tu pago y creando tu cuenta...</span>
+              <div className="au-loading" role="status">
+                <div className="au-spinner" />
+                <span>Procesando tu pago y creando tu cuenta…</span>
               </div>
             )}
-
           </div>
         </div>
       )}
-
-    </div>
     </PayPalScriptProvider>
   );
 }

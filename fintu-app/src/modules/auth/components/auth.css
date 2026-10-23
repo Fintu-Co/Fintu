@@ -1,0 +1,408 @@
+/* ════════════════════════════════════════════════════════════
+   AUTH — login, registro y recuperar contraseña
+   Misma identidad que el landing: arena/crema, espresso y chocolate,
+   durazno de acento, verde bosque para la acción principal.
+════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap');
+
+.au {
+  --sand:     #E9E3DA;
+  --cream:    #F7F3ED;
+  --paper:    #FBF8F3;
+  --espresso: #2B1B17;
+  --choco:    #4A2F28;
+  --choco-2:  #3A2420;
+  --peach:    #F1B68C;
+  --peach-d:  #E8946A;
+  --terra:    #A5562F;
+  --green:    #2F4A3E;
+  --green-h:  #375747;
+  --coral:    #C2462A;   /* coral oscuro: errores legibles sobre crema */
+  --muted:    #6B5148;
+  --line:     rgba(43, 27, 23, 0.14);
+  --serif:    'Fraunces', Georgia, 'Times New Roman', serif;
+
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(380px, 0.85fr) minmax(0, 1.15fr);
+  background: var(--sand);
+  color: var(--espresso);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+:where(.au) :where(h1, h2, h3, p, ul) { margin: 0; padding: 0; }
+:where(.au) :where(ul) { list-style: none; }
+:where(.au) :where(button, input) { font: inherit; color: inherit; }
+:where(.au) *, :where(.au) *::before, :where(.au) *::after { box-sizing: border-box; }
+
+/* ── Panel izquierdo ── */
+.au-aside {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  margin: 12px 0 12px 12px;
+  height: calc(100vh - 24px);
+  border-radius: 28px;
+  background: linear-gradient(160deg, var(--choco) 0%, var(--choco-2) 55%, var(--espresso) 100%);
+  color: var(--cream);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  overflow: hidden;
+}
+.au-aside-logo { align-items: flex-start; --brand-accent: var(--peach); }
+.au-aside-copy { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+.au-aside-copy h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 3.2vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.au-aside-copy p { font-size: 16px; line-height: 1.55; color: rgba(247, 243, 237, 0.7); max-width: 34ch; }
+.au-aside-copy ul { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.au-aside-copy li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: rgba(247, 243, 237, 0.86); }
+.au-aside-copy li span { width: 6px; height: 6px; border-radius: 50%; background: var(--peach); flex-shrink: 0; }
+
+.au-preview { display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
+.au-card {
+  background: var(--paper);
+  color: var(--espresso);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.5);
+}
+.au-card--dark {
+  background: rgba(247, 243, 237, 0.06);
+  color: var(--cream);
+  border: 1px solid rgba(247, 243, 237, 0.14);
+  box-shadow: none;
+}
+.au-card-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.au-card--dark .au-card-label { color: rgba(247, 243, 237, 0.66); font-weight: 500; }
+.au-card-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+.au-card-row--top { margin: 0 0 10px; }
+.au-card-row strong { font-size: 22px; font-weight: 700; }
+.au-card-date {
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(232, 148, 106, 0.22);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+.au-cycle {
+  --brand-accent: var(--espresso);
+  position: relative;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(247, 243, 237, 0.1);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.au-cycle-fill { position: absolute; inset: 0 40% 0 0; background: linear-gradient(90deg, #EADBE6, var(--peach) 55%, var(--peach-d)); }
+.au-cycle .brand-symbol { position: relative; z-index: 1; width: 22px; height: 22px; margin-left: 12px; color: var(--espresso); }
+
+/* ── Columna del formulario ── */
+.au-main {
+  display: flex;
+  flex-direction: column;
+  padding: 28px clamp(20px, 5vw, 72px) 48px;
+}
+.au-top { display: flex; align-items: center; justify-content: flex-end; gap: 16px; min-height: 44px; }
+.au-top-logo { display: none; color: var(--espresso); }
+.au-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+}
+.au-back:hover { color: var(--espresso); background: rgba(43, 27, 23, 0.05); }
+
+.au-box {
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.au-box--wide { max-width: 520px; }
+
+.au-head { display: flex; flex-direction: column; gap: 10px; }
+.au-head h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.au-head p { font-size: 16px; line-height: 1.55; color: var(--muted); }
+.au-head strong { color: var(--espresso); }
+
+/* ── Formulario ── */
+.au-form { display: flex; flex-direction: column; gap: 18px; }
+.au-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.au-field { display: flex; flex-direction: column; gap: 8px; }
+.au-label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.au-field label { font-size: 14px; font-weight: 600; }
+
+.au-input { position: relative; display: flex; align-items: center; }
+.au-input svg { position: absolute; left: 16px; color: var(--muted); pointer-events: none; }
+.au-input input,
+.au-field > input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  font-size: 15.5px;
+  color: var(--espresso);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.au-input svg + input { padding-left: 44px; }
+.au-input input::placeholder,
+.au-field > input::placeholder { color: #A8968A; }
+.au-input input:focus,
+.au-field > input:focus {
+  outline: none;
+  border-color: var(--choco);
+  box-shadow: 0 0 0 4px rgba(232, 148, 106, 0.22);
+}
+.au-input input.is-error,
+.au-field > input.is-error { border-color: var(--coral); }
+.au-error { font-size: 13px; font-weight: 500; color: var(--coral); }
+
+.au-code { text-align: center; font-size: 24px !important; letter-spacing: 0.4em; font-weight: 600; }
+
+.au-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--terra);
+  cursor: pointer;
+}
+.au-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.au-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green);
+  color: var(--cream);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.au-btn:hover:not(:disabled) { background: var(--green-h); }
+.au-btn:active:not(:disabled) { transform: scale(0.99); }
+.au-btn:disabled { opacity: 0.6; cursor: progress; }
+.au-btn:focus-visible,
+.au-link:focus-visible,
+.au-back:focus-visible { outline: 2px solid var(--peach-d); outline-offset: 3px; }
+
+.au-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: none;
+  background: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.au-ghost:hover { color: var(--espresso); }
+
+.au-alt {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+  color: var(--muted);
+  text-align: center;
+}
+.au-alt a { color: var(--espresso); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+.au-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.au-trust span { display: inline-flex; align-items: center; gap: 6px; }
+.au-trust svg { color: var(--green); }
+
+/* ── Mensajes ── */
+.au-msg {
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.45;
+  border: 1px solid transparent;
+}
+.au-msg--success { background: #E3ECE6; border-color: rgba(47, 74, 62, 0.25); color: var(--green); }
+.au-msg--error   { background: #F7E2DA; border-color: rgba(194, 70, 42, 0.3); color: #8F2F18; }
+.au-msg--warning { background: #F8E8D8; border-color: rgba(165, 86, 47, 0.3); color: #7A3E1F; }
+
+/* ── Registro: resumen de pago ── */
+.au-pay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, var(--choco), var(--espresso));
+  color: var(--cream);
+}
+.au-pay strong { display: block; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--peach); }
+.au-pay span { font-size: 13.5px; color: rgba(247, 243, 237, 0.72); }
+.au-pay-tag {
+  font-size: 12px !important;
+  font-weight: 700;
+  color: var(--espresso) !important;
+  background: var(--peach);
+  padding: 6px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ── Recuperar: pasos ── */
+.au-steps { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.au-steps i { flex: 0 0 32px; height: 1px; background: var(--line); }
+.au-step { display: inline-flex; align-items: center; gap: 8px; }
+.au-step b {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12.5px;
+  background: rgba(43, 27, 23, 0.08);
+}
+.au-step.is-on { color: var(--espresso); }
+.au-step.is-on b { background: var(--espresso); color: var(--cream); }
+.au-step.is-done b { background: var(--green); color: var(--cream); }
+
+.au-done-ico {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: #E3ECE6;
+  color: var(--green);
+}
+
+/* ── Modal de pago ── */
+.au-modal-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(43, 27, 23, 0.55);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.au-modal {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 30px 80px -20px rgba(43, 27, 23, 0.6);
+}
+.au-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.au-modal-head h2 { font-family: var(--serif); font-weight: 500; font-size: 24px; }
+.au-modal-x {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: var(--sand);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.au-modal-sum {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  font-size: 14.5px;
+}
+.au-modal-sum b { font-size: 16px; }
+.au-loading {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: rgba(251, 248, 243, 0.94);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-size: 14.5px;
+  font-weight: 500;
+  text-align: center;
+  padding: 24px;
+}
+.au-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(43, 27, 23, 0.12);
+  border-top-color: var(--peach-d);
+  border-radius: 50%;
+  animation: au-spin 0.8s linear infinite;
+}
+@keyframes au-spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .au { grid-template-columns: minmax(0, 1fr); }
+  .au-aside { display: none; }
+  .au-top { justify-content: space-between; }
+  .au-top-logo { display: inline-flex; }
+}
+@media (max-width: 520px) {
+  .au-main { padding: 16px 16px 32px; }
+  .au-back { padding: 0 8px; font-size: 13.5px; }
+  .au-row { grid-template-columns: minmax(0, 1fr); }
+  .au-box { padding: 20px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .au-spinner { animation-duration: 2s; }
+  .au-btn, .au-input input { transition: none; }
+}
