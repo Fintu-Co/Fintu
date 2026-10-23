@@ -1,0 +1,309 @@
+/* ============================================================
+   FINTÚ & CO. — INICIO (dashboard principal)
+   Ordenado por preguntas: ¿qué pago primero? → ¿cómo va cada
+   tarjeta? → ¿qué puedo hacer hoy?
+   Mismo lenguaje visual que el detalle de tarjeta (CardDashboard.css).
+============================================================ */
+
+.dh {
+  --dh-sand:     #E9E3DA;
+  --dh-surface:  #FBF8F3;
+  --dh-espresso: #2B1B17;
+  --dh-choco:    #4A2F28;
+  --dh-choco-2:  #3A2420;
+  --dh-peach:    #F1B68C;
+  --dh-peach-d:  #E8946A;
+  --dh-terra:    #A5562F;
+  --dh-green:    #2F4A3E;
+  --dh-warn:     #C27A1E;
+  --dh-coral:    #C2462A;
+  --dh-muted:    #6B5148;
+  --dh-dim:      #8A746A;
+  --dh-border:   rgba(74, 47, 40,0.10);
+  --dh-shadow:   0 1px 2px rgba(43, 27, 23,0.04), 0 8px 24px -12px rgba(43, 27, 23,0.18);
+  --dh-serif:    'Fraunces', Georgia, 'Times New Roman', serif;
+
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 3vw, 40px) 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--dh-espresso);
+  background: var(--dh-sand);
+}
+
+/* ── Botones ── */
+.dh-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  align-self: flex-start;
+  min-height: 46px; padding: 0 20px;
+  border: 1px solid transparent; border-radius: 999px;
+  font: inherit; font-size: 14.5px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+.dh-btn svg { width: 16px; height: 16px; }
+.dh-btn--peach   { background: var(--dh-peach); color: var(--dh-espresso); }
+.dh-btn--peach:hover { background: #F5C6A3; }
+.dh-btn--outline { background: transparent; color: var(--dh-espresso); border-color: rgba(43, 27, 23,0.22); }
+.dh-btn--outline:hover { border-color: var(--dh-espresso); }
+.dh-link {
+  display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  min-height: 32px; padding: 0;
+  background: none; border: none; font: inherit; font-size: 13.5px; font-weight: 600;
+  color: var(--dh-terra); cursor: pointer;
+}
+.dh-link svg { width: 14px; height: 14px; }
+.dh-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.dh :is(button, a):focus-visible { outline: 2px solid var(--dh-peach-d); outline-offset: 3px; }
+
+/* ============================================================
+   SALUDO
+============================================================ */
+.dh-top { display: flex; align-items: center; gap: 12px; }
+.dh-hello { flex: 1; min-width: 0; }
+.dh-hello h1 { margin: 0; font-family: var(--dh-serif); font-weight: 500; font-size: clamp(28px, 3.2vw, 38px); line-height: 1.1; }
+.dh-hello p { margin: 4px 0 0; font-size: 14px; color: var(--dh-muted); }
+.dh-hello p::first-letter { text-transform: uppercase; }
+.dh-icon-btn {
+  display: none; width: 42px; height: 42px; align-items: center; justify-content: center; flex-shrink: 0;
+  background: var(--dh-surface); border: 1px solid var(--dh-border); border-radius: 12px; cursor: pointer; color: var(--dh-espresso);
+}
+.dh-icon-btn svg { width: 18px; height: 18px; }
+@media (max-width: 1023px) { .dh-icon-btn { display: inline-flex; } }
+.dh-avatar {
+  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+  border: none; cursor: pointer;
+  background: linear-gradient(150deg, var(--dh-choco), var(--dh-espresso));
+  color: var(--dh-peach); font: inherit; font-size: 14px; font-weight: 700;
+}
+
+/* ============================================================
+   HERO — qué pagar primero + próximos pagos
+============================================================ */
+.dh-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 1fr);
+  gap: 32px;
+  align-items: center;
+  padding: clamp(24px, 3.5vw, 40px);
+  border-radius: 28px;
+  background: linear-gradient(150deg, var(--dh-choco) 0%, var(--dh-choco-2) 55%, var(--dh-espresso) 100%);
+  color: #F7F3ED;
+  box-shadow: 0 30px 60px -36px rgba(43, 27, 23,0.6);
+}
+.dh-hero-msg { display: flex; flex-direction: column; }
+.dh-hero-tag {
+  align-self: flex-start; margin-bottom: 14px;
+  padding: 5px 12px; border-radius: 8px;
+  background: var(--dh-peach); color: var(--dh-espresso);
+  font-size: 12px; font-weight: 700;
+}
+.dh-hero.is-urgent .dh-hero-tag { background: #E2603F; color: #FBF8F3; }
+.dh-hero-msg h2 {
+  margin: 0; font-family: var(--dh-serif); font-weight: 400;
+  font-size: clamp(28px, 3.3vw, 42px); line-height: 1.12; letter-spacing: -0.015em;
+}
+.dh-hero-msg h2 em { font-style: normal; color: var(--dh-peach); }
+.dh-hero-msg p { margin: 12px 0 22px; font-size: 16px; line-height: 1.5; color: rgba(247, 243, 237,0.74); }
+
+.dh-agenda {
+  padding: 18px; border-radius: 20px;
+  border: 1px solid rgba(247, 243, 237,0.14);
+  background: rgba(247, 243, 237,0.05);
+}
+.dh-agenda-title { display: block; margin-bottom: 8px; font-size: 13px; color: rgba(247, 243, 237,0.7); }
+.dh-agenda ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dh-agenda li + li { border-top: 1px solid rgba(247, 243, 237,0.1); }
+.dh-agenda button {
+  width: 100%; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 6px; background: none; border: none; border-radius: 10px;
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.dh-agenda button:hover { background: rgba(247, 243, 237,0.05); }
+.dh-agenda-bank { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dh-agenda-bank b { font-size: 15px; font-weight: 600; }
+.dh-agenda-bank small { font-size: 12.5px; color: rgba(247, 243, 237,0.62); }
+.dh-agenda-amt { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; white-space: nowrap; }
+.dh-agenda-amt i,
+.dh-card-foot i {
+  font-style: normal; font-size: 12px; font-weight: 700;
+  padding: 4px 9px; border-radius: 999px;
+  background: rgba(241, 182, 140,0.18); color: var(--dh-peach);
+}
+.dh-agenda-amt i.is-urgent { background: #E2603F; color: #FBF8F3; }
+
+/* ============================================================
+   TRES DATOS
+============================================================ */
+.dh-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.dh-stat {
+  background: var(--dh-surface); border-radius: 20px; padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 6px; box-shadow: var(--dh-shadow);
+}
+.dh-stat-label { font-size: 13px; font-weight: 600; color: var(--dh-muted); }
+.dh-stat strong { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+.dh-stat-sub { font-size: 13px; color: var(--dh-muted); line-height: 1.4; }
+.dh .is-good { color: var(--dh-green); }
+.dh .is-warn { color: #9A5A12; }
+.dh .is-bad  { color: var(--dh-coral); }
+
+.dh-meter { position: relative; height: 8px; border-radius: 99px; background: rgba(43, 27, 23,0.08); margin: 4px 0 2px; }
+.dh-meter--sm { height: 6px; margin: 0; }
+.dh-meter-fill { height: 100%; border-radius: 99px; }
+.dh-meter-fill.is-good { background: var(--dh-green); }
+.dh-meter-fill.is-warn { background: var(--dh-warn); }
+.dh-meter-fill.is-bad  { background: var(--dh-coral); }
+.dh-meter i { position: absolute; top: -4px; bottom: -4px; left: 30%; width: 2px; border-radius: 2px; background: var(--dh-espresso); opacity: 0.5; }
+
+/* ============================================================
+   SECCIONES
+============================================================ */
+.dh-sec { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.dh-tag {
+  display: inline-block; margin-bottom: 8px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--dh-terra);
+}
+.dh-sec-head h2 {
+  margin: 0; font-family: var(--dh-serif); font-weight: 400;
+  font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1; letter-spacing: -0.01em;
+}
+.dh-sec-head p { margin: 6px 0 0; font-size: 15px; color: var(--dh-muted); }
+
+/* ── Tarjetas ── */
+.dh-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.dh-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: var(--dh-surface);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--dh-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dh-card:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -16px rgba(43, 27, 23,0.3); }
+.dh-card-open { position: absolute; inset: 0; z-index: 1; border: none; background: none; cursor: pointer; border-radius: 22px; }
+.dh-card-top {
+  min-height: 92px; padding: 18px 20px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
+  color: #F7F3ED;
+}
+.dh-card-bank { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+.dh-card-name { font-size: 12.5px; color: rgba(247, 243, 237,0.68); }
+.dh-card-body { padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 12px; }
+.dh-card-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.dh-card-row span { font-size: 13px; color: var(--dh-muted); }
+.dh-card-row strong { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.dh-card-use { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; font-weight: 600; }
+.dh-card-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-top: 12px; border-top: 1px solid var(--dh-border);
+  font-size: 13px; color: var(--dh-muted);
+}
+.dh-card-foot i { background: rgba(232, 148, 106,0.16); color: var(--dh-terra); }
+.dh-card-foot i.is-urgent { background: #E2603F; color: #FBF8F3; }
+.dh-card-del {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  width: 34px; height: 34px; display: grid; place-items: center;
+  border: none; border-radius: 10px;
+  background: rgba(247, 243, 237,0.12); color: rgba(247, 243, 237,0.8); cursor: pointer;
+  opacity: 0; transition: opacity 0.2s, background 0.2s;
+}
+.dh-card-del svg { width: 15px; height: 15px; }
+.dh-card:hover .dh-card-del, .dh-card-del:focus-visible { opacity: 1; }
+.dh-card-del:hover { background: #C2462A; color: #FBF8F3; }
+@media (hover: none) { .dh-card-del { opacity: 1; } }
+
+.dh-card--add {
+  align-items: center; justify-content: center; gap: 6px;
+  min-height: 250px; padding: 24px;
+  border: 1.5px dashed rgba(74, 47, 40,0.25);
+  background: transparent; box-shadow: none;
+  font: inherit; color: var(--dh-espresso); cursor: pointer;
+}
+.dh-card--add:hover { background: var(--dh-surface); border-color: var(--dh-terra); }
+.dh-add-ico {
+  width: 48px; height: 48px; border-radius: 16px; margin-bottom: 6px;
+  display: grid; place-items: center; background: var(--dh-espresso); color: var(--dh-peach);
+}
+.dh-add-ico svg { width: 20px; height: 20px; }
+.dh-card--add b { font-size: 16px; }
+.dh-card--add small { font-size: 13px; color: var(--dh-muted); }
+
+/* ── Aprende y mejora ── */
+.dh-learn { display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+.dh-concept {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 26px; border-radius: 22px;
+  background: linear-gradient(150deg, var(--dh-choco), var(--dh-espresso));
+  color: #F7F3ED;
+}
+.dh-concept-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.dh-concept-cat { font-size: 12.5px; font-weight: 600; color: var(--dh-peach); }
+.dh-concept-nav { display: flex; gap: 6px; }
+.dh-concept-nav button {
+  width: 36px; height: 36px; display: grid; place-items: center;
+  border: 1px solid rgba(247, 243, 237,0.18); border-radius: 10px;
+  background: transparent; color: #F7F3ED; cursor: pointer;
+}
+.dh-concept-nav button svg { width: 15px; height: 15px; }
+.dh-concept-nav button:hover { background: rgba(247, 243, 237,0.08); }
+.dh-concept h3 { margin: 4px 0 0; font-family: var(--dh-serif); font-weight: 400; font-size: 26px; line-height: 1.15; text-transform: none; letter-spacing: -0.01em; }
+.dh-concept p { margin: 0 0 6px; font-size: 15px; line-height: 1.55; color: rgba(247, 243, 237,0.75); flex: 1; }
+
+.dh-panel {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 24px; border-radius: 22px;
+  background: var(--dh-surface); box-shadow: var(--dh-shadow);
+}
+.dh-panel h3 { margin: 0; font-size: 17px; font-weight: 600; text-transform: none; letter-spacing: 0; font-family: 'DM Sans', system-ui, sans-serif; }
+.dh-panel p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--dh-muted); }
+.dh-panel-ico {
+  width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center;
+  background: #E3ECE6; color: var(--dh-green); margin-bottom: 4px;
+}
+.dh-panel-ico svg { width: 22px; height: 22px; }
+.dh-panel-meta { font-size: 13px; color: var(--dh-muted); margin-bottom: auto; }
+.dh-panel-meta b { color: var(--dh-espresso); }
+.dh-panel .dh-btn { margin-top: 8px; }
+
+.dh-tools { gap: 2px; }
+.dh-tools h3 { margin-bottom: 8px; }
+.dh-tools button {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 60px; padding: 8px; margin: 0 -8px;
+  background: none; border: none; border-radius: 14px;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.dh-tools button:hover { background: rgba(43, 27, 23,0.04); }
+.dh-tools button > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.dh-tools b { font-size: 14.5px; font-weight: 600; }
+.dh-tools small { font-size: 13px; color: var(--dh-muted); }
+.dh-tools button > svg { width: 16px; height: 16px; color: var(--dh-dim); }
+.dh-tool-ico {
+  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center;
+  background: rgba(232, 148, 106,0.14); color: var(--dh-terra);
+}
+.dh-tool-ico svg { width: 19px; height: 19px; }
+
+.dh-note { margin: 12px 0 0; font-size: 12.5px; color: var(--dh-dim); text-align: center; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 1100px) {
+  .dh-hero { grid-template-columns: minmax(0, 1fr); }
+  .dh-learn { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dh-concept { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .dh-stats, .dh-learn { grid-template-columns: minmax(0, 1fr); }
+  .dh-btn { align-self: stretch; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dh-card { transition: none; }
+  .dh-card:hover { transform: none; }
+}

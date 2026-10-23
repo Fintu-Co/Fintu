@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calcularCiclo, proximoPago, saldoPendiente, cicloDeFecha, diaDelMes, aISO } from './ciclo';
+import { calcularCiclo, proximoPago, saldoPendiente, pagoVigente, cicloDeFecha, diaDelMes, aISO } from './ciclo';
 
 /**
  * El ciclo decide qué movimientos entran en el estado de cuenta y qué fecha
@@ -330,5 +330,40 @@ describe('calcularCiclo — navegación entre ciclos (offsetCiclos)', () => {
     const t = { dia_cierre_ciclo: 25, dia_pago: 15 };
     const hoy = enDia('2026-07-20');
     expect(aISO(calcularCiclo(t, hoy, 0).cierre)).toBe(aISO(calcularCiclo(t, hoy).cierre));
+  });
+});
+
+describe('pagoVigente — la frase de "cuánto y cuándo pagar"', () => {
+  /* Cierra el 25, vence el 20 del mes siguiente. */
+  const base = { dia_inicio_ciclo: 26, dia_cierre_ciclo: 25, dia_pago: 20 };
+  const gasto = (fecha, monto) => ({ tipo: 'gasto', monto, fecha_movimiento: `${fecha} 12:00:00` });
+
+  it('sin deuda está al día', () => {
+    expect(pagoVigente({ ...base, deuda_actual: '0.00' }, [], enDia('2026-07-26')).tipo).toBe('ok');
+  });
+
+  it('con el ciclo cerrado, vence solo lo consumido hasta el corte', () => {
+    const t = { ...base, deuda_actual: '310.00' };
+    const movs = [gasto('2026-07-10', 300), gasto('2026-07-27', 10)];   // el de 27/07 es del ciclo siguiente
+    const p = pagoVigente(t, movs, enDia('2026-07-28'));
+    expect(p.tipo).toBe('vence');
+    expect(p.monto).toBe(300);
+    expect(aISO(p.vence)).toBe('2026-08-20');
+    expect(aISO(p.corte)).toBe('2026-07-25');
+  });
+
+  it('si lo del ciclo cerrado ya está pagado, muestra lo que acumula', () => {
+    const t = { ...base, deuda_actual: '45.00' };
+    const movs = [gasto('2026-07-27', 45)];
+    const p = pagoVigente(t, movs, enDia('2026-07-28'));
+    expect(p.tipo).toBe('acumula');
+    expect(p.monto).toBe(45);
+    expect(aISO(p.vence)).toBe('2026-09-20');
+  });
+
+  it('mientras cargan los movimientos no inventa un monto que vence', () => {
+    const p = pagoVigente({ ...base, deuda_actual: '200.00' }, null, enDia('2026-07-28'));
+    expect(p.tipo).toBe('acumula');
+    expect(p.monto).toBe(200);
   });
 });

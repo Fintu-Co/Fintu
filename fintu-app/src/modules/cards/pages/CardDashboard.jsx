@@ -21,7 +21,7 @@ import FinancialHealthButton from '@/modules/analytics/components/FinancialHealt
 import InterestCalculator from '@/modules/cards/components/InterestCalculator';
 import Sidebar from '@/shared/components/Sidebar';
 import { BrandSymbol } from '@/shared/components/BrandLogo';
-import { calcularCiclo, proximoPago, saldoPendiente, aISO } from '@/shared/utils/ciclo';
+import { calcularCiclo, pagoVigente, aISO } from '@/shared/utils/ciclo';
 
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MESES_C = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
@@ -178,15 +178,7 @@ function CardDashboard() {
   const diasAlCierre = Math.max(0, Math.round((soloDia(ciclo.cierre) - hoy) / DIA));
   const avance = Math.round((diaCiclo / largoCiclo) * 100);
 
-  const pago = proximoPago(tarjeta);
-  let hero;
-  if (deudaNum <= 0) {
-    hero = { tipo: 'ok' };
-  } else if (pago.cerrado && historial) {
-    const { saldo } = saldoPendiente(historial, pago.cicloCierre);
-    if (saldo > 0) hero = { tipo: 'vence', monto: saldo, vence: pago.vence, dias: pago.dias, corte: pago.cicloCierre };
-  }
-  if (!hero) hero = { tipo: 'acumula', monto: deudaNum, vence: ciclo.pago };
+  const hero = pagoVigente(tarjeta, historial);
   const urgente = hero.tipo === 'vence' && hero.dias <= 3;
   const cuandoVence = hero.tipo === 'vence'
     ? (hero.dias <= 0 ? 'Vence hoy.' : hero.dias === 1 ? 'Vence mañana.' : `Te quedan ${hero.dias} días.`)

@@ -159,4 +159,33 @@ export function saldoPendiente(movimientos = [], cierre, hoy = new Date()) {
   return { saldo: Math.max(0, cargos - abonos), cargos, abonos, pagosDesdeCierre };
 }
 
+/**
+ * Lo que hay que pagar ahora en una tarjeta, listo para decirlo en una frase.
+ *
+ *   'ok'      → sin deuda.
+ *   'vence'   → el ciclo ya cerró y queda saldo de ese ciclo: monto fijo.
+ *   'acumula' → lo que se debe es del ciclo que aún suma consumos; vence en
+ *               el pago de ese ciclo y todavía puede crecer.
+ *
+ * Mientras `movimientos` sea null (cargando) no se puede saber cuánto del
+ * saldo es del ciclo cerrado, así que se trata como 'acumula'.
+ *
+ * @returns {{ tipo: 'ok'|'vence'|'acumula', monto: number, vence?: Date, dias?: number, corte?: Date }}
+ */
+export function pagoVigente(tarjeta, movimientos = null, hoy = new Date()) {
+  const deuda = parseFloat(tarjeta?.deuda_actual || 0);
+  if (!(deuda > 0)) return { tipo: 'ok', monto: 0 };
+
+  const pago = proximoPago(tarjeta, hoy);
+  if (pago.cerrado && movimientos) {
+    const { saldo } = saldoPendiente(movimientos, pago.cicloCierre, hoy);
+    if (saldo > 0) {
+      return { tipo: 'vence', monto: saldo, vence: pago.vence, dias: pago.dias, corte: pago.cicloCierre };
+    }
+  }
+
+  const ciclo = calcularCiclo(tarjeta, hoy);
+  return { tipo: 'acumula', monto: deuda, vence: ciclo.pago, dias: ciclo.diasParaPago, corte: ciclo.cierre };
+}
+
 export default calcularCiclo;
