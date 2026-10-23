@@ -41,13 +41,14 @@ Fintú es una aplicación web para personas en el **Perú** que usan tarjetas de
 
 ## Arquitectura
 
-Monorepo con dos paquetes que se despliegan por separado:
+Monorepo con tres paquetes que se despliegan por separado:
 
 ```
 Fintu-Co/
-├── fintu-app/   React 19 + Vite · SPA en Cloudflare Pages
-│   └── src/modules/        landing · auth · cards · movements · analytics · goals · education
-└── fintu-api/   Node.js + Express 5 · API REST
+├── fintu-landing/   React 19 + Vite · landing pública en Cloudflare Pages
+├── fintu-app/       React 19 + Vite · la app (abre en el login) en Cloudflare Pages
+│   └── src/modules/        auth · cards · movements · analytics · goals · education
+└── fintu-api/       Node.js + Express 5 · API REST
     └── src/modules/        auth · cards · movements · analytics · goals
         └── <módulo>/       domain · application · infrastructure · interfaces
 ```
@@ -80,11 +81,17 @@ cp .env.example .env      # completa DB_PASSWORD, JWT_SECRET y las credenciales 
 npm install
 npm run dev               # http://localhost:5000
 
-# Frontend
+# App
 cd ../fintu-app
 cp .env.example .env
 npm install
-npm run dev               # http://localhost:5173
+npm run dev               # http://localhost:5173 (abre en el login)
+
+# Landing
+cd ../fintu-landing
+cp .env.example .env
+npm install
+npm run dev               # http://localhost:5174
 ```
 
 Tests del backend (Vitest, 29 casos): `npm test`.
@@ -93,8 +100,8 @@ Sin SMTP configurado, el código de recuperación de contraseña se imprime en l
 
 ## Despliegue
 
-- **CI**: GitHub Actions corre los tests del backend y el build del frontend en cada push y PR a `master`.
-- **Frontend**: Cloudflare Pages, con despliegue automático en cada push a `master`.
+- **CI**: GitHub Actions corre los tests del backend y el build de la app y del landing en cada push y PR a `master`.
+- **Landing y app**: dos proyectos de Cloudflare Pages, con despliegue automático en cada push a `master`.
 - **Backend**: preparado para Railway + MySQL (ver [DEPLOY.md](./DEPLOY.md)). No va en serverless porque usa un pool de conexiones persistente y una tarea programada diaria.
 
 ---

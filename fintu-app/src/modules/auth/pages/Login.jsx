@@ -4,6 +4,7 @@ import { useAuth } from '@/modules/auth/context/AuthContext';
 import { authApi } from '@/modules/auth/services/authApi';
 import BrandLogo from '@/shared/components/BrandLogo';
 import './Login.css';
+import { goToLanding } from '@/shared/config';
 
 // ── Íconos inline ──────────────────────────────────────────
 const IcMail = () => (
@@ -256,7 +257,7 @@ function Login() {
           <BrandLogo size="sm" className="login-mobile-brand" />
 
           {/* Volver */}
-          <button className="login-back" onClick={() => navigate('/')}>
+          <button className="login-back" onClick={goToLanding}>
             <IcBack />
             Volver al inicio
           </button>

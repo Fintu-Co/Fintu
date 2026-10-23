@@ -7,10 +7,9 @@ import './App.css';
 
 /*
   Carga diferida por ruta: cada página se descarga solo cuando se visita.
-  Así el landing no arrastra el código de charts, PDF ni PayPal.
-  El landing se importa directo porque es la primera pantalla.
+  Así el login no arrastra el código de charts, PDF ni PayPal.
+  El landing vive aparte, en fintu-landing.
 */
-import Landing from '@/modules/landing/pages/Landing';
 
 const Register       = lazy(() => import('@/modules/auth/pages/Register'));
 const Login          = lazy(() => import('@/modules/auth/pages/Login'));
@@ -21,7 +20,7 @@ const CardDashboard  = lazy(() => import('@/modules/cards/pages/CardDashboard'))
 const Goals          = lazy(() => import('@/modules/goals/pages/Goals'));
 const Educacion      = lazy(() => import('@/modules/education/pages/Educacion'));
 const Comparador     = lazy(() => import('@/modules/education/pages/Comparador'));
-const NotFound       = lazy(() => import('@/modules/landing/pages/NotFound'));
+const NotFound       = lazy(() => import('@/shared/pages/NotFound'));
 
 const PageLoader = () => (
   <div className="app-loading"><div className="app-spinner" /></div>
@@ -33,6 +32,13 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
+// La raíz de la app no tiene pantalla propia: con sesión va al dashboard, sin ella al login.
+function RootRedirect() {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  return <Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -40,7 +46,7 @@ function App() {
         <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Landing />} />
+              <Route path="/" element={<RootRedirect />} />
               <Route path="/registro" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/recuperar" element={<ForgotPassword />} />

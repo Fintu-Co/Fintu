@@ -1,11 +1,12 @@
 # Despliegue — Fintú & Co.
 
-Monorepo con dos paquetes que se despliegan por separado:
+Monorepo con tres paquetes que se despliegan por separado:
 
 | Paquete | Dónde | Por qué |
 |---|---|---|
 | `fintu-api` | Railway | Necesita proceso persistente |
-| `fintu-app` | Cloudflare Pages | SPA estática |
+| `fintu-app` | Cloudflare Pages (proyecto `fintu-app`) | SPA estática; abre en el login |
+| `fintu-landing` | Cloudflare Pages (proyecto `fintu-co`) | Landing pública |
 
 > **El backend no puede ir en serverless.** Usa un pool de MySQL con `keepAlive`
 > y un `setInterval` diario (limpieza de movimientos). En serverless el pool se
@@ -74,35 +75,52 @@ Anota esa URL para el paso 2.
 
 ---
 
-## 2. Frontend en Cloudflare Pages
+## 2. App y landing en Cloudflare Pages
 
-**Workers & Pages → Create → Pages → Connect to Git**, elige el repo y configura:
+Son **dos proyectos** de Pages sobre el mismo repo. Para cada uno:
+**Workers & Pages → Create → Pages → Connect to Git**, elige el repo y configura
+`Build command: npm run build` y `Output directory: dist`.
+
+### 2.1 App (proyecto `fintu-app` → `fintu-app.pages.dev`)
 
 ```
 Root directory:   fintu-app
-Build command:    npm run build
-Output directory: dist
 ```
 
 El fallback de la SPA (que `/dashboard` no dé 404 al recargar) lo resuelve
-`public/_redirects`. Variables de entorno:
+`public/_redirects`. La raíz `/` redirige al login, o al dashboard si ya hay sesión.
+Variables de entorno:
 
 ```
 VITE_API_URL=https://tu-backend.up.railway.app     # sin barra final
 VITE_PAYPAL_CLIENT_ID=
+VITE_LANDING_URL=https://fintu-co.pages.dev        # destino de "Volver al inicio"
 ```
 
-> `VITE_API_URL` se inyecta **en build**, no en runtime. Si la cambias después,
-> hay que redesplegar para que tenga efecto.
+### 2.2 Landing (proyecto `fintu-co` → `fintu-co.pages.dev`)
+
+```
+Root directory:   fintu-landing
+```
+
+Variables de entorno:
+
+```
+VITE_APP_URL=https://fintu-app.pages.dev           # a dónde llevan "Iniciar sesión" y "Comenzar"
+```
+
+> Las variables `VITE_*` se inyectan **en build**, no en runtime. Si cambias una,
+> hay que redesplegar ese proyecto para que tenga efecto.
 
 ---
 
 ## 3. Cerrar el círculo (CORS)
 
-Vuelve a Railway y pon `FRONTEND_URL` con el dominio exacto de Cloudflare Pages:
+Vuelve a Railway y pon `FRONTEND_URL` con el dominio exacto de la **app**
+(el landing no llama al API):
 
 ```
-FRONTEND_URL=https://fintu-co.pages.dev
+FRONTEND_URL=https://fintu-app.pages.dev
 ```
 
 Exacto quiere decir: **con `https://` y sin barra final**. `server.js` lo pasa
@@ -110,7 +128,7 @@ tal cual como `origin` de CORS; si no coincide carácter por carácter, el
 navegador bloquea cada petición.
 
 **Gotcha de los previews:** Cloudflare Pages genera una URL distinta por cada
-rama y cada despliegue (`<hash>.fintu-co.pages.dev`). Como `FRONTEND_URL` admite un solo origen,
+rama y cada despliegue (`<hash>.fintu-app.pages.dev`). Como `FRONTEND_URL` admite un solo origen,
 los previews quedan bloqueados por CORS. Si los necesitas, hay que cambiar
 `corsOptions.origin` en `server.js` por una función que valide contra una lista
 o un patrón.

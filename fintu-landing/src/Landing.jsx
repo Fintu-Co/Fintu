@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Landing.css';
 
-import BrandLogo from '@/shared/components/BrandLogo';
-import imgCardsFan from '@/assets/images/cards-fan.jpg';
+import BrandLogo from './components/BrandLogo';
+import imgCardsFan from './assets/images/cards-fan.jpg';
+
+// La app (login, registro, dashboard) vive en otro dominio: se navega con recarga completa.
+const APP_URL = (import.meta.env.VITE_APP_URL || 'http://localhost:5173').replace(/\/$/, '');
+const goApp = (path) => { window.location.href = `${APP_URL}${path}`; };
 
 /* ════════════════════════════════════════════════════════════
    INTRO — saludo multiidioma estilo Apple
@@ -433,7 +436,6 @@ function useReveal(active) {
    LANDING
 ════════════════════════════════════════════════════════════ */
 export default function Landing() {
-  const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
   const [navScrolled, setNavScrolled] = useState(false);
   const [navMobileOpen, setNavMobileOpen] = useState(false);
@@ -534,8 +536,8 @@ export default function Landing() {
             </a>
           ))}
           <div className="lp-mobile-nav-btns">
-            <button className="lp-btn-ghost" onClick={() => { setNavMobileOpen(false); navigate('/login'); }}>Iniciar sesión</button>
-            <button className="lp-btn-gold" onClick={() => { setNavMobileOpen(false); navigate('/registro'); }}>Comenzar <Arr /></button>
+            <button className="lp-btn-ghost" onClick={() => { setNavMobileOpen(false); goApp('/login'); }}>Iniciar sesión</button>
+            <button className="lp-btn-gold" onClick={() => { setNavMobileOpen(false); goApp('/registro'); }}>Comenzar <Arr /></button>
           </div>
         </div>
       )}
@@ -558,7 +560,7 @@ export default function Landing() {
               y pagos. Sin conectar tu banco.
             </p>
             <div className="lp-hero-cta">
-              <button className="lp-btn-gold lp-btn-hero" onClick={() => navigate('/registro')}>
+              <button className="lp-btn-gold lp-btn-hero" onClick={() => goApp('/registro')}>
                 Empezar por $4 <Arr />
               </button>
               <button className="lp-btn-text" onClick={() => scrollTo('sec-features')}>
@@ -629,7 +631,7 @@ export default function Landing() {
             <p className="lp-hero-detail-desc">
               Mira, entiende y mejora la salud de todas tus tarjetas: ciclos, intereses y metas en un tablero claro.
             </p>
-            <button className="lp-btn-dark lp-hero-buy" onClick={() => navigate('/login')}>
+            <button className="lp-btn-dark lp-hero-buy" onClick={() => goApp('/login')}>
               Iniciar sesión <Arr />
             </button>
           </div>
@@ -915,7 +917,7 @@ export default function Landing() {
                 <li key={t}><span className="lp-check"><IcCheck /></span>{t}</li>
               ))}
             </ul>
-            <button className="lp-btn-gold lp-btn-full" onClick={() => navigate('/registro')}>
+            <button className="lp-btn-gold lp-btn-full" onClick={() => goApp('/registro')}>
               Crear mi cuenta <Arr />
             </button>
             <p className="lp-price-terms">
@@ -923,7 +925,7 @@ export default function Landing() {
               la <span onClick={() => setLegalOpen('privacidad')}>Política de Privacidad</span>.
             </p>
             <p className="lp-price-login">
-              ¿Ya tienes cuenta? <span onClick={() => navigate('/login')}>Inicia sesión</span>
+              ¿Ya tienes cuenta? <span onClick={() => goApp('/login')}>Inicia sesión</span>
             </p>
           </div>
         </div>
@@ -965,8 +967,8 @@ export default function Landing() {
           <div className="lp-footer-col">
             <h4>Producto</h4>
             <ul>
-              <li onClick={() => navigate('/registro')}>Crear cuenta</li>
-              <li onClick={() => navigate('/login')}>Iniciar sesión</li>
+              <li onClick={() => goApp('/registro')}>Crear cuenta</li>
+              <li onClick={() => goApp('/login')}>Iniciar sesión</li>
               <li onClick={() => scrollTo('sec-pricing')}>Precio</li>
               <li onClick={() => scrollTo('sec-faq')}>Preguntas frecuentes</li>
             </ul>
@@ -996,7 +998,7 @@ export default function Landing() {
           <span className="lp-mca-label">Acceso de por vida</span>
           <span className="lp-mca-price"><strong>$4 USD</strong> pago único</span>
         </div>
-        <button className="lp-btn-gold" onClick={() => navigate('/registro')}>
+        <button className="lp-btn-gold" onClick={() => goApp('/registro')}>
           Empezar <Arr />
         </button>
       </div>

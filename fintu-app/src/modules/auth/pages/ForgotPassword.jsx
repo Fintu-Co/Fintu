@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '@/modules/auth/services/authApi';
 import './ForgotPassword.css';
+import { goToLanding } from '@/shared/config';
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ function ForgotPassword() {
       <div className="fp-box">
 
         {/* ── LOGO ── */}
-        <div className="fp-logo" onClick={() => navigate('/')}>Fintú & Co.</div>
+        <div className="fp-logo" onClick={goToLanding}>Fintú & Co.</div>
 
         {/* ── STEP INDICATOR ── */}
         {step < 3 && (

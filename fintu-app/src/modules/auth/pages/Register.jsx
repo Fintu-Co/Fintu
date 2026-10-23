@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { useToast } from '@/shared/context/ToastContext';
 import registerImg from '@/assets/images/register-hero.jpg';
 import BrandLogo from '@/shared/components/BrandLogo';
 import './Register.css';
+import { goToLanding } from '@/shared/config';
 
 const initialOptions = {
   clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
@@ -13,7 +13,6 @@ const initialOptions = {
 };
 
 function Register() {
-  const navigate = useNavigate();
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
     nombre: '', apellido: '', email: '', password: '', confirmPassword: ''
@@ -159,7 +158,7 @@ function Register() {
 
         <div className="register-box">
 
-          <button className="register-back" onClick={() => navigate('/')}>
+          <button className="register-back" onClick={goToLanding}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <polyline points="15,18 9,12 15,6"/>
             </svg>
