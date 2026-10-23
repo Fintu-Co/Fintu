@@ -3,31 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/context/AuthContext';
 import { authApi } from '@/modules/auth/services/authApi';
 import { useToast } from '@/shared/context/ToastContext';
-import AppFooter from '@/shared/components/AppFooter';
 import Sidebar from '@/shared/components/Sidebar';
-/* Armazón compartido — ver nota en Comparador.jsx. */
+/* Armazón compartido (layout + sidebar) — ver nota en Comparador.jsx. */
 import '@/modules/cards/pages/Dashboard.css';
 import './Profile.css';
 
+const IcMenu  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="14" y2="17" /></svg>);
+const IcCheck = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>);
+const IcOut   = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>);
+const IcMail  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M22 7l-10 7L2 7" /></svg>);
+const IcCopy  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>);
+
+const formatDate = (dateStr) => (dateStr
+  ? new Date(dateStr).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })
+  : '—');
+
 function Profile() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, token, login, logout } = useAuth();
   const { showToast } = useToast();
 
-  const [profile, setProfile]       = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profile, setProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
-  // Datos personales
-  const [nombre, setNombre]         = useState('');
-  const [apellido, setApellido]     = useState('');
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
 
-  // Contraseña
-  const [pwActual, setPwActual]     = useState('');
-  const [pwNueva, setPwNueva]       = useState('');
-  const [pwConfirm, setPwConfirm]   = useState('');
-  const [savingPw, setSavingPw]     = useState(false);
-  const [showPwSection, setShowPwSection] = useState(false);
+  const [pwActual, setPwActual] = useState('');
+  const [pwNueva, setPwNueva] = useState('');
+  const [pwConfirm, setPwConfirm] = useState('');
+  const [savingPw, setSavingPw] = useState(false);
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
@@ -38,269 +45,180 @@ function Profile() {
         setApellido(data.user.apellido);
       }
     }).finally(() => setLoadingProfile(false));
-  }, [user, navigate]);
+    // Solo al cambiar de usuario: al guardar el nombre se actualiza `user` y no hace falta recargar
+  }, [user?.id, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const cambios = profile && (nombre.trim() !== profile.nombre || apellido.trim() !== profile.apellido);
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
-    if (!nombre.trim() || !apellido.trim()) {
-      showToast('Nombre y apellido son obligatorios', 'warning'); return;
-    }
+    if (!nombre.trim() || !apellido.trim()) { showToast('Nombre y apellido son obligatorios', 'warning'); return; }
     setSavingProfile(true);
     try {
-      const res = await authApi.updateProfile({ userId: user.id, nombre, apellido });
+      const res = await authApi.updateProfile({ userId: user.id, nombre: nombre.trim(), apellido: apellido.trim() });
       if (res.success) {
-        setProfile(res.user);
-        // Actualizar localStorage
-        const stored = JSON.parse(localStorage.getItem('user') || '{}');
-        localStorage.setItem('user', JSON.stringify({ ...stored, nombre, apellido }));
-        showToast('Perfil actualizado correctamente', 'success');
+        setProfile(p => ({ ...p, ...(res.user || {}), nombre: nombre.trim(), apellido: apellido.trim() }));
+        // Actualiza la sesión para que el menú y los saludos muestren el nombre nuevo sin recargar
+        login(token, { ...user, nombre: nombre.trim(), apellido: apellido.trim() });
+        showToast('Datos actualizados', 'success');
       } else {
         showToast(res.message || 'Error al actualizar', 'error');
       }
     } catch { showToast('Error de conexión', 'error'); }
-    finally   { setSavingProfile(false); }
+    finally { setSavingProfile(false); }
   };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-    if (!pwActual || !pwNueva || !pwConfirm) {
-      showToast('Completa todos los campos', 'warning'); return;
-    }
-    if (pwNueva.length < 6) {
-      showToast('La nueva contraseña debe tener al menos 6 caracteres', 'warning'); return;
-    }
-    if (pwNueva !== pwConfirm) {
-      showToast('Las contraseñas no coinciden', 'warning'); return;
-    }
+    if (!pwActual || !pwNueva || !pwConfirm) { showToast('Completa los tres campos', 'warning'); return; }
+    if (pwNueva.length < 6) { showToast('La nueva contraseña debe tener al menos 6 caracteres', 'warning'); return; }
+    if (pwNueva !== pwConfirm) { showToast('Las contraseñas nuevas no coinciden', 'warning'); return; }
     setSavingPw(true);
     try {
       const res = await authApi.changePassword({ userId: user.id, currentPassword: pwActual, newPassword: pwNueva });
       if (res.success) {
-        showToast('Contraseña actualizada correctamente', 'success');
+        showToast('Contraseña actualizada', 'success');
         setPwActual(''); setPwNueva(''); setPwConfirm('');
-        setShowPwSection(false);
       } else {
         showToast(res.message || 'Error al cambiar contraseña', 'error');
       }
     } catch { showToast('Error de conexión', 'error'); }
-    finally   { setSavingPw(false); }
+    finally { setSavingPw(false); }
   };
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' });
+  const copiarId = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.paypal_payment_id);
+      showToast('ID de pago copiado', 'success');
+    } catch { showToast('No se pudo copiar', 'error'); }
   };
-
-  const initials = profile
-    ? `${profile.nombre?.charAt(0)}${profile.apellido?.charAt(0)}`.toUpperCase()
-    : '??';
 
   if (!user) return null;
 
-  return (
-    <div className="profile-page">
+  const initials = `${(profile?.nombre || user.nombre || '').charAt(0)}${(profile?.apellido || user.apellido || '').charAt(0)}`.toUpperCase();
 
+  return (
+    <div className="dashboard-dark">
       <Sidebar active="perfil" open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* ── LAYOUT ── */}
-      <div className="profile-layout">
+      <div className="dashboard-layout">
+        <main className="pf">
 
-        {/* Header */}
-        <header className="dashboard-header">
-          <div className="header-left">
-            <button className="menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/>
-              </svg>
-            </button>
-            <h1 className="header-title">Mi Perfil</h1>
-          </div>
-          <div className="header-right">
-            <div className="header-avatar" title={`${user.nombre} ${user.apellido}`}>
-              {initials}
+          <header className="pf-top">
+            <button className="pf-icon-btn" onClick={() => setSidebarOpen(true)} aria-label="Abrir menú"><IcMenu /></button>
+            <div className="pf-title">
+              <h1>Mi perfil</h1>
+              <p>Tu cuenta, tu acceso y tu seguridad.</p>
             </div>
-          </div>
-        </header>
+          </header>
 
-        <main className="profile-main">
-        {loadingProfile ? (
-          <div className="profile-loading">
-            <div className="profile-spinner" />
-          </div>
-        ) : (
-          <div className="profile-content">
-
-            {/* ── AVATAR CARD ── */}
-            <div className="profile-hero">
-              <div className="profile-avatar">{initials}</div>
-              <div className="profile-hero-info">
-                <h1>{profile?.nombre} {profile?.apellido}</h1>
-                <p className="profile-email">{profile?.email}</p>
-                <div className="profile-badges">
-                  <span className="profile-badge profile-badge--gold">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                    Acceso de por vida
-                  </span>
-                  <span className="profile-badge profile-badge--dim">
-                    Miembro desde {formatDate(profile?.fecha_registro)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* ── DATOS PERSONALES ── */}
-            <div className="profile-card">
-              <div className="profile-card-header">
-                <div className="profile-card-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                  </svg>
-                </div>
-                <div>
-                  <h2>Datos personales</h2>
-                  <p>Actualiza tu nombre y apellido</p>
-                </div>
-              </div>
-
-              <form onSubmit={handleSaveProfile} className="profile-form">
-                <div className="pf-row">
-                  <div className="pf-group">
-                    <label>Nombre</label>
-                    <input type="text" value={nombre}
-                      onChange={e => setNombre(e.target.value)} placeholder="Juan" />
-                  </div>
-                  <div className="pf-group">
-                    <label>Apellido</label>
-                    <input type="text" value={apellido}
-                      onChange={e => setApellido(e.target.value)} placeholder="Pérez" />
+          {loadingProfile ? (
+            <div className="pf-loading"><div className="spinner"></div></div>
+          ) : (
+            <>
+              {/* ── TU CUENTA ── */}
+              <section className="pf-hero" aria-label="Tu cuenta">
+                <span className="pf-avatar" aria-hidden="true">{initials}</span>
+                <div className="pf-hero-info">
+                  <h2>{profile?.nombre} {profile?.apellido}</h2>
+                  <p>{profile?.email}</p>
+                  <div className="pf-chips">
+                    <span className="pf-chip pf-chip--peach"><IcCheck /> Acceso de por vida</span>
+                    <span className="pf-chip">Miembro desde {formatDate(profile?.fecha_registro)}</span>
                   </div>
                 </div>
-                <div className="pf-group">
-                  <label>Correo electrónico</label>
-                  <input type="email" value={profile?.email || ''} disabled
-                    className="pf-input--readonly" />
-                  <span className="pf-hint">El email no puede modificarse</span>
-                </div>
-                <button type="submit" className="pf-btn-save" disabled={savingProfile}>
-                  {savingProfile ? (
-                    <><div className="pf-spinner" /> Guardando...</>
-                  ) : (
-                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg> Guardar cambios</>
-                  )}
-                </button>
-              </form>
-            </div>
+                <button className="pf-btn pf-btn--ghost-light" onClick={logout}><IcOut /> Cerrar sesión</button>
+              </section>
 
-            {/* ── SEGURIDAD ── */}
-            <div className="profile-card">
-              <div className="profile-card-header profile-card-header--clickable"
-                onClick={() => setShowPwSection(p => !p)}>
-                <div className="profile-card-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <rect x="3" y="11" width="18" height="11" rx="2"/>
-                    <path d="M7 11V7a5 5 0 0110 0v4"/>
-                  </svg>
-                </div>
-                <div>
-                  <h2>Seguridad</h2>
-                  <p>Cambia tu contraseña de acceso</p>
-                </div>
-                <svg className={`profile-chevron ${showPwSection ? 'open' : ''}`}
-                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="6,9 12,15 18,9"/>
-                </svg>
-              </div>
+              <div className="pf-grid">
+                <div className="pf-col">
+                  {/* ── DATOS ── */}
+                  <section className="pf-card" aria-labelledby="pf-datos-t">
+                    <span className="pf-tag">Datos</span>
+                    <h2 id="pf-datos-t">¿Tus datos están bien?</h2>
+                    <form onSubmit={handleSaveProfile} className="pf-form" noValidate>
+                      <div className="pf-row">
+                        <label className="pf-field">
+                          <span>Nombre</span>
+                          <input type="text" autoComplete="given-name" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Juan" />
+                        </label>
+                        <label className="pf-field">
+                          <span>Apellido</span>
+                          <input type="text" autoComplete="family-name" value={apellido} onChange={e => setApellido(e.target.value)} placeholder="Pérez" />
+                        </label>
+                      </div>
+                      <label className="pf-field">
+                        <span>Correo electrónico</span>
+                        <input type="email" value={profile?.email || ''} disabled />
+                        <small>Es tu usuario para entrar; no se puede cambiar.</small>
+                      </label>
+                      <button type="submit" className="pf-btn pf-btn--green" disabled={savingProfile || !cambios}>
+                        {savingProfile ? 'Guardando…' : 'Guardar cambios'}
+                      </button>
+                    </form>
+                  </section>
 
-              {showPwSection && (
-                <form onSubmit={handleChangePassword} className="profile-form profile-form--animate">
-                  <div className="pf-group">
-                    <label>Contraseña actual</label>
-                    <input type="password" value={pwActual}
-                      onChange={e => setPwActual(e.target.value)}
-                      placeholder="Tu contraseña actual" autoFocus />
-                  </div>
-                  <div className="pf-row">
-                    <div className="pf-group">
-                      <label>Nueva contraseña</label>
-                      <input type="password" value={pwNueva}
-                        onChange={e => setPwNueva(e.target.value)}
-                        placeholder="Mínimo 6 caracteres" />
-                    </div>
-                    <div className="pf-group">
-                      <label>Confirmar contraseña</label>
-                      <input type="password" value={pwConfirm}
-                        onChange={e => setPwConfirm(e.target.value)}
-                        placeholder="Repite la nueva" />
-                    </div>
-                  </div>
-                  <button type="submit" className="pf-btn-save" disabled={savingPw}>
-                    {savingPw ? (
-                      <><div className="pf-spinner" /> Actualizando...</>
-                    ) : (
-                      <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg> Actualizar contraseña</>
+                  {/* ── SEGURIDAD ── */}
+                  <section className="pf-card" aria-labelledby="pf-seg-t">
+                    <span className="pf-tag">Seguridad</span>
+                    <h2 id="pf-seg-t">Cambia tu contraseña</h2>
+                    <form onSubmit={handleChangePassword} className="pf-form" noValidate>
+                      <label className="pf-field">
+                        <span>Contraseña actual</span>
+                        <input type="password" autoComplete="current-password" value={pwActual} onChange={e => setPwActual(e.target.value)} placeholder="Tu contraseña actual" />
+                      </label>
+                      <div className="pf-row">
+                        <label className="pf-field">
+                          <span>Nueva contraseña</span>
+                          <input type="password" autoComplete="new-password" value={pwNueva} onChange={e => setPwNueva(e.target.value)} placeholder="Mínimo 6 caracteres" />
+                        </label>
+                        <label className="pf-field">
+                          <span>Repite la nueva</span>
+                          <input type="password" autoComplete="new-password" value={pwConfirm} onChange={e => setPwConfirm(e.target.value)} placeholder="Igual a la anterior" />
+                        </label>
+                      </div>
+                      <button type="submit" className="pf-btn pf-btn--green" disabled={savingPw || !pwActual || !pwNueva || !pwConfirm}>
+                        {savingPw ? 'Actualizando…' : 'Cambiar contraseña'}
+                      </button>
+                    </form>
+                  </section>
+                </div>
+
+                <div className="pf-col">
+                  {/* ── PLAN ── */}
+                  <section className="pf-card" aria-labelledby="pf-plan-t">
+                    <span className="pf-tag">Pago</span>
+                    <h2 id="pf-plan-t">Tu plan</h2>
+                    <dl className="pf-facts">
+                      <div><dt>Plan</dt><dd className="pf-good">Acceso de por vida</dd></div>
+                      <div><dt>Pagaste</dt><dd>{profile?.monto_pagado ? `$${parseFloat(profile.monto_pagado).toFixed(2)} USD` : '—'}</dd></div>
+                      <div><dt>Fecha de pago</dt><dd>{formatDate(profile?.fecha_pago)}</dd></div>
+                      <div><dt>Renovación</dt><dd>Ninguna, es un pago único</dd></div>
+                    </dl>
+                    {profile?.paypal_payment_id && (
+                      <div className="pf-payid">
+                        <div>
+                          <span>ID de pago PayPal</span>
+                          <code>{profile.paypal_payment_id}</code>
+                        </div>
+                        <button type="button" className="pf-copy" onClick={copiarId} aria-label="Copiar ID de pago"><IcCopy /></button>
+                      </div>
                     )}
-                  </button>
-                </form>
-              )}
-            </div>
+                    <p className="pf-hint">Tenlo a mano si escribes a soporte por tu pago.</p>
+                  </section>
 
-            {/* ── MI PLAN ── */}
-            <div className="profile-card profile-card--plan">
-              <div className="profile-card-header">
-                <div className="profile-card-icon profile-card-icon--gold">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <rect x="1" y="4" width="22" height="16" rx="2"/>
-                    <line x1="1" y1="10" x2="23" y2="10"/>
-                  </svg>
-                </div>
-                <div>
-                  <h2>Mi plan</h2>
-                  <p>Información de tu pago único</p>
+                  {/* ── AYUDA ── */}
+                  <section className="pf-card pf-card--help" aria-labelledby="pf-ayuda-t">
+                    <h2 id="pf-ayuda-t">¿Necesitas ayuda?</h2>
+                    <p>Escríbenos y te respondemos lo antes posible.</p>
+                    <a className="pf-btn pf-btn--outline" href="mailto:soporte@fintu.pe"><IcMail /> soporte@fintu.pe</a>
+                  </section>
                 </div>
               </div>
-
-              <div className="plan-grid">
-                <div className="plan-item">
-                  <span className="plan-label">Plan</span>
-                  <span className="plan-value plan-value--gold">Acceso de por vida ✓</span>
-                </div>
-                <div className="plan-item">
-                  <span className="plan-label">Monto pagado</span>
-                  <span className="plan-value">
-                    {profile?.monto_pagado ? `$${parseFloat(profile.monto_pagado).toFixed(2)} USD` : '—'}
-                  </span>
-                </div>
-                <div className="plan-item">
-                  <span className="plan-label">Fecha de pago</span>
-                  <span className="plan-value">{formatDate(profile?.fecha_pago)}</span>
-                </div>
-                <div className="plan-item plan-item--full">
-                  <span className="plan-label">ID de pago PayPal</span>
-                  <span className="plan-value plan-value--mono">
-                    {profile?.paypal_payment_id || '—'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        )}
-      </main>
-
-      <div className="profile-footer-full">
-        <AppFooter variant="light" />
+            </>
+          )}
+        </main>
       </div>
-
-      </div>{/* /profile-layout */}
     </div>
   );
 }
