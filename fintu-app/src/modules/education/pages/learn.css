@@ -157,6 +157,46 @@
 .lr-meter div { width: 30%; height: 100%; border-radius: 99px; background: var(--lr-green); }
 .lr-meter i { position: absolute; top: -4px; bottom: -4px; left: 30%; width: 2px; background: var(--lr-espresso); opacity: 0.5; }
 
+/* ── Experiencias de usuarios ── */
+.lr-story {
+  position: relative;
+  background: var(--lr-surface); border-radius: 22px; padding: 26px 24px 22px;
+  display: flex; flex-direction: column; gap: 12px; box-shadow: var(--lr-shadow);
+}
+.lr-story-n {
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--lr-espresso); color: var(--lr-peach);
+  font-family: var(--lr-serif); font-size: 20px;
+}
+.lr-story h3 { margin: 0; font-family: var(--lr-serif); font-weight: 400; font-size: 24px; line-height: 1.15; text-transform: none; letter-spacing: -0.01em; }
+.lr-story-who { margin: 0; font-size: 14px; line-height: 1.5; color: var(--lr-muted); }
+.lr-steps { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; }
+.lr-steps li {
+  position: relative; padding: 0 0 14px 26px; font-size: 14.5px; line-height: 1.5;
+}
+.lr-steps li::before {
+  content: ''; position: absolute; left: 5px; top: 7px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--lr-peach-d);
+}
+.lr-steps li::after {
+  content: ''; position: absolute; left: 9px; top: 18px; bottom: 0; width: 1px; background: rgba(43, 27, 23,0.18);
+}
+.lr-steps li:last-child { padding-bottom: 0; }
+.lr-steps li:last-child::after { display: none; }
+.lr-story-result {
+  margin: 6px 0 0; padding: 12px 14px; border-radius: 14px;
+  background: #E3ECE6; color: var(--lr-green);
+  display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; font-weight: 600; line-height: 1.4;
+}
+.lr-story-result svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+
+.lr-takeaways ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+.lr-takeaways li { font-size: 14.5px; line-height: 1.5; color: var(--lr-muted); }
+.lr-takeaways li b { display: block; color: var(--lr-espresso); }
+.lr-takeaways-tip { margin: 8px 0 0 !important; padding: 14px 16px; border-radius: 14px; background: rgba(232, 148, 106,0.12); color: var(--lr-espresso) !important; }
+.lr-takeaways-tip b { color: var(--lr-terra); }
+@media (max-width: 680px) { .lr-takeaways ul { grid-template-columns: minmax(0, 1fr); } }
+
 /* ── Resumen ── */
 .lr-summary {
   display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 20px 40px; align-items: start;

@@ -13,9 +13,37 @@ const SECCIONES = [
   { id: 'tcea',   label: 'TEA o TCEA' },
   { id: 'pagos',  label: 'Cuánto pagar' },
   { id: 'regla',  label: 'Tu score' },
+  { id: 'experiencias', label: 'Más línea' },
   { id: 'resumen', label: 'Resumen' },
 ];
-const TAB_A_SECCION = { tea: 'costo', intereses: 'costo', tcea: 'tcea', pagos: 'pagos', regla: 'regla', reglas: 'resumen' };
+const TAB_A_SECCION = { tea: 'costo', intereses: 'costo', tcea: 'tcea', pagos: 'pagos', regla: 'regla', experiencias: 'experiencias', reglas: 'resumen' };
+
+/* Experiencias reales compartidas por usuarios. Se cuentan como vivencias,
+   no como promesas: cada banco evalúa distinto. Sin nombres de bancos
+   (publicidad comparativa, INDECOPI). */
+const EXPERIENCIAS = [
+  {
+    titulo: 'De cliente “de bajo riesgo” a más línea',
+    perfil: 'Paga sus tarjetas a tiempo y concentró sus productos en un banco',
+    pasos: [
+      'Por su buen historial, el banco calificó su perfil como de bajo riesgo y le ofreció un crédito hipotecario preaprobado.',
+      'Contrató un seguro oncológico con ese mismo banco.',
+      'Al mes, le subieron la línea de su tarjeta. Le comentaron que podría haber otro aumento pronto.',
+      'Le dijeron que podría acceder a una mejor tarjeta si presentaba ingresos fijos o activos estables.',
+    ],
+    resultado: 'Más línea en un mes y la puerta abierta a una tarjeta mejor.',
+  },
+  {
+    titulo: 'De tarjeta con garantía a S/ 10,000 sin garantía',
+    perfil: 'Trabaja de forma independiente: emite recibos por honorarios y declara sus ingresos en SUNAT. Tiene cuentas mancomunadas.',
+    pasos: [
+      'Empezó con una tarjeta con garantía y la usó bien durante 6 meses.',
+      'Otro banco le ofreció otra tarjeta con garantía, así que dio de baja la primera.',
+      'Poco después, una entidad de la competencia le ofreció una tarjeta sin garantía de S/ 10,000 de línea.',
+    ],
+    resultado: 'Pasó de dejar un depósito a tener S/ 10,000 de línea sin garantía.',
+  },
+];
 
 /* Mínimo típico: intereses del mes + 5% del capital (varía por banco). */
 const simular = (deuda, tea) => {
@@ -207,7 +235,47 @@ function Educacion() {
             </div>
           </section>
 
-          {/* ── 5. RESUMEN ── */}
+          {/* ── 5. EXPERIENCIAS: MÁS LÍNEA Y SALIR DE LA GARANTÍA ── */}
+          <section className="lr-sec" id="experiencias" aria-labelledby="exp-t">
+            <div className="lr-sec-head">
+              <span className="lr-tag">Experiencias de usuarios</span>
+              <h2 id="exp-t">¿Cómo subir tu línea o dejar la garantía?</h2>
+              <p>Dos historias reales de personas que lo lograron. No son una receta, pero muestran qué les abrió puertas.</p>
+            </div>
+
+            <div className="lr-grid-2">
+              {EXPERIENCIAS.map((e, i) => (
+                <article className="lr-story" key={e.titulo}>
+                  <span className="lr-story-n" aria-hidden="true">{i + 1}</span>
+                  <h3>{e.titulo}</h3>
+                  <p className="lr-story-who">{e.perfil}</p>
+                  <ol className="lr-steps">
+                    {e.pasos.map(p => <li key={p}>{p}</li>)}
+                  </ol>
+                  <p className="lr-story-result"><IcCheck /> {e.resultado}</p>
+                </article>
+              ))}
+            </div>
+
+            <article className="lr-card lr-takeaways">
+              <h3>Lo que se repite en ambas</h3>
+              <ul>
+                <li><b>Historial limpio.</b> Meses pagando a tiempo, sin atrasos.</li>
+                <li><b>Ingresos que se puedan comprobar.</b> Boletas, o recibos por honorarios declarados en SUNAT.</li>
+                <li><b>Más relación con el banco.</b> Cuentas, seguros u otros productos pueden hacer que te conozcan mejor.</li>
+                <li><b>Las ofertas pueden venir de la competencia.</b> Un buen historial se ve en todo el sistema, no solo en tu banco.</li>
+              </ul>
+              <p className="lr-takeaways-tip">
+                <b>Si tienes tarjeta con garantía:</b> después de varios meses de buen uso, pregunta a tu banco si puede pasarla a una sin garantía y devolverte el depósito. Algunos lo evalúan; no cuesta preguntar.
+              </p>
+            </article>
+
+            <p className="lr-note">
+              Son experiencias personales compartidas por usuarios, no asesoría financiera ni una garantía de resultado. Cada banco evalúa tu perfil a su manera.
+            </p>
+          </section>
+
+          {/* ── 6. RESUMEN ── */}
           <section className="lr-sec" id="resumen" aria-labelledby="resumen-t">
             <div className="lr-summary">
               <div>

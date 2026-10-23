@@ -31,6 +31,9 @@ const LEARN_CONCEPTS = [
   { cat: 'Comparación', titulo: 'No todas las tarjetas cobran igual',
     texto: 'Entre bancos peruanos la TEA va de ~25% a más de 100%. Conocer la tuya es el primer paso para pagar menos.',
     cta: 'bancos', ctaLabel: 'Comparar bancos' },
+  { cat: 'Experiencias', titulo: '¿Quieres más línea o dejar la garantía?',
+    texto: 'Dos usuarios cuentan qué les funcionó: historial limpio, ingresos comprobables y dejar que los bancos compitan por ti.',
+    cta: 'experiencias', ctaLabel: 'Leer sus experiencias' },
   { cat: 'Intereses', titulo: 'Pagar antes del cierre ahorra doble',
     texto: 'Bajas el saldo sobre el que se calculan intereses y también el uso que se reporta a las centrales.',
     cta: 'regla', ctaLabel: 'Cómo hacerlo' },
@@ -188,6 +191,7 @@ function Dashboard() {
   const irConcepto = () => {
     if (c.cta === 'bancos') navigate('/comparador');
     else if (c.cta === 'regla') navigate('/educacion?tab=regla');
+    else if (c.cta === 'experiencias') navigate('/educacion?tab=experiencias');
     else navigate('/educacion');
   };
 
