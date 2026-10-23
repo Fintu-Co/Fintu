@@ -2,30 +2,57 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/context/AuthContext';
 import { useToast } from '@/shared/context/ToastContext';
-import { cardsApi } from '@/modules/cards/services/cardsApi';import { movementsApi } from '@/modules/movements/services/movementsApi';
+import { cardsApi } from '@/modules/cards/services/cardsApi';
+import { movementsApi } from '@/modules/movements/services/movementsApi';
 import { generarEstadoCuenta } from '@/shared/utils/generarPDF';
 /* Armazón compartido — ver nota en Comparador.jsx. */
 import '@/modules/cards/pages/Dashboard.css';
 import './CardDashboard.css';
 
-// Importar componentes
 import MovementForm from '@/modules/movements/components/MovementForm';
 import MiniCycleCalendar from '@/modules/cards/components/MiniCycleCalendar';
 import UsageDonut from '@/modules/cards/components/UsageDonut';
 import PaymentPlan from '@/modules/cards/components/PaymentPlan';
-import PaymentDueAlert from '@/modules/cards/components/PaymentDueAlert';
 import HistoryChart from '@/modules/movements/components/HistoryChart';
 import MovementsTable from '@/modules/movements/components/MovementsTable';
 import MovementsPanel from '@/modules/movements/components/MovementsPanel';
-import DailyTip from '@/modules/cards/components/DailyTip';
 import TeaMarketCard from '@/modules/cards/components/TeaMarketCard';
 import FinancialHealthButton from '@/modules/analytics/components/FinancialHealthButton';
-import FloatingMovementsButton from '@/modules/movements/components/FloatingMovementsButton';
 import InterestCalculator from '@/modules/cards/components/InterestCalculator';
-import CardIntroGuide from '@/modules/cards/modals/CardIntroGuide';
 import Sidebar from '@/shared/components/Sidebar';
-import { parseISODate } from '@/shared/utils/fecha';
-import { calcularCiclo, aISO } from '@/shared/utils/ciclo';
+import { BrandSymbol } from '@/shared/components/BrandLogo';
+import { calcularCiclo, proximoPago, saldoPendiente, aISO } from '@/shared/utils/ciclo';
+
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MESES_C = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const fechaLarga = (d) => `${d.getDate()} de ${MESES[d.getMonth()]}`;
+const fechaCorta = (d) => `${d.getDate()} ${MESES_C[d.getMonth()]}`;
+const DIA = 86400000;
+const soloDia = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+/* ── Íconos ── */
+const IcBack = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>);
+const IcPlus = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>);
+const IcDoc = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><polyline points="9 15 12 18 15 15" /></svg>);
+const IcMenu = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="14" y2="17" /></svg>);
+const IcArrow = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>);
+
+/* Encabezado de cada bloque: qué es + la pregunta que responde + para qué sirve */
+function Section({ id, tag, title, text, actions, children }) {
+  return (
+    <section className="cdx-sec" id={id} aria-labelledby={`${id}-t`}>
+      <div className="cdx-sec-head">
+        <div>
+          <span className="cdx-tag">{tag}</span>
+          <h2 id={`${id}-t`}>{title}</h2>
+          {text && <p>{text}</p>}
+        </div>
+        {actions && <div className="cdx-sec-actions">{actions}</div>}
+      </div>
+      {children}
+    </section>
+  );
+}
 
 function CardDashboard() {
   const { slotNumero } = useParams();
@@ -38,7 +65,6 @@ function CardDashboard() {
   const [refreshMovements, setRefreshMovements] = useState(0);
   const [showCalculadora, setShowCalculadora] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const [showIntro, setShowIntro] = useState(false);
   const [showMovements, setShowMovements] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [historial, setHistorial] = useState(null);
@@ -48,40 +74,24 @@ function CardDashboard() {
     cargarDatosTarjeta(user.id, slotNumero);
   }, [slotNumero, user, navigate]);
 
-  // Guía de primera visita: se muestra una sola vez por usuario
-  useEffect(() => {
-    if (!user || !tarjeta) return;
-    const key = `card_intro_done_${user.id}`;
-    if (!localStorage.getItem(key)) {
-      setShowIntro(true);
-      localStorage.setItem(key, 'true');
-    }
-  }, [user, tarjeta]);
-
   const cargarDatosTarjeta = async (userId, slot) => {
     try {
       setLoading(true);
-
       const dataCards = await cardsApi.getUserCards(userId);
-
       if (dataCards.success) {
         const tarjetaEncontrada = dataCards.tarjetas.find(t => t.slot_numero === parseInt(slot));
-
         if (!tarjetaEncontrada) {
           showToast('Tarjeta no encontrada', 'error');
           navigate('/dashboard');
           return;
         }
-
         if (tarjetaEncontrada.esta_vacia) {
           showToast('Esta tarjeta está vacía. Agrégala primero.', 'warning');
           navigate('/dashboard');
           return;
         }
-
         setTarjeta(tarjetaEncontrada);
       }
-
     } catch (error) {
       console.error('Error al cargar datos:', error);
       showToast('Error al cargar la tarjeta', 'error');
@@ -91,43 +101,31 @@ function CardDashboard() {
     }
   };
 
-  /* ── Historial para el aviso de pago por vencer ──
-     Hace falta el detalle de movimientos, no `deuda_actual`: ese saldo mezcla
-     el ciclo cerrado con lo que llevas gastado del que aún acumula. */
+  /* ── Historial: hace falta para saber cuánto vence de verdad ──
+     `deuda_actual` mezcla el ciclo cerrado con lo que llevas gastado del
+     que aún acumula; el monto que vence sale de los movimientos. */
   useEffect(() => {
     if (!tarjeta?.id) return;
     let cancelado = false;
-
     (async () => {
       try {
         const hasta = new Date();
         const desde = new Date(hasta);
         desde.setMonth(desde.getMonth() - 12);   // igual que la retención del backend
-
-        const data = await movementsApi.getByRange({
-          tarjetaId: tarjeta.id,
-          desde: aISO(desde),
-          hasta: aISO(hasta),
-        });
+        const data = await movementsApi.getByRange({ tarjetaId: tarjeta.id, desde: aISO(desde), hasta: aISO(hasta) });
         if (!cancelado) setHistorial(data?.movimientos || []);
       } catch (err) {
         console.error('Error al cargar el historial:', err);
         if (!cancelado) setHistorial([]);
       }
     })();
-
     return () => { cancelado = true; };
   }, [tarjeta?.id, refreshMovements]);
 
-  // Función para manejar cuando se agrega un movimiento
   const handleMovementAdded = () => {
     setRefreshMovements(prev => prev + 1);
     cargarDatosTarjeta(user.id, slotNumero);
     setShowMovementModal(false);
-  };
-
-  const handleBack = () => {
-    navigate('/dashboard');
   };
 
   const handleExportPDF = async () => {
@@ -135,20 +133,11 @@ function CardDashboard() {
     try {
       setPdfLoading(true);
       showToast('Generando estado de cuenta…', 'info');
-
-      /* ── Traer los movimientos del rango real del ciclo ──
-         No por mes calendario: un ciclo que cruza de mes (p. ej. 25/06 al
-         24/07) perdería la mayor parte de sus movimientos. */
+      /* Rango real del ciclo, no el mes calendario: un ciclo que cruza de
+         mes perdería la mayor parte de sus movimientos. */
       const { inicio, cierre } = calcularCiclo(tarjeta);
-
-      const data = await movementsApi.getByRange({
-        tarjetaId: tarjeta.id,
-        desde: aISO(inicio),
-        hasta: aISO(cierre),
-      });
-      const movimientos = data?.movimientos || [];
-      const simbolo = tarjeta.simbolo_moneda || 'S/';
-      await generarEstadoCuenta(tarjeta, movimientos, simbolo, { usuario: user });
+      const data = await movementsApi.getByRange({ tarjetaId: tarjeta.id, desde: aISO(inicio), hasta: aISO(cierre) });
+      await generarEstadoCuenta(tarjeta, data?.movimientos || [], tarjeta.simbolo_moneda || 'S/', { usuario: user });
       showToast('¡PDF descargado correctamente!', 'success');
     } catch (err) {
       console.error('Error al generar PDF:', err);
@@ -162,394 +151,262 @@ function CardDashboard() {
     return (
       <div className="card-dashboard-loading">
         <div className="spinner"></div>
-        <p>Cargando tarjeta...</p>
+        <p>Cargando tarjeta…</p>
       </div>
     );
   }
+  if (!tarjeta) return null;
 
-  if (!tarjeta) {
-    return null;
+  /* ── Datos ── */
+  const simbolo    = tarjeta.simbolo_moneda || 'S/';
+  const deudaNum   = parseFloat(tarjeta.deuda_actual || 0);
+  const lineaNum   = parseFloat(tarjeta.linea_credito || 0);
+  const disponible = Math.max(0, lineaNum - deudaNum);
+  const uso        = lineaNum > 0 ? Math.round((deudaNum / lineaNum) * 100) : 0;
+  const usoTono    = uso >= 70 ? 'bad' : uso >= 30 ? 'warn' : 'good';
+  const fmt  = (n) => parseFloat(n).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmt0 = (n) => Math.round(n).toLocaleString('es-PE');
+  const banco = tarjeta.banco_nombre || tarjeta.banco_nombre_custom || 'Banco';
+  const iniciales = banco.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const tea = parseFloat(tarjeta.tasa_interes || 0);
+
+  /* ── Ciclo actual y lo que hay que pagar ── */
+  const hoy = soloDia(new Date());
+  const ciclo = calcularCiclo(tarjeta);
+  const largoCiclo = Math.max(1, Math.round((soloDia(ciclo.cierre) - soloDia(ciclo.inicio)) / DIA) + 1);
+  const diaCiclo = Math.min(largoCiclo, Math.max(1, Math.round((hoy - soloDia(ciclo.inicio)) / DIA) + 1));
+  const diasAlCierre = Math.max(0, Math.round((soloDia(ciclo.cierre) - hoy) / DIA));
+  const avance = Math.round((diaCiclo / largoCiclo) * 100);
+
+  const pago = proximoPago(tarjeta);
+  let hero;
+  if (deudaNum <= 0) {
+    hero = { tipo: 'ok' };
+  } else if (pago.cerrado && historial) {
+    const { saldo } = saldoPendiente(historial, pago.cicloCierre);
+    if (saldo > 0) hero = { tipo: 'vence', monto: saldo, vence: pago.vence, dias: pago.dias, corte: pago.cicloCierre };
   }
-
-  // Calcular datos
-  const simboloMoneda = tarjeta.simbolo_moneda || 'S/';
-  const porcentajeUso = tarjeta.linea_credito > 0
-    ? Math.round((tarjeta.deuda_actual / tarjeta.linea_credito) * 100)
-    : 0;
-  const deudaNum      = parseFloat(tarjeta.deuda_actual || 0);
-  const lineaNum      = parseFloat(tarjeta.linea_credito || 0);
-  const disponible    = lineaNum - deudaNum;
-  const disponiblePct = lineaNum > 0 ? Math.round((disponible / lineaNum) * 100) : 0;
-  const bancoBreve    = (tarjeta.banco_nombre || tarjeta.banco_nombre_custom || 'B')
-                          .split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-  const fmt = (n) => parseFloat(n).toLocaleString('es-PE', { minimumFractionDigits: 2 });
-  const fmtFecha = (iso) => {
-    if (!iso) return '—';
-    const d = parseISODate(iso);
-    const m = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-    return `${d.getDate()} ${m[d.getMonth()]}`;
-  };
+  if (!hero) hero = { tipo: 'acumula', monto: deudaNum, vence: ciclo.pago };
+  const urgente = hero.tipo === 'vence' && hero.dias <= 3;
+  const cuandoVence = hero.tipo === 'vence'
+    ? (hero.dias <= 0 ? 'Vence hoy.' : hero.dias === 1 ? 'Vence mañana.' : `Te quedan ${hero.dias} días.`)
+    : '';
 
   return (
     <div className="card-shell">
-
-      {/* Sidebar compartido (mismo del dashboard principal) */}
       <Sidebar active="dashboard" open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="card-dashboard-container">
+      <div className="card-dashboard-container cdx">
 
-      {/* Botón flotante de regreso */}
-      <button className="btn-back-float" onClick={handleBack} title="Volver">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-      </button>
-
-      {/* ── HEADER PREMIUM ── */}
-      <header className="card-dashboard-header">
-        <button className="cd-menu-toggle" onClick={() => setSidebarOpen(true)} aria-label="Abrir menú">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/>
-          </svg>
-        </button>
-        <div className="header-bank-logo">{bancoBreve}</div>
-        <div className="header-info">
-          <h1 className="card-title-header">
-            {tarjeta.banco_nombre || tarjeta.banco_nombre_custom || 'Banco'}
-          </h1>
-          <div className="card-subtitle-row">
-            <span className="card-subtitle">
-              {tarjeta.nombre_tarjeta || tarjeta.categoria_principal || 'Tarjeta de crédito'}
-              &nbsp;·&nbsp;{tarjeta.moneda || 'Soles'}
-            </span>
-            {tarjeta.tasa_interes && (
-              <span className={`badge-tea ${parseFloat(tarjeta.tasa_interes) >= 70 ? 'tea-alta' : parseFloat(tarjeta.tasa_interes) >= 40 ? 'tea-media' : 'tea-baja'}`}>
-                TEA {tarjeta.tasa_interes}%
-              </span>
-            )}
+        {/* ── ENCABEZADO ── */}
+        <header className="cdx-top">
+          <div className="cdx-top-nav">
+            <button className="cdx-icon-btn cd-menu-toggle" onClick={() => setSidebarOpen(true)} aria-label="Abrir menú"><IcMenu /></button>
+            <button className="cdx-back" onClick={() => navigate('/dashboard')}><IcBack /> Mis tarjetas</button>
           </div>
-        </div>
-        <div className="header-badge">
-          <span className="badge-status active">
-            <span className="badge-dot" />
-            Activa
-          </span>
-          <span className="badge-slot">Slot {tarjeta.slot_numero}</span>
-
-          <button
-            className={`btn-export-pdf${pdfLoading ? ' pdf-loading' : ''}`}
-            onClick={handleExportPDF}
-            disabled={pdfLoading}
-            title="Exportar estado de cuenta en PDF"
-          >
-            {pdfLoading ? (
-              <>
-                <svg className="pdf-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-                </svg>
-                Generando…
-              </>
-            ) : (
-              <>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="12" y1="18" x2="12" y2="12"/>
-                  <polyline points="9 15 12 18 15 15"/>
-                </svg>
-                Exportar PDF
-              </>
-            )}
-          </button>
-                    <button
-            className="btn-help-guide"
-            onClick={() => setShowIntro(true)}
-            title="¿Cómo usar esta pantalla?"
-            aria-label="Abrir guía de uso"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* ── FRANJA KPI ── */}
-      <div className="kpi-strip">
-        <div className="kpi-card">
-          <span className="kpi-label">Deuda actual</span>
-          <span className="kpi-value kpi-gold">{simboloMoneda} {fmt(deudaNum)}</span>
-          <span className="kpi-sub">Saldo pendiente</span>
-          <span className={`kpi-trend ${porcentajeUso >= 70 ? 'down' : porcentajeUso >= 30 ? 'warn' : 'up'}`}>
-            <svg className="kpi-trend-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg>
-            {porcentajeUso}%
-          </span>
-          <span className="kpi-icon-svg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          </span>
-        </div>
-        <div className="kpi-card">
-          <span className="kpi-label">Disponible</span>
-          <span className="kpi-value kpi-good">{simboloMoneda} {fmt(disponible)}</span>
-          <span className="kpi-sub">Crédito libre</span>
-          <span className="kpi-trend up">
-            <svg className="kpi-trend-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg>
-            {disponiblePct}%
-          </span>
-          <span className="kpi-icon-svg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-          </span>
-        </div>
-        <div className="kpi-card">
-          <span className="kpi-label">Uso de línea</span>
-          <span className={`kpi-value ${porcentajeUso >= 70 ? 'kpi-danger' : porcentajeUso >= 30 ? 'kpi-warn' : 'kpi-good'}`}>
-            {porcentajeUso}%
-          </span>
-          <span className="kpi-sub">
-            {porcentajeUso < 30 ? 'Saludable' : porcentajeUso < 70 ? 'Moderado' : 'Alto riesgo'}
-          </span>
-          <span className="kpi-trend neutral">Meta 30%</span>
-          <span className="kpi-icon-svg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          </span>
-        </div>
-        <div className="kpi-card">
-          <span className="kpi-label">Próximo pago</span>
-          <span className={`kpi-value ${tarjeta.dias_al_pago <= 5 ? 'kpi-danger' : ''}`}>
-            {tarjeta.dias_al_pago === 0 ? '¡Hoy!' : `${tarjeta.dias_al_pago ?? '—'} días`}
-          </span>
-          <span className="kpi-sub">{fmtFecha(tarjeta.fecha_pago)}</span>
-          <span className={`kpi-trend ${tarjeta.dias_al_pago <= 5 ? 'down' : 'up'}`}>
-            <svg className="kpi-trend-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg>
-            {tarjeta.dias_al_pago <= 5 ? 'Pronto' : 'A tiempo'}
-          </span>
-          <span className="kpi-icon-svg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </span>
-        </div>
-      </div>
-
-      {/* ── LAYOUT PRINCIPAL: gráfico grande + panel lateral ── */}
-      <div className="cd-main-grid">
-
-        {/* Gráfico grande (como "Total Revenue") */}
-        <div id="section-historial" className="cd-panel">
-          <div className="cd-panel-head">
+          <div className="cdx-id">
+            <span className="cdx-avatar" aria-hidden="true">{iniciales}</span>
             <div>
-              <h3 className="cd-panel-title">Evolución de deuda</h3>
-              <p className="cd-panel-sub">Seguimiento de tu deuda a lo largo del tiempo</p>
+              <h1>{banco}</h1>
+              <p>
+                {tarjeta.nombre_tarjeta || 'Tarjeta de crédito'} · {tarjeta.moneda || 'Soles'}
+                {tea > 0 && <> · TEA {tea}%</>}
+              </p>
             </div>
           </div>
-          <HistoryChart
-            tarjetaId={tarjeta.id}
-            simboloMoneda={simboloMoneda}
-            deudaInicial={parseFloat(tarjeta.deuda_actual || 0)}
-            lineaCredito={tarjeta.linea_credito}
+          <div className="cdx-top-actions">
+            <button className="cdx-btn cdx-btn--outline" onClick={handleExportPDF} disabled={pdfLoading}>
+              <IcDoc /> {pdfLoading ? 'Generando…' : 'Estado de cuenta'}
+            </button>
+            <button className="cdx-btn cdx-btn--green" onClick={() => setShowMovementModal(true)}>
+              <IcPlus /> Registrar movimiento
+            </button>
+          </div>
+        </header>
+
+        {/* ── RESPUESTA PRINCIPAL: cuánto y cuándo pagar ── */}
+        <section className={`cdx-hero${urgente ? ' is-urgent' : ''}`} aria-label="Resumen de este ciclo">
+          <div className="cdx-hero-msg">
+            {hero.tipo === 'ok' && (
+              <>
+                <span className="cdx-hero-tag">Este ciclo</span>
+                <h2>Estás al día.</h2>
+                <p>No tienes deuda, así que este mes no pagas intereses.</p>
+              </>
+            )}
+            {hero.tipo === 'vence' && (
+              <>
+                <span className="cdx-hero-tag">{urgente ? 'Pago urgente' : 'Tu próximo pago'}</span>
+                <h2>Paga <em>{simbolo} {fmt(hero.monto)}</em> antes del {fechaLarga(hero.vence)}.</h2>
+                <p>Cubre lo que gastaste hasta el corte del {fechaCorta(hero.corte)} y no pagas intereses. {cuandoVence}</p>
+              </>
+            )}
+            {hero.tipo === 'acumula' && (
+              <>
+                <span className="cdx-hero-tag">Este ciclo</span>
+                <h2>Llevas <em>{simbolo} {fmt(hero.monto)}</em> gastados.</h2>
+                <p>Págalo completo hasta el {fechaLarga(hero.vence)} y no pagas intereses.</p>
+              </>
+            )}
+          </div>
+
+          <div className="cdx-cycle">
+            <div className="cdx-cycle-head">
+              <span>Ciclo actual</span>
+              <span>Día {diaCiclo} de {largoCiclo}</span>
+            </div>
+            <div className="cdx-cycle-bar" role="progressbar" aria-valuemin={0} aria-valuemax={largoCiclo} aria-valuenow={diaCiclo} aria-label="Avance del ciclo">
+              <div className="cdx-cycle-fill" style={{ width: `${avance}%` }} />
+              <BrandSymbol />
+            </div>
+            <div className="cdx-cycle-dates">
+              <span><b>{fechaCorta(ciclo.inicio)}</b>Inicio</span>
+              <span><b>{fechaCorta(ciclo.cierre)}</b>Corte</span>
+              <span><b>{fechaCorta(ciclo.pago)}</b>Pago</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ── TRES DATOS ── */}
+        <div className="cdx-stats">
+          <div className="cdx-stat">
+            <span className="cdx-stat-label">Disponible</span>
+            <strong>{simbolo} {fmt(disponible)}</strong>
+            <span className="cdx-stat-sub">de {simbolo} {fmt0(lineaNum)} de línea</span>
+          </div>
+          <div className="cdx-stat">
+            <span className="cdx-stat-label">Uso de línea</span>
+            <strong className={`is-${usoTono}`}>{uso}%</strong>
+            <div className="cdx-meter" aria-hidden="true">
+              <div className={`cdx-meter-fill is-${usoTono}`} style={{ width: `${Math.min(100, uso)}%` }} />
+              <i className="cdx-meter-goal" />
+            </div>
+            <span className="cdx-stat-sub">{uso < 30 ? 'Bien: menos de 30% cuida tu score' : 'Ideal: bajar de 30% para cuidar tu score'}</span>
+          </div>
+          <div className="cdx-stat">
+            <span className="cdx-stat-label">Próximo corte</span>
+            <strong>{fechaCorta(ciclo.cierre)}</strong>
+            <span className="cdx-stat-sub">{diasAlCierre === 0 ? 'Cierra hoy' : `En ${diasAlCierre} ${diasAlCierre === 1 ? 'día' : 'días'} · lo que gastes después va al siguiente`}</span>
+          </div>
+        </div>
+
+        {/* ── 1. CUÁNTO PAGAR ── */}
+        <section className="cdx-sec cdx-sec--plan" aria-label="Cuánto pagar este ciclo">
+          <span className="cdx-tag">Pagos</span>
+          {/* Mismo monto que la portada: si ya hay un pago que vence, el plan es sobre ese pago */}
+          <PaymentPlan
+            deuda={hero.tipo === 'vence' ? hero.monto : deudaNum}
+            linea={lineaNum}
+            pagoMinimo={tarjeta.pago_minimo}
+            tea={tarjeta.tasa_interes}
+            simboloMoneda={simbolo}
+            onVerCalculadora={() => setShowCalculadora(true)}
           />
-        </div>
+        </section>
 
-        {/* Panel lateral: calendario semanal + donut de uso */}
-        <div className="cd-side-col">
-          <div className="cd-panel">
-            <div className="cd-panel-head">
-              <h3 className="cd-panel-title">Fechas del ciclo</h3>
-            </div>
-            <MiniCycleCalendar
-              diaInicio={tarjeta.dia_inicio_ciclo}
-              diaCierre={tarjeta.dia_cierre_ciclo}
-              diaPago={tarjeta.dia_pago}
-            />
-          </div>
-
-          <div className="cd-panel">
-            <UsageDonut
-              porcentajeUso={porcentajeUso}
-              deudaActual={tarjeta.deuda_actual || 0}
-              lineaCredito={tarjeta.linea_credito}
-              simboloMoneda={simboloMoneda}
+        {/* ── 2. MOVIMIENTOS ── */}
+        <Section
+          id="movimientos"
+          tag="Movimientos"
+          title="¿En qué se fue tu dinero?"
+          text="Cada consumo y pago de esta tarjeta."
+          actions={
+            <>
+              <button className="cdx-link" onClick={() => setShowMovements(true)}>Ver todos <IcArrow /></button>
+              <button className="cdx-btn cdx-btn--soft" onClick={() => setShowMovementModal(true)}><IcPlus /> Registrar</button>
+            </>
+          }
+        >
+          <div className="cdx-card cdx-card--flush">
+            <MovementsTable
               tarjetaId={tarjeta.id}
+              userId={user.id}
+              simboloMoneda={simbolo}
+              refreshTrigger={refreshMovements}
+              onAdd={() => setShowMovementModal(true)}
             />
           </div>
+        </Section>
 
-          {/* Calculadora — llena el espacio del panel lateral */}
-          <div className="calc-promo-card" onClick={() => setShowCalculadora(true)}>
-            <div className="calc-promo-glow" />
-            <div className="calc-promo-left">
-              <div className="calc-promo-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="20" height="20">
-                  <rect x="4" y="2" width="16" height="20" rx="2"/>
-                  <line x1="8" y1="10" x2="16" y2="10"/>
-                  <line x1="8" y1="14" x2="16" y2="14"/>
-                  <line x1="8" y1="18" x2="11" y2="18"/>
-                </svg>
-              </div>
-              <div className="calc-promo-text">
-                <h4>Calculadora de Intereses</h4>
-                <p>¿Cuánto tiempo para liquidar tu deuda?</p>
-                <div className="calc-promo-tags">
-                  <span>Simulador</span>
-                  <span>Comparar</span>
-                  <span>Proyección</span>
-                </div>
-              </div>
+        {/* ── 3. EVOLUCIÓN ── */}
+        <Section
+          id="evolucion"
+          tag="Evolución"
+          title="¿Tu deuda sube o baja?"
+          text="Tu deuda y tus gastos en el tiempo, y las fechas que mueven todo."
+        >
+          <div className="cdx-grid-2">
+            <div className="cdx-card">
+              <HistoryChart
+                tarjetaId={tarjeta.id}
+                simboloMoneda={simbolo}
+                deudaInicial={deudaNum}
+                lineaCredito={tarjeta.linea_credito}
+              />
             </div>
-            <div className="calc-promo-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="16" height="16">
-                <polyline points="9 18 15 12 9 6"/>
-              </svg>
+            <div className="cdx-card">
+              <h3 className="cdx-card-title">Fechas clave</h3>
+              <MiniCycleCalendar
+                diaInicio={tarjeta.dia_inicio_ciclo}
+                diaCierre={tarjeta.dia_cierre_ciclo}
+                diaPago={tarjeta.dia_pago}
+              />
             </div>
           </div>
-        </div>
+        </Section>
 
-      </div>
-
-      {/* ── PAGO POR VENCER (solo con el ciclo ya cerrado y deuda viva) ── */}
-      <PaymentDueAlert tarjeta={tarjeta} movimientos={historial} />
-
-      {/* ── ¿CUÁNTO PAGAR ESTE CICLO? ── */}
-      <PaymentPlan
-        deuda={tarjeta.deuda_actual || 0}
-        linea={tarjeta.linea_credito}
-        pagoMinimo={tarjeta.pago_minimo}
-        tea={tarjeta.tasa_interes}
-        simboloMoneda={simboloMoneda}
-      />
-
-      {/* ── TABLA DE MOVIMIENTOS (como "Course Purchases") ── */}
-      <div className="cd-panel cd-panel-table">
-        <div className="cd-panel-head">
-          <div>
-            <h3 className="cd-panel-title">Movimientos recientes</h3>
-            <p className="cd-panel-sub">Tus últimos consumos y pagos registrados</p>
+        {/* ── 4. MEJORA ── */}
+        <Section
+          id="mejora"
+          tag="Mejora"
+          title="¿Qué puedes mejorar?"
+          text="Lo que más pesa en tu score y en lo que pagas de intereses."
+        >
+          <div className="cdx-grid-3">
+            <div className="cdx-card">
+              <UsageDonut
+                porcentajeUso={uso}
+                deudaActual={deudaNum}
+                lineaCredito={tarjeta.linea_credito}
+                simboloMoneda={simbolo}
+                tarjetaId={tarjeta.id}
+              />
+            </div>
+            <FinancialHealthButton tarjetaId={tarjeta.id} simboloMoneda={simbolo} tarjetaData={tarjeta} />
+            <TeaMarketCard tea={tarjeta.tasa_interes} deuda={deudaNum} simboloMoneda={simbolo} />
           </div>
-          <div className="cd-panel-head-actions">
-            <button className="cd-panel-link" onClick={() => setShowMovements(true)}>
-              Ver todo
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="13" height="13"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-            <button className="cd-panel-add" onClick={() => setShowMovementModal(true)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Registrar
-            </button>
-          </div>
-        </div>
-        <MovementsTable
+        </Section>
+
+        <p className="cdx-note">
+          Cálculos referenciales con los datos que registras. No reemplazan el estado de cuenta de tu banco.
+        </p>
+
+        {showCalculadora && (
+          <InterestCalculator tarjeta={tarjeta} simboloMoneda={simbolo} onClose={() => setShowCalculadora(false)} />
+        )}
+
+        <MovementsPanel
+          open={showMovements}
+          onClose={() => setShowMovements(false)}
+          onAddMovement={() => { setShowMovements(false); setShowMovementModal(true); }}
           tarjetaId={tarjeta.id}
-          userId={user.id}
-          simboloMoneda={simboloMoneda}
+          simboloMoneda={simbolo}
           refreshTrigger={refreshMovements}
-          onAdd={() => setShowMovementModal(true)}
         />
+
+        {showMovementModal && (
+          <MovementForm
+            tarjeta={tarjeta}
+            tarjetaId={tarjeta.id}
+            userId={user.id}
+            simboloMoneda={simbolo}
+            deudaActual={deudaNum}
+            lineaCredito={tarjeta.linea_credito}
+            onMovementAdded={handleMovementAdded}
+            onClose={() => setShowMovementModal(false)}
+          />
+        )}
       </div>
-
-      {/* ── APRENDE Y ORGANIZA (el resto, siguiendo el formato) ── */}
-      <div className="cd-resto-label">Aprende y organiza</div>
-      <div className="cd-resto-grid">
-
-        <FinancialHealthButton
-          tarjetaId={tarjeta.id}
-          simboloMoneda={simboloMoneda}
-          tarjetaData={tarjeta}
-        />
-
-        <div id="section-tips">
-          <DailyTip />
-        </div>
-
-        <TeaMarketCard
-          tea={tarjeta.tasa_interes}
-          deuda={tarjeta.deuda_actual || 0}
-          simboloMoneda={simboloMoneda}
-        />
-
-      </div>
-
-      {showCalculadora && (
-        <InterestCalculator
-          tarjeta={tarjeta}
-          simboloMoneda={simboloMoneda}
-          onClose={() => setShowCalculadora(false)}
-        />
-      )}
-
-      {/* ==================== FOOTER ==================== */}
-      <footer className="cd-footer" data-fab-stop>
-          <div className="cd-footer-line" />
-
-          <div className="cd-footer-main">
-            <div className="cd-footer-brand">
-              <div className="cd-footer-logo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="1" y="4" width="22" height="16" rx="3"/>
-                  <line x1="1" y1="10" x2="23" y2="10"/>
-                  <line x1="5" y1="15" x2="9" y2="15"/>
-                  <line x1="12" y1="15" x2="15" y2="15"/>
-                </svg>
-              </div>
-              <div className="cd-footer-brand-text">
-                <span className="cd-footer-name">Fintú &amp; Co.</span>
-                <span className="cd-footer-tag">Tus tarjetas, bajo control.</span>
-              </div>
-            </div>
-
-            <div className="cd-footer-links">
-              <button onClick={() => navigate('/dashboard')}>Dashboard</button>
-              <span className="cd-footer-dot" />
-              <button onClick={() => navigate('/objetivos')}>Objetivos</button>
-              <span className="cd-footer-dot" />
-              <button onClick={() => navigate('/educacion')}>Educación</button>
-              <span className="cd-footer-dot" />
-              <button onClick={() => navigate('/comparador')}>Comparador</button>
-            </div>
-          </div>
-
-          <div className="cd-footer-note">
-            Los cálculos mostrados son referenciales y no reemplazan el estado de cuenta oficial de tu banco.
-          </div>
-
-          <div className="cd-footer-bottom">
-            <span>© {new Date().getFullYear()} Fintú &amp; Co.</span>
-            <span className="cd-footer-dot" />
-            <span>Hecho en Perú 🇵🇪</span>
-          </div>
-      </footer>
-
-      {/* ==================== BOTÓN FLOTANTE DE MOVIMIENTOS ==================== */}
-      <FloatingMovementsButton onOpen={() => setShowMovements(true)} />
-
-      {/* ==================== PANEL COMPLETO DE MOVIMIENTOS ==================== */}
-      <MovementsPanel
-        open={showMovements}
-        onClose={() => setShowMovements(false)}
-        onAddMovement={() => { setShowMovements(false); setShowMovementModal(true); }}
-        tarjetaId={tarjeta.id}
-        simboloMoneda={simboloMoneda}
-        refreshTrigger={refreshMovements}
-      />
-
-      {/* ==================== GUÍA DE PRIMERA VISITA ==================== */}
-      {showIntro && (
-        <CardIntroGuide onClose={() => setShowIntro(false)} />
-      )}
-
-      {/* ==================== MODAL DE NUEVO MOVIMIENTO ==================== */}
-      {showMovementModal && (
-        <MovementForm
-          tarjeta={tarjeta}
-          tarjetaId={tarjeta.id}
-          userId={user.id}
-          simboloMoneda={simboloMoneda}
-          deudaActual={tarjeta.deuda_actual || 0}
-          lineaCredito={tarjeta.linea_credito}
-          onMovementAdded={handleMovementAdded}
-          onClose={() => setShowMovementModal(false)}
-        />
-      )}
-
-      </div>{/* /card-dashboard-container */}
     </div>
   );
 }
