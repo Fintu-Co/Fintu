@@ -1,5 +1,5 @@
 ﻿-- ============================================================
--- CreditSmart.PE — Esquema de base de datos
+-- Fintú & Co. — Esquema de base de datos
 -- Genera todas las tablas + datos semilla de bancos.
 -- Uso:  mysql -u USER -p NOMBRE_BD < schema.sql
 -- ============================================================

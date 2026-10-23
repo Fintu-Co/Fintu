@@ -1,4 +1,4 @@
-# creditsmart-frontend
+# fintu-app
 
 SPA de Fintú & Co. (React 19 + Vite), desplegada en Cloudflare Pages.
 

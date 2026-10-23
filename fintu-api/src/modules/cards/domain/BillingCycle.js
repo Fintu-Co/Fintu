@@ -9,7 +9,7 @@
  * `diaInicio` queda como dato informativo de la tarjeta: el inicio se
  * deriva del cierre para que ambos no puedan contradecirse.
  *
- * Espejo de creditsmart-frontend/src/shared/utils/ciclo.js — si cambias
+ * Espejo de fintu-app/src/shared/utils/ciclo.js — si cambias
  * uno, cambia el otro.
  *
  * Ejemplo (tarjeta BCP: cierre=25, pago=20):

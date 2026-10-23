@@ -1,11 +1,11 @@
-# Despliegue — CreditSmart PE
+# Despliegue — Fintú & Co.
 
 Monorepo con dos paquetes que se despliegan por separado:
 
 | Paquete | Dónde | Por qué |
 |---|---|---|
-| `creditsmart-backend` | Railway | Necesita proceso persistente |
-| `creditsmart-frontend` | Cloudflare Pages | SPA estática |
+| `fintu-api` | Railway | Necesita proceso persistente |
+| `fintu-app` | Cloudflare Pages | SPA estática |
 
 > **El backend no puede ir en serverless.** Usa un pool de MySQL con `keepAlive`
 > y un `setInterval` diario (limpieza de movimientos). En serverless el pool se
@@ -29,7 +29,7 @@ variables de conexión; no hace falta cargar `schema.sql` a mano, porque
 *Settings → Root Directory* pon:
 
 ```
-creditsmart-backend
+fintu-api
 ```
 
 Railway detecta Node y usa `npm start` (que ya apunta a `src/server.js`).
@@ -67,7 +67,7 @@ No definas `PORT`: Railway la inyecta y `server.js` ya la lee.
 Genera el dominio en *Settings → Networking → Generate Domain* y abre la raíz:
 
 ```json
-{ "message": "CreditSmart PE API funcionando correctamente" }
+{ "message": "Fintú & Co. API funcionando correctamente" }
 ```
 
 Anota esa URL para el paso 2.
@@ -79,7 +79,7 @@ Anota esa URL para el paso 2.
 **Workers & Pages → Create → Pages → Connect to Git**, elige el repo y configura:
 
 ```
-Root directory:   creditsmart-frontend
+Root directory:   fintu-app
 Build command:    npm run build
 Output directory: dist
 ```
@@ -133,6 +133,6 @@ o un patrón.
 ## Antes de cada despliegue
 
 ```bash
-cd creditsmart-backend  && npm test
-cd creditsmart-frontend && npm test && npm run build
+cd fintu-api && npm test
+cd fintu-app && npm test && npm run build
 ```

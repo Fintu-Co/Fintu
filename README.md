@@ -44,10 +44,10 @@ Fintú es una aplicación web para personas en el **Perú** que usan tarjetas de
 Monorepo con dos paquetes que se despliegan por separado:
 
 ```
-CreditSmart-PE/
-├── creditsmart-frontend/   React 19 + Vite · SPA en Cloudflare Pages
+Fintu-Co/
+├── fintu-app/   React 19 + Vite · SPA en Cloudflare Pages
 │   └── src/modules/        landing · auth · cards · movements · analytics · goals · education
-└── creditsmart-backend/    Node.js + Express 5 · API REST
+└── fintu-api/   Node.js + Express 5 · API REST
     └── src/modules/        auth · cards · movements · analytics · goals
         └── <módulo>/       domain · application · infrastructure · interfaces
 ```
@@ -75,13 +75,13 @@ Necesitas **Node 22+** y **MySQL 8**.
 
 ```bash
 # Backend: crea la base y las tablas al arrancar
-cd creditsmart-backend
+cd fintu-api
 cp .env.example .env      # completa DB_PASSWORD, JWT_SECRET y las credenciales sandbox de PayPal
 npm install
 npm run dev               # http://localhost:5000
 
 # Frontend
-cd ../creditsmart-frontend
+cd ../fintu-app
 cp .env.example .env
 npm install
 npm run dev               # http://localhost:5173

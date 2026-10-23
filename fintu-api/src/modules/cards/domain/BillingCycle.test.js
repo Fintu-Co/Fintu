@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import BillingCycle from './BillingCycle.js';
 
 /**
- * Espejo de creditsmart-frontend/src/shared/utils/ciclo.js.
+ * Espejo de fintu-app/src/shared/utils/ciclo.js.
  * La paridad entre ambos se verifica en el test del frontend
  * (ciclo.paridad.test.js); aquí se prueba el contrato de este lado.
  */

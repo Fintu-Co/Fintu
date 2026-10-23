@@ -17,7 +17,7 @@ import { calcularCiclo, proximoPago, aISO } from './ciclo';
 const aquí = path.dirname(fileURLToPath(import.meta.url));
 const rutaBackend = path.resolve(
   aquí,
-  '../../../../creditsmart-backend/src/modules/cards/domain/BillingCycle.js'
+  '../../../../fintu-api/src/modules/cards/domain/BillingCycle.js'
 );
 
 /* En un checkout solo-frontend el backend no está: se omite en vez de fallar. */

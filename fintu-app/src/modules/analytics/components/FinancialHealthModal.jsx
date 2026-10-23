@@ -130,7 +130,7 @@ function FinancialHealthModal({ tarjetaId, simboloMoneda, tarjetaData, onClose }
     if (acciones.length === 0) {
       acciones.push({
         icon: 'star',
-        texto: 'Mantén tus buenos hábitos. Estás en el top de usuarios CreditSmart.',
+        texto: 'Mantén tus buenos hábitos. Estás en el top de usuarios de Fintú.',
         impacto: '↗ Mantener',
       });
     }
