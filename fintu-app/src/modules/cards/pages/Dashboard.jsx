@@ -7,6 +7,7 @@ import { movementsApi } from '@/modules/movements/services/movementsApi';
 import AddCardModal from '@/modules/cards/modals/AddCardModal';
 import FinancialSummaryModal from '@/modules/cards/modals/FinancialSummaryModal';
 import Sidebar from '@/shared/components/Sidebar';
+import InstallApp from '@/shared/components/InstallApp';
 import { pagoVigente, aISO } from '@/shared/utils/ciclo';
 
 /* Armazón compartido (header, layout, modal de confirmación) + estilos propios */
@@ -302,6 +303,8 @@ function Dashboard() {
               </div>
             </div>
           )}
+
+          <InstallApp />
 
           {/* ── TARJETAS ── */}
           <section className="dh-sec" aria-labelledby="dh-cards-t">
