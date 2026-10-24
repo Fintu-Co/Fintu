@@ -121,7 +121,7 @@
 
 .chart-container-improved {
   position: relative;
-  height: 420px;
+  height: 340px;
   padding: 20px 16px;
   background: #FAF7F2;
   border-radius: 16px;
@@ -163,194 +163,69 @@
   line-height: 1.5;
 }
 
-/* ===============================
-   INSIGHTS AUTOMÁTICOS
-================================ */
-
-.chart-insights {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid rgba(74, 47, 40,0.08);
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(74, 47, 40,0.05);
-}
-
-.insights-title {
-  margin: 0 0 12px 0;
-  font-size: 10px;
-  font-weight: 800;
-  color: #E8946A;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.insights-title::before {
-  content: '';
-  display: inline-block; width: 5px; height: 5px;
-  background: #E8946A; border-radius: 50%;
-  box-shadow: 0 0 6px rgba(232, 148, 106,0.50);
-}
-.hc-title-icon { display: flex; align-items: center; }
-.hc-title-icon svg { width: 14px; height: 14px; }
-
-.insights-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-}
-
-.insight-card {
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid;
-  transition: all 0.3s;
-  animation: slideInInsight 0.5s ease;
-}
-
-@keyframes slideInInsight {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.insight-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(74, 47, 40,0.12);
-}
-
-.insight-card.danger {
-  background: linear-gradient(135deg, rgba(226, 96, 63, 0.15), rgba(226, 96, 63, 0.05));
-  border-color: rgba(226, 96, 63, 0.3);
-}
-
-.insight-card.success {
-  background: linear-gradient(135deg, rgba(62, 107, 87, 0.15), rgba(62, 107, 87, 0.05));
-  border-color: rgba(62, 107, 87, 0.3);
-}
-
-.insight-card.warning {
-  background: linear-gradient(135deg, rgba(194, 122, 30, 0.15), rgba(194, 122, 30, 0.05));
-  border-color: rgba(194, 122, 30, 0.3);
-}
-
-.insight-card.info {
-  background: linear-gradient(135deg, rgba(94, 131, 146, 0.15), rgba(94, 131, 146, 0.05));
-  border-color: rgba(94, 131, 146, 0.3);
-}
-
-.insight-icon {
-  flex-shrink: 0;
-}
-
-/* SVG icon boxes */
-.hc-ic {
-  width: 38px; height: 38px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-.hc-ic svg { width: 18px; height: 18px; }
-.hc-ic.danger  { background: rgba(226, 96, 63,0.12);  color: #EC8A6E; }
-.hc-ic.success { background: rgba(62, 107, 87,0.12);  color: #5E8C74; }
-.hc-ic.info    { background: rgba(94, 131, 146,0.12);  color: #4F6D7A; }
-.hc-ic.warning { background: rgba(194, 122, 30,0.12); color: #C27A1E; }
-
-.insight-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.insight-label {
-  font-size: 10px;
+.chart-hint {
+  margin: -8px 0 0;
+  font-size: 12.5px;
   color: #8A746A;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-.insight-value {
-  font-size: 18px;
-  font-weight: 900;
-  color: #2B1B17;
-  letter-spacing: -0.5px;
-}
-
-.insight-card.danger .insight-value {
-  color: #E2603F;
-}
-
-.insight-card.success .insight-value {
-  color: #3E6B57;
-}
-
-.insight-card.warning .insight-value {
-  color: #C27A1E;
-}
-
-.insight-card.info .insight-value {
-  color: #5E8392;
-}
-
-.insight-date,
-.insight-hint {
-  font-size: 11px;
-  color: #8A746A;
-  font-weight: 600;
+  text-align: center;
 }
 
 /* ===============================
-   TIP EDUCATIVO
+   RESUMEN DEL PERIODO (columna derecha)
 ================================ */
 
-.educational-tip {
+.ps-title { margin-bottom: 2px; }
+.ps-sub {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  color: #8A746A;
+}
+
+.ps-list { margin: 0; }
+.ps-row {
   display: flex;
-  align-items: flex-start;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 12px;
-  padding: 14px 18px;
-  background: rgba(232, 148, 106,0.06);
-  border: 1.5px solid rgba(232, 148, 106,0.20);
-  border-radius: 12px;
-  margin-top: 4px;
+  padding: 11px 0;
+  border-top: 1px solid rgba(74, 47, 40,0.08);
 }
+.ps-row:first-child { border-top: 0; padding-top: 4px; }
 
-.tip-icon {
-  flex-shrink: 0;
-}
-.hc-tip {
-  display: flex; align-items: center;
-  width: 28px; height: 28px;
-  border-radius: 7px;
-  flex-shrink: 0;
-}
-.hc-tip svg { width: 15px; height: 15px; }
-.hc-tip.warn { background: rgba(194, 122, 30,0.1); color: #C27A1E; }
-.hc-tip.info { background: rgba(94, 131, 146,0.1);  color: #4F6D7A; }
-.hc-tip.good { background: rgba(62, 107, 87,0.1);  color: #5E8C74; }
-
-.tip-text {
-  font-size: 13px;
+.ps-row dt {
+  font-size: 13.5px;
   color: #6B5148;
-  line-height: 1.6;
 }
+.ps-row dt span {
+  display: block;
+  font-size: 11.5px;
+  color: #8A746A;
+}
+.ps-row dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2B1B17;
+  white-space: nowrap;
+}
+.ps-row dd span { font-size: 12px; font-weight: 500; color: #8A746A; }
+.ps-row dd.up   { color: #A5562F; }
+.ps-row dd.down { color: #2F4A3E; }
 
-.tip-text strong {
-  color: #E8946A;
-  font-weight: 800;
+.ps-tip {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6B5148;
+  background: rgba(232, 148, 106,0.10);
 }
+.ps-tip strong { color: #A5562F; }
+.ps-tip.alto { background: rgba(194, 70, 42,0.08); }
+.ps-tip.alto strong { color: #C2462A; }
+.ps-tip.bien { background: rgba(47, 74, 62,0.08); }
+.ps-tip.bien strong { color: #2F4A3E; }
 
 /* ===============================
    RESPONSIVE
@@ -362,11 +237,6 @@
   .period-btn-new            { padding: 10px 8px; }
   .period-value              { font-size: 13px; }
   .chart-container-improved  { height: 300px; padding: 14px 10px; }
-  .insights-grid             { grid-template-columns: 1fr; }
-  .insight-card              { padding: 12px; }
-  .insight-value             { font-size: 16px; }
-  .educational-tip           { padding: 12px 14px; }
-  .tip-text                  { font-size: 12px; }
 }
 
 @media (max-width: 480px) {
@@ -375,8 +245,6 @@
   .period-label              { font-size: 8px; letter-spacing: 0; }
   .period-value              { font-size: 12px; }
   .chart-container-improved  { height: 220px; padding: 10px 6px; border-radius: 10px; }
-  .insight-card              { padding: 10px; gap: 8px; }
-  .insight-value             { font-size: 14px; }
 }
 
 /* ===============================

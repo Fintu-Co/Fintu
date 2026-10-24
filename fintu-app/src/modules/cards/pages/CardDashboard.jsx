@@ -14,6 +14,7 @@ import MiniCycleCalendar from '@/modules/cards/components/MiniCycleCalendar';
 import UsageDonut from '@/modules/cards/components/UsageDonut';
 import PaymentPlan from '@/modules/cards/components/PaymentPlan';
 import HistoryChart from '@/modules/movements/components/HistoryChart';
+import PeriodSummary from '@/modules/movements/components/PeriodSummary';
 import MovementsTable from '@/modules/movements/components/MovementsTable';
 import MovementsPanel from '@/modules/movements/components/MovementsPanel';
 import TeaMarketCard from '@/modules/cards/components/TeaMarketCard';
@@ -68,6 +69,7 @@ function CardDashboard() {
   const [showMovements, setShowMovements] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [historial, setHistorial] = useState(null);
+  const [resumen, setResumen] = useState({ insights: null, dias: 14 });
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
@@ -334,15 +336,23 @@ function CardDashboard() {
                 simboloMoneda={simbolo}
                 deudaInicial={deudaNum}
                 lineaCredito={tarjeta.linea_credito}
+                onResumen={(insights, dias) => setResumen({ insights, dias })}
               />
             </div>
-            <div className="cdx-card">
-              <h3 className="cdx-card-title">Fechas clave</h3>
-              <MiniCycleCalendar
-                diaInicio={tarjeta.dia_inicio_ciclo}
-                diaCierre={tarjeta.dia_cierre_ciclo}
-                diaPago={tarjeta.dia_pago}
-              />
+            <div className="cdx-stack">
+              <div className="cdx-card">
+                <h3 className="cdx-card-title">Fechas clave</h3>
+                <MiniCycleCalendar
+                  diaInicio={tarjeta.dia_inicio_ciclo}
+                  diaCierre={tarjeta.dia_cierre_ciclo}
+                  diaPago={tarjeta.dia_pago}
+                />
+              </div>
+              {resumen.insights && (
+                <div className="cdx-card">
+                  <PeriodSummary insights={resumen.insights} dias={resumen.dias} simboloMoneda={simbolo} />
+                </div>
+              )}
             </div>
           </div>
         </Section>
