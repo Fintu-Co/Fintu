@@ -1,3 +1,4 @@
+import { simularPagos } from '@/shared/utils/intereses';
 import './PaymentPlan.css';
 
 /**
@@ -46,29 +47,13 @@ function PaymentPlan({ deuda, linea, pagoMinimo, tea, simboloMoneda, onVerCalcul
   const yaSaludable   = deudaNum <= umbral30;
   const pagoSaludable = Math.max(0, deudaNum - umbral30);
 
-  /* ── Proyección del pago mínimo (TEA → tasa mensual efectiva) ──
-     Se simula mes a mes: el último pago es parcial, así que multiplicar
-     mínimo × meses sobreestimaría los intereses. */
-  const iMensual = teaNum > 0 ? Math.pow(1 + teaNum / 100, 1 / 12) - 1 : 0;
+  /* ── Proyección del pago mínimo (misma simulación que la calculadora) ── */
   let proyeccion = null;
-  if (pagoMin > 0 && iMensual > 0) {
-    const interesMes = deudaNum * iMensual;
-    if (pagoMin <= interesMes) {
-      // El mínimo no cubre ni los intereses: la deuda nunca baja.
-      proyeccion = { imposible: true, interesMes };
-    } else {
-      let saldo = deudaNum;
-      let meses = 0;
-      let pagado = 0;
-      while (saldo > 0.01 && meses < 600) {
-        saldo = saldo * (1 + iMensual);
-        const pago = Math.min(pagoMin, saldo);
-        saldo -= pago;
-        pagado += pago;
-        meses++;
-      }
-      proyeccion = { imposible: false, meses, interesTotal: Math.max(0, pagado - deudaNum) };
-    }
+  if (pagoMin > 0 && teaNum > 0) {
+    const r = simularPagos(deudaNum, teaNum, pagoMin);
+    proyeccion = r.imposible
+      ? { imposible: true, interesMes: r.interesMes }
+      : { imposible: false, meses: r.meses, interesTotal: r.intereses };
   }
 
   const tiers = [

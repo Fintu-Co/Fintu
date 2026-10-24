@@ -386,7 +386,15 @@ function CardDashboard() {
         </p>
 
         {showCalculadora && (
-          <InterestCalculator tarjeta={tarjeta} simboloMoneda={simbolo} onClose={() => setShowCalculadora(false)} />
+          <InterestCalculator
+            tarjeta={tarjeta}
+            deudaBase={hero.tipo === 'vence' ? hero.monto : deudaNum}
+            etiquetaDeuda={hero.tipo === 'vence'
+              ? `Vence el ${hero.vence.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' }).replace('.', '')}`
+              : 'Hoy debes'}
+            simboloMoneda={simbolo}
+            onClose={() => setShowCalculadora(false)}
+          />
         )}
 
         <MovementsPanel
