@@ -188,4 +188,37 @@ export function pagoVigente(tarjeta, movimientos = null, hoy = new Date()) {
   return { tipo: 'acumula', monto: deuda, vence: ciclo.pago, dias: ciclo.diasParaPago, corte: ciclo.cierre };
 }
 
+/**
+ * ¿Pagaste a tiempo? Revisa los últimos ciclos cuyo pago ya venció.
+ *
+ * Un ciclo cuenta como "a tiempo" si, al llegar su fecha de pago, el saldo
+ * de ese ciclo quedó en cero (`saldoPendiente` evaluado ese día). Solo se
+ * evalúan ciclos con consumos registrados: los anteriores a que el usuario
+ * empezara a anotar movimientos no dicen nada de cómo paga.
+ *
+ * @returns {{ evaluados: number, aTiempo: number,
+ *             ciclos: Array<{ cierre: Date, pago: Date, saldo: number, aTiempo: boolean }> }}
+ *   `ciclos` va del más reciente al más antiguo.
+ */
+export function puntualidad(tarjeta, movimientos = [], hoy = new Date(), maxCiclos = 6) {
+  const hoyDia = soloDia(hoy);
+  const ciclos = [];
+
+  for (let k = 0; ciclos.length < maxCiclos && k > -24; k--) {
+    const c = calcularCiclo(tarjeta, hoy, k);
+    if (soloDia(c.pago) >= hoyDia) continue;      // su pago aún no vence
+
+    const { saldo, cargos } = saldoPendiente(movimientos, c.cierre, c.pago);
+    if (!(cargos > 0)) break;                     // antes del primer consumo registrado
+
+    ciclos.push({ cierre: c.cierre, pago: c.pago, saldo, aTiempo: saldo < 0.01 });
+  }
+
+  return {
+    evaluados: ciclos.length,
+    aTiempo: ciclos.filter(c => c.aTiempo).length,
+    ciclos,
+  };
+}
+
 export default calcularCiclo;

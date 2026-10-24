@@ -1,0 +1,202 @@
+/* ═══════════════════════════════════════════════
+   IMPROVE CARD — "¿Qué puedes mejorar?"
+   Prefijo: mj-
+═══════════════════════════════════════════════ */
+
+.mj {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+/* Cabecera igual a las tarjetas de "¿Cuánto pagar?": etiqueta + chip */
+.mj-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.mj-q {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--cd-muted, #6B5148);
+}
+.mj-chip {
+  flex-shrink: 0;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(232, 148, 106, 0.16);
+  color: var(--cd-gold-d, #A5562F);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mj-answer {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 2px;
+}
+.mj-valor {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--cd-text, #2B1B17);
+}
+.mj-valor.good { color: var(--cd-good, #2F4A3E); }
+.mj-valor.warn { color: var(--cd-gold-d, #A5562F); }
+.mj-valor.bad  { color: var(--cd-danger, #C2462A); }
+.mj-detalle {
+  font-size: 13.5px;
+  color: var(--cd-muted, #6B5148);
+}
+
+.mj-texto {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--cd-muted, #6B5148);
+}
+
+/* Barra con una marca de referencia (30%, promedio…) */
+.mj-bar { position: relative; margin: 4px 0 18px; }
+.mj-track {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--cd-surface2, #F4EEE6);
+  overflow: hidden;
+}
+.mj-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--cd-gold, #E8946A);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mj-fill.good { background: var(--cd-good, #2F4A3E); }
+.mj-fill.bad  { background: var(--cd-danger, #C2462A); }
+.mj-mark {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 14px;
+  background: var(--cd-text, #2B1B17);
+  border-radius: 2px;
+  transform: translateX(-1px);
+}
+.mj-mark span {
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cd-dim, #8A746A);
+}
+/* Punto sobre la escala (tu TEA) */
+.mj-dot {
+  position: absolute;
+  top: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cd-surface, #FBF8F3);
+  border: 3px solid var(--cd-text, #2B1B17);
+  transform: translateX(-8px);
+}
+.mj-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--cd-dim, #8A746A);
+}
+.mj-ends b { color: var(--cd-muted, #6B5148); }
+
+.mj-paso {
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cd-surface2, #F4EEE6);
+}
+.mj-paso span {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cd-dim, #8A746A);
+}
+.mj-paso p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--cd-text, #2B1B17);
+}
+
+.mj-cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cd-gold-d, #A5562F);
+  cursor: pointer;
+}
+.mj-cta svg { width: 14px; height: 14px; transition: transform 0.2s; }
+.mj-cta:hover svg { transform: translateX(3px); }
+
+/* Escala barata → cara (TEA) */
+.mj-track--escala {
+  background: linear-gradient(90deg, rgba(47, 74, 62, 0.55), rgba(232, 148, 106, 0.7), rgba(194, 70, 42, 0.7));
+}
+
+/* Últimos ciclos: ✓ a tiempo / ! quedó saldo */
+.mj-ciclos {
+  display: flex;
+  gap: 8px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.mj-ciclos li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.mj-ciclo-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+}
+.mj-ciclos li.ok .mj-ciclo-dot { background: rgba(47, 74, 62, 0.12); color: var(--cd-good, #2F4A3E); }
+.mj-ciclos li.no .mj-ciclo-dot { background: rgba(194, 70, 42, 0.10); color: var(--cd-danger, #C2462A); }
+.mj-ciclo-mes {
+  font-size: 11px;
+  color: var(--cd-dim, #8A746A);
+  text-transform: capitalize;
+}
+.mj-paso p strong { font-weight: 700; }

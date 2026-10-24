@@ -78,6 +78,8 @@ function HistoryChart({ tarjetaId, simboloMoneda, onResumen }) {
     const gastos = datos.map(item => item.gasto || 0);
     const pagos = datos.map(item => item.pago || 0);
     const deudas = datos.map(item => item.deuda_acumulada);
+    // El gráfico parte de 0: un saldo a favor se dibuja en 0 (el tooltip muestra el real)
+    const deudasGrafico = deudas.map(d => Math.max(0, d));
 
     setInsights(insightsData);
     setPuntos(datos.length);
@@ -105,7 +107,8 @@ function HistoryChart({ tarjetaId, simboloMoneda, onResumen }) {
         {
           type: 'line',
           label: 'Deuda',
-          data: deudas,
+          data: deudasGrafico,
+          deudaReal: deudas,
           borderColor: '#E8946A',
           borderWidth: 3,
           tension: 0.4,
@@ -153,7 +156,11 @@ function HistoryChart({ tarjetaId, simboloMoneda, onResumen }) {
           label: function(context) {
             const value = context.parsed.y;
             if (context.dataset.label === 'Deuda') {
-              return `Deuda: ${simboloMoneda} ${value.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
+              const real = context.dataset.deudaReal?.[context.dataIndex] ?? value;
+              if (real < 0) {
+                return `Saldo a favor: ${simboloMoneda} ${Math.abs(real).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
+              }
+              return `Deuda: ${simboloMoneda} ${real.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
             }
             if (value > 0) {
               return `Gastos: ${simboloMoneda} ${value.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
@@ -183,6 +190,7 @@ function HistoryChart({ tarjetaId, simboloMoneda, onResumen }) {
       },
       y: {
         beginAtZero: true,
+        min: 0,
         grid: { color: 'rgba(74, 47, 40,0.06)' },
         border: { display: false },
         ticks: {
@@ -208,6 +216,7 @@ function HistoryChart({ tarjetaId, simboloMoneda, onResumen }) {
       display: true,
       content,
       position: 'start',
+      xAdjust: 6,
       yAdjust,
       backgroundColor: 'transparent',
       color,
@@ -252,28 +261,17 @@ function HistoryChart({ tarjetaId, simboloMoneda, onResumen }) {
 
       {/* Controles */}
       <div className="chart-controls">
-        <div className="period-selector-improved">
-          <button
-            className={`period-btn-new ${periodo === 7 ? 'active' : ''}`}
-            onClick={() => setPeriodo(7)}
-          >
-            <span className="period-label">Última</span>
-            <span className="period-value">Semana</span>
-          </button>
-          <button
-            className={`period-btn-new ${periodo === 14 ? 'active' : ''}`}
-            onClick={() => setPeriodo(14)}
-          >
-            <span className="period-label">Últimas</span>
-            <span className="period-value">2 Semanas</span>
-          </button>
-          <button
-            className={`period-btn-new ${periodo === 30 ? 'active' : ''}`}
-            onClick={() => setPeriodo(30)}
-          >
-            <span className="period-label">Último</span>
-            <span className="period-value">Mes</span>
-          </button>
+        <div className="period-seg" role="group" aria-label="Periodo">
+          {[[7, 'Última semana'], [14, '2 semanas'], [30, 'Último mes']].map(([dias, texto]) => (
+            <button
+              key={dias}
+              className={`period-seg-btn ${periodo === dias ? 'active' : ''}`}
+              aria-pressed={periodo === dias}
+              onClick={() => setPeriodo(dias)}
+            >
+              {texto}
+            </button>
+          ))}
         </div>
       </div>
 

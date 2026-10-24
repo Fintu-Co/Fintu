@@ -11,14 +11,14 @@ import './CardDashboard.css';
 
 import MovementForm from '@/modules/movements/components/MovementForm';
 import MiniCycleCalendar from '@/modules/cards/components/MiniCycleCalendar';
-import UsageDonut from '@/modules/cards/components/UsageDonut';
+import OnTimeCard from '@/modules/cards/components/OnTimeCard';
+import InterestCostCard from '@/modules/cards/components/InterestCostCard';
 import PaymentPlan from '@/modules/cards/components/PaymentPlan';
 import HistoryChart from '@/modules/movements/components/HistoryChart';
 import PeriodSummary from '@/modules/movements/components/PeriodSummary';
 import MovementsTable from '@/modules/movements/components/MovementsTable';
 import MovementsPanel from '@/modules/movements/components/MovementsPanel';
 import TeaMarketCard from '@/modules/cards/components/TeaMarketCard';
-import FinancialHealthButton from '@/modules/analytics/components/FinancialHealthButton';
 import InterestCalculator from '@/modules/cards/components/InterestCalculator';
 import Sidebar from '@/shared/components/Sidebar';
 import { BrandSymbol } from '@/shared/components/BrandLogo';
@@ -365,16 +365,18 @@ function CardDashboard() {
           text="Lo que más pesa en tu score y en lo que pagas de intereses."
         >
           <div className="cdx-grid-3">
-            <div className="cdx-card">
-              <UsageDonut
-                porcentajeUso={uso}
-                deudaActual={deudaNum}
-                lineaCredito={tarjeta.linea_credito}
-                simboloMoneda={simbolo}
-                tarjetaId={tarjeta.id}
-              />
-            </div>
-            <FinancialHealthButton tarjetaId={tarjeta.id} simboloMoneda={simbolo} tarjetaData={tarjeta} />
+            <OnTimeCard
+              tarjeta={tarjeta}
+              movimientos={historial}
+              simboloMoneda={simbolo}
+              onRegistrarPago={() => setShowMovementModal(true)}
+            />
+            <InterestCostCard
+              tea={tarjeta.tasa_interes}
+              deuda={deudaNum}
+              simboloMoneda={simbolo}
+              onSimular={() => setShowCalculadora(true)}
+            />
             <TeaMarketCard tea={tarjeta.tasa_interes} deuda={deudaNum} simboloMoneda={simbolo} />
           </div>
         </Section>

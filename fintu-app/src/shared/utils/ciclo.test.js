@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calcularCiclo, proximoPago, saldoPendiente, pagoVigente, cicloDeFecha, diaDelMes, aISO } from './ciclo';
+import { calcularCiclo, proximoPago, saldoPendiente, pagoVigente, puntualidad, cicloDeFecha, diaDelMes, aISO } from './ciclo';
 
 /**
  * El ciclo decide qué movimientos entran en el estado de cuenta y qué fecha
@@ -365,5 +365,40 @@ describe('pagoVigente — la frase de "cuánto y cuándo pagar"', () => {
     const p = pagoVigente({ ...base, deuda_actual: '200.00' }, null, enDia('2026-07-28'));
     expect(p.tipo).toBe('acumula');
     expect(p.monto).toBe(200);
+  });
+});
+
+describe('puntualidad — ¿pagaste a tiempo?', () => {
+  const gasto = (fecha, monto) => ({ tipo: 'gasto', monto, fecha_movimiento: `${fecha} 12:00:00` });
+  const pago  = (fecha, monto) => ({ tipo: 'pago',  monto, fecha_movimiento: `${fecha} 12:00:00` });
+  // Cierre 25, pago 20 del mes siguiente
+  const tarjeta = { dia_cierre_ciclo: 25, dia_pago: 20 };
+  const hoy = new Date(2026, 8, 10);   // 10 set: vencieron el 20/07 (cierre jun) y el 20/08 (cierre jul)
+
+  it('sin movimientos no evalúa nada', () => {
+    expect(puntualidad(tarjeta, [], hoy)).toMatchObject({ evaluados: 0, aTiempo: 0 });
+  });
+
+  it('cuenta a tiempo si el saldo del ciclo quedó en cero al vencer', () => {
+    const r = puntualidad(tarjeta, [
+      gasto('2026-06-10', 100), pago('2026-07-15', 100),   // ciclo jun: pagado antes del 20/07
+      gasto('2026-07-10', 200), pago('2026-08-25', 200),   // ciclo jul: pagado tarde (vence 20/08)
+    ], hoy);
+    expect(r.evaluados).toBe(2);
+    expect(r.aTiempo).toBe(1);
+    expect(r.ciclos[0].aTiempo).toBe(false);   // el más reciente primero
+    expect(r.ciclos[0].saldo).toBe(200);
+    expect(r.ciclos[1].aTiempo).toBe(true);
+  });
+
+  it('no evalúa el ciclo cuyo pago aún no vence', () => {
+    const r = puntualidad(tarjeta, [gasto('2026-08-10', 50)], hoy);   // ciclo ago: vence 20/09
+    expect(r.evaluados).toBe(0);
+  });
+
+  it('se detiene antes del primer consumo registrado', () => {
+    const r = puntualidad(tarjeta, [gasto('2026-07-10', 80), pago('2026-08-01', 80)], hoy);
+    expect(r.evaluados).toBe(1);
+    expect(r.aTiempo).toBe(1);
   });
 });

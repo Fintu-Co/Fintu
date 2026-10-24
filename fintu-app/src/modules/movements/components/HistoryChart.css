@@ -36,83 +36,40 @@
 }
 
 /* ===============================
-   CONTROLES MEJORADOS
+   CONTROLES: periodo (segmentado)
 ================================ */
 
 .chart-controls {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
+  justify-content: flex-start;
 }
 
-.period-selector-improved {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  width: 100%;
-  max-width: 500px;
+.period-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: #F4EEE6;
+  border-radius: 999px;
 }
 
-.period-btn-new {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 12px 20px;
-  background: #FAF7F2;
-  border: 1.5px solid rgba(74, 47, 40,0.08);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  font-family: inherit;
-}
-
-.period-btn-new::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent, rgba(232, 148, 106,0.08), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.5s;
-}
-
-.period-btn-new:hover::before { transform: translateX(100%); }
-
-.period-btn-new:hover {
-  background: #ffffff;
-  border-color: rgba(232, 148, 106,0.30);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 47, 40,0.10);
-}
-
-.period-btn-new.active {
-  background: rgba(232, 148, 106,0.10);
-  border-color: rgba(232, 148, 106,0.40);
-  box-shadow: 0 0 0 3px rgba(232, 148, 106,0.10);
-}
-
-.period-label {
-  font-size: 10px;
-  color: #8A746A;
+.period-seg-btn {
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: #6B5148;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
-
-.period-btn-new.active .period-label { color: #E8946A; }
-
-.period-value {
-  font-size: 15px;
-  font-weight: 800;
+.period-seg-btn:hover { color: #2B1B17; }
+.period-seg-btn.active {
+  background: #ffffff;
   color: #2B1B17;
-  letter-spacing: -0.5px;
-}
-
-.period-btn-new.active .period-value {
-  color: #E8946A;
+  box-shadow: 0 1px 3px rgba(43, 27, 23, 0.12);
 }
 
 /* ===============================
@@ -232,19 +189,13 @@
 ================================ */
 
 @media (max-width: 768px) {
-  /* Botones de período: mantener en 3 columnas (no 1) */
-  .period-selector-improved  { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .period-btn-new            { padding: 10px 8px; }
-  .period-value              { font-size: 13px; }
   .chart-container-improved  { height: 300px; padding: 14px 10px; }
 }
 
 @media (max-width: 480px) {
-  .period-selector-improved  { gap: 6px; }
-  .period-btn-new            { padding: 8px 4px; border-radius: 8px; }
-  .period-label              { font-size: 8px; letter-spacing: 0; }
-  .period-value              { font-size: 12px; }
   .chart-container-improved  { height: 220px; padding: 10px 6px; border-radius: 10px; }
+  .period-seg                { display: flex; width: 100%; }
+  .period-seg-btn            { flex: 1; padding: 7px 6px; font-size: 12.5px; }
 }
 
 /* ===============================
@@ -264,25 +215,4 @@
 
 .chart-container-improved canvas {
   animation: fadeInChart 0.6s ease;
-}
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media (max-width: 768px) {
-  .history-chart {
-    height: 250px; /* ← Más bajo en móvil */
-  }
-
-  .chart-legend {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .history-chart {
-    height: 200px;
-  }
 }
