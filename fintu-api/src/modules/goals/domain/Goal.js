@@ -18,6 +18,9 @@ class Goal {
     PAGO_TOTAL: 'pago_total',
     MANTENER_USO: 'mantener_uso',
     NO_ATRASAR: 'no_atrasar',
+    // Plan para salir de deudas (pantalla "Mi plan"). meta_valor = monto mensual;
+    // descripcion = JSON con la deuda de cada tarjeta al empezar. Los tipos de arriba quedaron retirados en la app.
+    PLAN_DEUDAS: 'plan_deudas',
   };
 
   constructor({

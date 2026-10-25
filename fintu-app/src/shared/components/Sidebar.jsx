@@ -46,7 +46,7 @@ function Sidebar({ active, open, onClose }) {
             <svg className="nav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
             </svg>
-            <span className="nav-label">Mis Objetivos</span>
+            <span className="nav-label">Mi plan</span>
           </button>
 
           {/* ── Herramientas ── */}

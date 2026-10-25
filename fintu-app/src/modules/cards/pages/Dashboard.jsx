@@ -413,7 +413,7 @@ function Dashboard() {
                 </button>
                 <button onClick={() => navigate('/objetivos')}>
                   <span className="dh-tool-ico"><IcTarget /></span>
-                  <span><b>Mis objetivos</b><small>Metas para bajar tu deuda</small></span>
+                  <span><b>Mi plan</b><small>Cuándo sales de deudas</small></span>
                   <IcChev />
                 </button>
               </nav>

@@ -1,89 +1,42 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/context/AuthContext';
 import { cardsApi } from '@/modules/cards/services/cardsApi';
 import { goalsApi } from '@/modules/goals/services/goalsApi';
+import { movementsApi } from '@/modules/movements/services/movementsApi';
+import { planDeudas, soloMinimos, tarjetasParaPlan, mesesDesde, mesFin } from '@/shared/utils/planDeudas';
+import { textoMeses } from '@/shared/utils/intereses';
+import { puntualidad, aISO } from '@/shared/utils/ciclo';
 import Sidebar from '@/shared/components/Sidebar';
-import ConfirmDialog from '@/shared/components/ConfirmDialog';
 /* Armazón compartido (layout + sidebar) — ver nota en Comparador.jsx. */
 import '@/modules/cards/pages/Dashboard.css';
 import './Goals.css';
 
-const GOAL_TYPES = [
-  {
-    tipo: 'reducir_uso',
-    titulo: 'Reducir uso de línea',
-    descripcion: 'Baja el % de uso de una tarjeta',
-    beneficio: 'Es lo más rápido para subir tu score: las centrales miran tu % de uso cada mes. Bajo 30% te ven como cliente sano.',
-    color: 'slate',
-    necesitaMeta: true,
-    metaLabel: '¿A qué % quieres llegar?',
-    metaPlaceholder: '30',
-    metaSufijo: '%',
-    necesitaFecha: true,
-    icono: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6" /><polyline points="17 18 23 18 23 12" /></svg>),
-  },
-  {
-    tipo: 'reducir_deuda',
-    titulo: 'Reducir mi deuda',
-    descripcion: 'Lleva una deuda a un monto objetivo',
-    beneficio: 'Cada sol que bajas deja de generar intereses desde ese mismo mes. Con TEAs de 60–100%, es el ahorro más directo.',
-    color: 'peach',
-    necesitaMeta: true,
-    metaLabel: '¿A cuánto quieres bajar la deuda?',
-    metaPlaceholder: '500',
-    metaSufijo: 'S/',
-    necesitaFecha: true,
-    icono: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></svg>),
-  },
-  {
-    tipo: 'pago_total',
-    titulo: 'Pagar el total de una tarjeta',
-    descripcion: 'Deja una tarjeta en cero',
-    beneficio: 'El banco solo cobra interés sobre lo que dejas al corte. Si dejas cero, usas la tarjeta gratis.',
-    color: 'green',
-    necesitaMeta: false,
-    necesitaFecha: false,
-    icono: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>),
-  },
-  {
-    tipo: 'no_atrasar',
-    titulo: 'No atrasar pagos',
-    descripcion: '3 meses seguidos al día',
-    beneficio: 'Pagar a tiempo es lo que más pesa en tu score. Un atraso se reporta por años; la puntualidad lo repara.',
-    color: 'mauve',
-    necesitaMeta: false,
-    necesitaFecha: false,
-    icono: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>),
-  },
-  {
-    tipo: 'mantener_uso',
-    titulo: 'Mantener uso bajo 30%',
-    descripcion: 'Sostenerlo hasta una fecha',
-    beneficio: 'Las centrales reportan tu uso cada mes: lo que suma es mantenerlo bajo en el tiempo, no bajarlo una vez.',
-    color: 'terra',
-    necesitaMeta: false,
-    necesitaFecha: true,
-    icono: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>),
-  },
-];
+/*
+  "Tu plan para salir de deudas"
 
-const MAX_ACTIVOS = 3;
-const MESES_C = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  Responde lo que ninguna otra pantalla responde: con lo que puedo pagar al
+  mes, ¿cuándo quedo en cero con TODAS mis tarjetas y cuánto pago a cada una?
+  El cálculo vive en shared/utils/planDeudas.js (con tests).
+
+  El plan se guarda como un objetivo de tipo `plan_deudas`:
+    meta_valor   → lo que el usuario destina al mes
+    descripcion  → JSON con la deuda de cada tarjeta al empezar ({ d: { id: deuda } }),
+                   para comparar lo que debería deber hoy con lo que debe.
+  Los tipos de meta anteriores quedaron retirados: al guardar un plan se
+  desactivan los que sigan activos.
+*/
+const TIPO_PLAN = 'plan_deudas';
+
 const fmt0 = (n) => Math.round(parseFloat(n || 0)).toLocaleString('es-PE');
-const nombreBanco = (t) => t?.banco_nombre || t?.banco_nombre_custom || 'Banco';
-const interesMensual = (t) => {
-  const deuda = parseFloat(t.deuda_actual || 0);
-  const tea = parseFloat(t.tasa_interes || 0);
-  return tea > 0 ? deuda * (Math.pow(1 + tea / 100, 1 / 12) - 1) : 0;
+const redondear10 = (n) => Math.ceil(n / 10) * 10;
+const leerInicio = (goal) => {
+  try { return JSON.parse(goal.descripcion)?.d || null; } catch { return null; }
 };
 
 /* ── Íconos ── */
 const IcMenu  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="14" y2="17" /></svg>);
-const IcPlus  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>);
 const IcArrow = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>);
-const IcCheck = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>);
-const IcTrash = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /></svg>);
 
 function Goals() {
   const navigate = useNavigate();
@@ -91,489 +44,326 @@ function Goals() {
 
   const [tarjetas, setTarjetas] = useState([]);
   const [goals, setGoals] = useState([]);
-  const [completedGoals, setCompletedGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showNewGoal, setShowNewGoal] = useState(false);
-  const [selectedType, setSelectedType] = useState(null);
-  const [selectedTarjeta, setSelectedTarjeta] = useState(null);
-  const [metaValor, setMetaValor] = useState('');
-  const [fechaLimite, setFechaLimite] = useState('');
+  const [monto, setMonto] = useState('');
+  const [editando, setEditando] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
-  // Objetivo pendiente de eliminar: { id, done } (done = ya cumplido / del historial)
-  const [goalToDelete, setGoalToDelete] = useState(null);
-  const autoCompletandoRef = useRef(false);
-
-  const tarjetasActivas = tarjetas.filter(t => !t.esta_vacia);
-  const tarjetaSeleccionada = tarjetasActivas.find(t => t.id === selectedTarjeta);
-  const deudaTarjeta = parseFloat(tarjetaSeleccionada?.deuda_actual || 0);
-  const lineaTarjeta = parseFloat(tarjetaSeleccionada?.linea_credito || 1);
-  const usoTarjeta = lineaTarjeta > 0 ? Math.round((deudaTarjeta / lineaTarjeta) * 100) : 0;
-  const simboloTarjeta = tarjetaSeleccionada?.simbolo_moneda || 'S/';
+  const [racha, setRacha] = useState(null);
 
   const cargarDatos = async (userId) => {
     try {
       setLoading(true);
       const [dataCards, dataGoals] = await Promise.all([cardsApi.getUserCards(userId), goalsApi.getByUser(userId)]);
-      if (dataCards.success) setTarjetas(dataCards.tarjetas);
-      if (dataGoals.success) { setGoals(dataGoals.objetivos); setCompletedGoals(dataGoals.completados); }
+      if (dataCards.success) setTarjetas(dataCards.tarjetas.filter(t => !t.esta_vacia));
+      if (dataGoals.success) setGoals(dataGoals.objetivos || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
-  const showMessage = (text, type) => { setMessage({ text, type }); setTimeout(() => setMessage(null), 4500); };
-  const getGoalConfig = (tipo) => GOAL_TYPES.find(g => g.tipo === tipo) || GOAL_TYPES[0];
-
-  const resetForm = () => { setSelectedType(null); setSelectedTarjeta(null); setMetaValor(''); setFechaLimite(''); };
-
-  /* Abre el formulario con la meta ya armada (desde el "siguiente paso") */
-  const prepararMeta = (tipo, tarjetaId) => {
-    setSelectedType(tipo); setSelectedTarjeta(tarjetaId ?? null); setMetaValor(''); setFechaLimite('');
-    setShowNewGoal(true);
-    setTimeout(() => document.getElementById('nueva-meta')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
-  };
-
-  const handleCreateGoal = async () => {
-    if (!selectedType) return;
-    const config = getGoalConfig(selectedType);
-    if (config.necesitaMeta && !metaValor) return;
-    if (!selectedTarjeta) return;
-
-    // ── Validaciones de sentido: la meta solo se crea si de verdad ayuda ──
-    const meta = parseFloat(metaValor);
-    if (selectedType === 'reducir_uso') {
-      if (!(meta > 0 && meta < 100)) { showMessage('La meta de uso debe estar entre 1% y 99%.', 'error'); return; }
-      if (usoTarjeta <= meta) { showMessage(`Tu uso ya está en ${usoTarjeta}%. Elige una meta menor a tu uso actual.`, 'error'); return; }
-    }
-    if (selectedType === 'reducir_deuda') {
-      if (!(meta >= 0)) { showMessage('Ingresa un monto válido.', 'error'); return; }
-      if (deudaTarjeta <= meta) { showMessage(`Tu deuda ya es ${simboloTarjeta} ${deudaTarjeta.toLocaleString('es-PE')}. Elige un monto menor.`, 'error'); return; }
-    }
-    if (selectedType === 'pago_total' && deudaTarjeta <= 0) {
-      showMessage('Esta tarjeta ya no tiene deuda; no hay nada que liquidar.', 'error'); return;
-    }
-    if (selectedType === 'mantener_uso') {
-      if (usoTarjeta > 30) { showMessage(`Tu uso está en ${usoTarjeta}%. Primero bájalo con "Reducir uso de línea".`, 'error'); return; }
-      if (!fechaLimite) { showMessage('Elige hasta cuándo quieres mantenerlo bajo 30%.', 'error'); return; }
-    }
-
-    const tarjeta = tarjetaSeleccionada;
-    const nombreTarjeta = tarjeta ? `${nombreBanco(tarjeta)} — ${tarjeta.nombre_tarjeta || ''}` : null;
-    try {
-      setSaving(true);
-      const data = await goalsApi.create({
-        usuario_id: user.id, tipo: selectedType, descripcion: config.titulo,
-        meta_valor: metaValor || null, fecha_limite: fechaLimite || null,
-        tarjeta_id: selectedTarjeta || null, tarjeta_nombre: nombreTarjeta || null,
-      });
-      if (data.success) {
-        showMessage('Meta creada. Su avance se actualiza solo.', 'success');
-        setShowNewGoal(false); resetForm();
-        cargarDatos(user.id);
-      } else { showMessage(data.message, 'error'); }
-    } catch (e) { console.error(e); } finally { setSaving(false); }
-  };
-
-  const handleDelete = async (goalId) => {
-    try {
-      await goalsApi.delete({ objetivo_id: goalId, usuario_id: user.id });
-      setGoalToDelete(null); cargarDatos(user.id);
-    } catch (e) { console.error(e); }
-  };
-
-  const calcularProgreso = (goal) => {
-    const t = tarjetasActivas.find(x => x.id === goal.tarjeta_id);
-    const deuda = t ? parseFloat(t.deuda_actual || 0) : 0;
-    const linea = t ? parseFloat(t.linea_credito || 1) : 1;
-    const uso = linea > 0 ? Math.round((deuda / linea) * 100) : 0;
-
-    if (goal.tipo === 'reducir_uso') {
-      if (uso <= parseFloat(goal.meta_valor)) return 100;
-      const inicio = parseFloat(goal.progreso_actual) || uso;
-      const rango = inicio - parseFloat(goal.meta_valor);
-      return rango <= 0 ? 0 : Math.max(0, Math.min(99, Math.round(((inicio - uso) / rango) * 100)));
-    }
-    if (goal.tipo === 'reducir_deuda') {
-      if (deuda <= parseFloat(goal.meta_valor)) return 100;
-      const inicio = parseFloat(goal.progreso_actual) || deuda;
-      const rango = inicio - parseFloat(goal.meta_valor);
-      return rango <= 0 ? 0 : Math.max(0, Math.min(99, Math.round(((inicio - deuda) / rango) * 100)));
-    }
-    if (goal.tipo === 'pago_total') {
-      if (deuda === 0) return 100;
-      const inicio = parseFloat(goal.progreso_actual) || 1;
-      return Math.max(0, Math.min(99, Math.round(((inicio - deuda) / inicio) * 100)));
-    }
-    if (goal.tipo === 'mantener_uso') {
-      if (!t) return 0;
-      // Pasarse del 30% rompe el "mantener": el avance cae
-      if (uso > 30) return uso > 50 ? 10 : 25;
-      // Bajo 30%: avanza con el tiempo hasta la fecha límite (o 3 meses por defecto)
-      const inicio = new Date(goal.fecha_inicio);
-      const fin = goal.fecha_limite ? new Date(goal.fecha_limite) : (() => { const f = new Date(inicio); f.setMonth(f.getMonth() + 3); return f; })();
-      if (fin <= inicio) return 100;
-      return Math.max(0, Math.min(100, Math.round(((new Date() - inicio) / (fin - inicio)) * 100)));
-    }
-    if (goal.tipo === 'no_atrasar') {
-      if (!t) return 0;
-      if (t.dias_al_pago < 0) return 5; // atrasado
-      const inicio = new Date(goal.fecha_inicio);
-      const meta = new Date(inicio); meta.setMonth(meta.getMonth() + 3);
-      return Math.max(0, Math.min(100, Math.round(((new Date() - inicio) / (meta - inicio)) * 100)));
-    }
-    return 0;
-  };
-
-  const formatFecha = (iso) => { if (!iso) return null; const f = new Date(iso); return `${f.getDate()} ${MESES_C[f.getMonth()]} ${f.getFullYear()}`; };
-  const diasRestantes = (iso) => {
-    if (!iso) return null;
-    const d = Math.ceil((new Date(iso) - new Date()) / 86400000);
-    if (d < 0) return { texto: 'Venció', tono: 'danger' };
-    if (d === 0) return { texto: 'Hoy', tono: 'urgente' };
-    return { texto: d === 1 ? 'Mañana' : `En ${d} días`, tono: d <= 7 ? 'urgente' : '' };
-  };
-  const calcularProyeccion = (goal, pct) => {
-    if (pct >= 100 || pct <= 0) return null;
-    const diasTranscurridos = Math.max(1, Math.floor((new Date() - new Date(goal.fecha_inicio)) / 86400000));
-    const diasRest = Math.ceil(diasTranscurridos / (pct / 100)) - diasTranscurridos;
-    if (diasRest <= 0) return 'muy pronto';
-    if (diasRest < 14) return `${diasRest} días`;
-    if (diasRest < 60) return `unas ${Math.ceil(diasRest / 7)} semanas`;
-    const m = Math.ceil(diasRest / 30);
-    return `unos ${m} mes${m !== 1 ? 'es' : ''}`;
-  };
-
-  // Carga inicial
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
     cargarDatos(user.id);
   }, [user, navigate]);
 
-  // Marca como logradas las metas que llegaron al 100%
+  const lista = tarjetasParaPlan(tarjetas);
+  const conDeuda = lista.filter(t => t.deuda > 0);
+  const totalDeuda = lista.reduce((s, t) => s + t.deuda, 0);
+  const plan = goals.find(g => g.tipo === TIPO_PLAN);
+  const presupuestoGuardado = plan ? parseFloat(plan.meta_valor) || 0 : 0;
+  const base = planDeudas(lista, 0);   // solo para los mínimos
+  const desde = Math.max(10, redondear10(base.minimosTotal));
+  const hasta = Math.max(desde, redondear10(totalDeuda));
+
+  /* Monto inicial del editor: el guardado, o el doble de los mínimos */
   useEffect(() => {
-    if (goals.length === 0 || tarjetasActivas.length === 0) return;
-    if (autoCompletandoRef.current) return;
-    const paraCompletar = goals.filter(g => !g.completado && calcularProgreso(g) >= 100);
-    if (paraCompletar.length === 0) return;
-    autoCompletandoRef.current = true;
-    Promise.all(paraCompletar.map(goal => goalsApi.complete({ objetivo_id: goal.id, usuario_id: user?.id })))
-      .then(() => { autoCompletandoRef.current = false; if (user?.id) cargarDatos(user.id); })
-      .catch(() => { autoCompletandoRef.current = false; });
-  }, [goals, tarjetas]);
+    if (loading || monto !== '') return;
+    setMonto(String(plan ? Math.round(presupuestoGuardado) : Math.min(hasta, redondear10(base.minimosTotal * 2) || desde)));
+  }, [loading]);
+
+  /* Sin deudas: racha de pagos completos a tiempo, con los movimientos reales */
+  useEffect(() => {
+    if (loading || totalDeuda > 0 || !tarjetas.length) return;
+    let cancelado = false;
+    (async () => {
+      const hastaF = new Date();
+      const desdeF = new Date(hastaF); desdeF.setMonth(desdeF.getMonth() - 12);
+      const res = await Promise.all(tarjetas.map(async (t) => {
+        try {
+          const data = await movementsApi.getByRange({ tarjetaId: t.id, desde: aISO(desdeF), hasta: aISO(hastaF) });
+          return puntualidad(t, data?.movimientos || []);
+        } catch { return { evaluados: 0, aTiempo: 0 }; }
+      }));
+      if (!cancelado) setRacha(res.reduce((a, r) => ({ evaluados: a.evaluados + r.evaluados, aTiempo: a.aTiempo + r.aTiempo }), { evaluados: 0, aTiempo: 0 }));
+    })();
+    return () => { cancelado = true; };
+  }, [loading, totalDeuda, tarjetas]);
+
+  const showMessage = (text, type) => { setMessage({ text, type }); setTimeout(() => setMessage(null), 4500); };
+
+  const guardarPlan = async () => {
+    const presupuesto = parseFloat(monto) || 0;
+    if (planDeudas(lista, presupuesto).estado !== 'ok') return;
+    try {
+      setSaving(true);
+      // Un solo plan activo: se desactiva el anterior y las metas antiguas
+      await Promise.all(goals.map(g => goalsApi.delete({ objetivo_id: g.id, usuario_id: user.id })));
+      const inicio = Object.fromEntries(lista.filter(t => t.deuda > 0).map(t => [t.id, Math.round(t.deuda * 100) / 100]));
+      const data = await goalsApi.create({
+        usuario_id: user.id, tipo: TIPO_PLAN,
+        descripcion: JSON.stringify({ d: inicio }),
+        meta_valor: presupuesto,
+      });
+      if (data.success) {
+        showMessage('Plan guardado. Cada mes te diremos cómo vas.', 'success');
+        setEditando(false);
+        cargarDatos(user.id);
+      } else { showMessage(data.message, 'error'); }
+    } catch (e) { console.error(e); showMessage('No se pudo guardar el plan.', 'error'); } finally { setSaving(false); }
+  };
 
   if (!user || loading) return (
     <div className="loading-screen"><div className="spinner"></div></div>
   );
 
-  const goalsActivos = goals.filter(g => !g.completado);
-  const puedeCrear = goalsActivos.length < MAX_ACTIVOS;
-  const formVisible = puedeCrear && tarjetasActivas.length > 0 && (showNewGoal || goalsActivos.length === 0);
+  const s = tarjetas[0]?.simbolo_moneda || 'S/';
+  const mostrarEditor = !plan || editando;
+  const presupuesto = mostrarEditor ? (parseFloat(monto) || 0) : presupuestoGuardado;
+  const r = planDeudas(lista, presupuesto);
+  const rMin = soloMinimos(lista);
 
-  /* ── Siguiente paso: la tarjeta que más cuesta (o la de más deuda) ── */
-  const conDeuda = tarjetasActivas.filter(t => parseFloat(t.deuda_actual || 0) > 0);
-  const masCara = [...conDeuda].sort((a, b) => (interesMensual(b) - interesMensual(a)) || (b.deuda_actual - a.deuda_actual))[0];
-  const totalDeuda = tarjetasActivas.reduce((s, t) => s + parseFloat(t.deuda_actual || 0), 0);
-  const totalLinea = tarjetasActivas.reduce((s, t) => s + parseFloat(t.linea_credito || 0), 0);
-  const usoTotal = totalLinea > 0 ? Math.round((totalDeuda / totalLinea) * 100) : 0;
-  const yaTieneMeta = (tipo, tarjetaId) => goalsActivos.some(g => g.tipo === tipo && g.tarjeta_id === tarjetaId);
-
-  let paso;
-  if (tarjetasActivas.length === 0) {
-    paso = { titulo: 'Primero agrega una tarjeta.', texto: 'Las metas se miden con la deuda real de tus tarjetas.', boton: 'Ir a mis tarjetas', accion: () => navigate('/dashboard') };
-  } else if (masCara) {
-    const im = interesMensual(masCara);
-    const s = masCara.simbolo_moneda || 'S/';
-    const extra30 = usoTotal > 30 ? ` Y para bajar tu uso al 30%, paga S/ ${fmt0(totalDeuda - totalLinea * 0.3)} en total.` : '';
-    paso = {
-      titulo: `Baja primero tu ${nombreBanco(masCara)}.`,
-      texto: (im >= 1
-        ? `Te cuesta ~${s} ${fmt0(im)} al mes en intereses (TEA ${parseFloat(masCara.tasa_interes)}%)${conDeuda.length > 1 ? ', más que tus otras tarjetas' : ''}.`
-        : `Es la tarjeta con más deuda: ${s} ${fmt0(masCara.deuda_actual)}.`) + extra30,
-      boton: 'Crear meta para esta tarjeta',
-      accion: () => prepararMeta('reducir_deuda', masCara.id),
-      hecho: yaTieneMeta('reducir_deuda', masCara.id) || yaTieneMeta('pago_total', masCara.id),
-    };
-  } else {
-    const t = tarjetasActivas[0];
-    paso = {
-      titulo: 'Estás sin deuda.',
-      texto: 'Lo que sigue: mantener tu uso bajo 30% para que tu score siga subiendo.',
-      boton: 'Crear meta: uso bajo 30%',
-      accion: () => prepararMeta('mantener_uso', t.id),
-      hecho: yaTieneMeta('mantener_uso', t.id),
+  /* ── ¿Cómo vas? (plan guardado): deuda de hoy vs la que el plan esperaba ── */
+  let avance = null;
+  if (plan && !editando) {
+    const inicio = leerInicio(plan) || {};
+    const ids = Object.keys(inicio).map(Number);
+    const deudaInicial = ids.reduce((acc, id) => acc + (inicio[id] || 0), 0);
+    const deudaHoy = ids.reduce((acc, id) => acc + (lista.find(t => t.id === id)?.deuda || 0), 0);
+    const meses = mesesDesde(plan.fecha_inicio);
+    let esperado = null;
+    if (meses >= 1) {
+      const delPlan = planDeudas(lista.filter(t => ids.includes(t.id)).map(t => ({ ...t, deuda: inicio[t.id] })), presupuestoGuardado);
+      esperado = delPlan.saldos[Math.min(meses, delPlan.saldos.length - 1)] ?? 0;
+    }
+    avance = {
+      deudaInicial, deudaHoy, meses, esperado,
+      pagado: Math.max(0, deudaInicial - deudaHoy),
+      pct: deudaInicial > 0 ? Math.max(0, Math.min(100, Math.round(((deudaInicial - deudaHoy) / deudaInicial) * 100))) : 0,
     };
   }
 
-  const renderGoal = (goal) => {
-    const config = getGoalConfig(goal.tipo);
-    const pct = Math.min(calcularProgreso(goal), 100);
-    const dias = diasRestantes(goal.fecha_limite);
-    const t = tarjetasActivas.find(x => x.id === goal.tarjeta_id);
-    const s = t?.simbolo_moneda || 'S/';
-    const deuda = t ? parseFloat(t.deuda_actual || 0) : 0;
-    const uso = t && parseFloat(t.linea_credito) > 0 ? Math.round((deuda / parseFloat(t.linea_credito)) * 100) : 0;
-    const proj = calcularProyeccion(goal, pct);
-    const estado = pct >= 100 ? 'done' : dias?.tono === 'danger' ? 'danger' : dias?.tono === 'urgente' ? 'urgente' : 'curso';
-    const estadoTxt = { done: 'Lograda', danger: 'Venció', urgente: 'Por vencer', curso: 'En curso' }[estado];
+  const chips = [
+    { tag: 'Solo los mínimos', val: desde },
+    { tag: 'El doble', val: Math.min(hasta, redondear10(base.minimosTotal * 2)) },
+    { tag: 'Todo', val: hasta },
+  ].filter((c, i, arr) => arr.findIndex(x => x.val === c.val) === i);
 
-    const metaTxt = goal.meta_valor
-      ? (config.metaSufijo === '%' ? `${goal.meta_valor}%` : `${s} ${fmt0(goal.meta_valor)}`)
-      : { pago_total: `${s} 0`, no_atrasar: '3 meses al día', mantener_uso: 'Menos de 30%' }[goal.tipo] || '—';
-    const ahoraTxt = !t ? '—'
-      : ['reducir_uso', 'mantener_uso'].includes(goal.tipo) ? `${uso}%`
-      : goal.tipo === 'no_atrasar' ? (t.dias_al_pago < 0 ? 'Atrasado' : 'Al día')
-      : `${s} ${fmt0(deuda)}`;
-    let venceTxt = dias ? dias.texto : 'Sin fecha';
-    if (!dias && goal.tipo === 'no_atrasar' && goal.fecha_inicio) {
-      const fin = new Date(goal.fecha_inicio); fin.setMonth(fin.getMonth() + 3);
-      venceTxt = formatFecha(fin.toISOString());
-    }
+  const pagoNum = parseFloat(monto) || 0;
+  const pctSlider = ((Math.min(hasta, Math.max(desde, pagoNum)) - desde) / Math.max(1, hasta - desde)) * 100;
 
-    return (
-      <article className="gl-goal" key={goal.id}>
-        <div className="gl-goal-head">
-          <span className={`gl-ico is-${config.color}`}>{config.icono}</span>
-          <div className="gl-goal-title">
-            <h3>{goal.descripcion}</h3>
-            {goal.tarjeta_nombre && <span>{goal.tarjeta_nombre.split('—')[0].trim()}</span>}
-          </div>
-          <span className={`gl-status is-${estado}`}>{estadoTxt}</span>
-        </div>
+  /* ── Bloques ── */
+  const resultadoEditor = r.estado === 'ok' ? (
+    <div className="gl-res">
+      <p className="gl-res-big">Terminas en {mesFin(r.meses)}</p>
+      <p className="gl-res-sub">
+        {r.meses === 1 ? 'Este mismo mes' : `En ${textoMeses(r.meses)}`}, pagando <b>{s} {fmt0(r.intereses)} de intereses</b>.
+      </p>
+      {rMin && rMin.intereses - r.intereses >= 1 && (
+        <p className="gl-res-ahorro">
+          Solo con los mínimos serían {textoMeses(rMin.meses)} y {s} {fmt0(rMin.intereses)}: <b>ahorras {s} {fmt0(rMin.intereses - r.intereses)}</b>.
+        </p>
+      )}
+    </div>
+  ) : r.estado === 'no_alcanza_minimos' ? (
+    <div className="gl-res is-bad">
+      <p className="gl-res-big">No alcanza para los mínimos</p>
+      <p className="gl-res-sub">Tus pagos mínimos suman {s} {fmt0(r.minimosTotal)}. Con menos, caes en mora.</p>
+    </div>
+  ) : r.estado === 'no_baja' ? (
+    <div className="gl-res is-bad">
+      <p className="gl-res-big">Tu deuda no bajaría</p>
+      <p className="gl-res-sub">Con {s} {fmt0(presupuesto)} los intereses se comen el pago. Sube el monto.</p>
+    </div>
+  ) : null;
 
-        <div className="gl-progress">
-          <div className="gl-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Avance de la meta">
-            <div style={{ width: `${pct}%` }} />
-          </div>
-          <strong>{pct}%</strong>
-        </div>
-
-        <dl className="gl-facts">
-          <div><dt>Ahora</dt><dd>{ahoraTxt}</dd></div>
-          <div><dt>Meta</dt><dd>{metaTxt}</dd></div>
-          <div><dt>Vence</dt><dd>{venceTxt}</dd></div>
-        </dl>
-
-        {proj && <p className="gl-proj">A este ritmo, la logras en {proj}.</p>}
-
-        <div className="gl-goal-actions">
-          {t ? <button className="gl-link" onClick={() => navigate(`/tarjeta/${t.slot_numero}`)}>Ver tarjeta <IcArrow /></button> : <span />}
-          <button className="gl-icon-del" onClick={() => setGoalToDelete({ id: goal.id, done: false })} aria-label={`Abandonar ${goal.descripcion}`}>
-            <IcTrash />
+  const editor = (
+    <div className="gl-editor">
+      <label className="gl-editor-label" htmlFor="gl-monto">¿Cuánto puedes pagar al mes entre todas tus tarjetas?</label>
+      <div className="gl-monto">
+        <span>{s}</span>
+        <input id="gl-monto" type="number" inputMode="decimal" min="0" value={monto} onChange={(e) => setMonto(e.target.value)} />
+      </div>
+      <input
+        className="gl-slider" type="range" min={desde} max={hasta} step="10"
+        value={Math.min(hasta, Math.max(desde, pagoNum))}
+        onChange={(e) => setMonto(e.target.value)}
+        aria-label="Monto mensual"
+        style={{ '--p': `${pctSlider}%` }}
+      />
+      <div className="gl-chips">
+        {chips.map(c => (
+          <button key={c.tag} type="button" className={`gl-chip${Math.abs(pagoNum - c.val) < 1 ? ' is-on' : ''}`} onClick={() => setMonto(String(c.val))}>
+            {c.tag} <b>{s} {fmt0(c.val)}</b>
           </button>
-        </div>
-      </article>
-    );
-  };
+        ))}
+      </div>
+      {resultadoEditor}
+      <div className="gl-editor-actions">
+        {plan && <button type="button" className="gl-btn gl-btn--ghost-dark" onClick={() => { setEditando(false); setMonto(String(Math.round(presupuestoGuardado))); }}>Cancelar</button>}
+        <button type="button" className="gl-btn gl-btn--peach" disabled={saving || r.estado !== 'ok'} onClick={guardarPlan}>
+          {saving ? 'Guardando…' : plan ? 'Guardar nuevo monto' : 'Guardar mi plan'} <IcArrow />
+        </button>
+      </div>
+    </div>
+  );
 
-  const config = selectedType ? getGoalConfig(selectedType) : null;
+  let hero;
+  if (lista.length === 0) {
+    hero = (
+      <section className="gl-hero gl-hero--solo">
+        <div className="gl-hero-msg">
+          <span className="gl-hero-tag">Empieza aquí</span>
+          <h2>Primero agrega una tarjeta.</h2>
+          <p>El plan se arma con la deuda, la TEA y el pago mínimo de tus tarjetas.</p>
+          <button className="gl-btn gl-btn--peach" onClick={() => navigate('/dashboard')}>Ir a mis tarjetas <IcArrow /></button>
+        </div>
+      </section>
+    );
+  } else if (totalDeuda <= 0) {
+    hero = (
+      <section className="gl-hero gl-hero--solo">
+        <div className="gl-hero-msg">
+          <span className="gl-hero-tag">Sin deudas</span>
+          <h2>No tienes deudas en tus tarjetas.</h2>
+          <p>
+            {racha === null ? 'Revisando tus pagos…'
+              : racha.evaluados === 0 ? 'Cuando venza tu próximo pago, verás aquí tu racha de pagos completos a tiempo.'
+              : `Pagaste el total a tiempo en ${racha.aTiempo} de tus últimos ${racha.evaluados} ${racha.evaluados === 1 ? 'pago' : 'pagos'}. `}
+            {racha?.evaluados > 0 && 'Sigue pagando el total antes de cada fecha de pago: así no pagas intereses y tu historial mejora.'}
+          </p>
+        </div>
+      </section>
+    );
+  } else if (mostrarEditor) {
+    hero = (
+      <section className="gl-hero">
+        <div className="gl-hero-msg">
+          <span className="gl-hero-tag">{plan ? 'Cambiar monto' : 'Arma tu plan'}</span>
+          <h2>Debes {s}&nbsp;{fmt0(totalDeuda)} {conDeuda.length === 1 ? `en tu ${conDeuda[0].nombre}` : `entre tus ${conDeuda.length} tarjetas`}.</h2>
+          <p>
+            Dinos cuánto puedes pagar al mes y te decimos cuándo terminas, cuánto pagas de intereses y cuánto darle a cada tarjeta.
+            El extra va primero a la que más te cobra.
+          </p>
+        </div>
+        {editor}
+      </section>
+    );
+  } else {
+    hero = (
+      <section className="gl-hero">
+        <div className="gl-hero-msg">
+          <span className="gl-hero-tag">Tu plan</span>
+          <h2>{r.estado === 'ok' ? `Sales de deudas en ${mesFin(r.meses)}.` : 'Tu plan necesita un ajuste.'}</h2>
+          <p>
+            {r.estado === 'ok'
+              ? <>Pagando {s} {fmt0(presupuestoGuardado)} al mes{conDeuda.length > 1 ? ' entre tus tarjetas' : ''}: {r.meses === 1 ? 'este mes terminas' : `te faltan ${textoMeses(r.meses)}`} y {s} {fmt0(r.intereses)} de intereses.</>
+              : <>Con {s} {fmt0(presupuestoGuardado)} al mes ya no alcanza: {r.estado === 'no_alcanza_minimos' ? `tus mínimos suman ${s} ${fmt0(r.minimosTotal)}` : 'los intereses se comen el pago'}. Cambia el monto.</>}
+          </p>
+          <button className="gl-btn gl-btn--ghost-dark" onClick={() => { setEditando(true); setMonto(String(Math.round(presupuestoGuardado))); }}>Cambiar monto</button>
+        </div>
+        {avance && (
+          <div className="gl-avance">
+            <span className="gl-editor-label">¿Cómo vas?</span>
+            <b className="gl-avance-num">{avance.pct}%</b>
+            <div className="gl-avance-bar"><div style={{ width: `${avance.pct}%` }} /></div>
+            <p>Ya bajaste {s} {fmt0(avance.pagado)} de {s} {fmt0(avance.deudaInicial)}.</p>
+            {avance.esperado === null ? (
+              <p className="gl-avance-nota">Empezaste el plan este mes. En un mes te diremos si vas al día.</p>
+            ) : avance.deudaHoy <= avance.esperado + 1 ? (
+              <p className="gl-avance-nota is-good">
+                {avance.esperado - avance.deudaHoy >= 1 ? `Vas adelantado: debes ${s} ${fmt0(avance.esperado - avance.deudaHoy)} menos de lo planeado.` : 'Vas al día con tu plan.'}
+              </p>
+            ) : (
+              <p className="gl-avance-nota is-bad">
+                Vas {s} {fmt0(avance.deudaHoy - avance.esperado)} atrás del plan. Si puedes, súmalo a tu pago de este mes.
+              </p>
+            )}
+          </div>
+        )}
+      </section>
+    );
+  }
 
   return (
     <div className="dashboard-dark">
       <Sidebar active="objetivos" open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <ConfirmDialog
-        open={!!goalToDelete}
-        title={goalToDelete?.done ? '¿Quitar del historial?' : '¿Abandonar esta meta?'}
-        message={goalToDelete?.done
-          ? 'Esta meta lograda se quitará de tu historial. No se puede deshacer.'
-          : 'Dejarás de hacerle seguimiento. No se puede deshacer.'}
-        confirmText={goalToDelete?.done ? 'Quitar' : 'Abandonar'}
-        onConfirm={() => { const id = goalToDelete.id; setGoalToDelete(null); handleDelete(id); }}
-        onCancel={() => setGoalToDelete(null)}
-      />
-
       <div className="dashboard-layout">
         <main className="gl">
 
-          {/* ── ENCABEZADO ── */}
           <header className="gl-top">
             <button className="gl-icon-btn" onClick={() => setSidebarOpen(true)} aria-label="Abrir menú"><IcMenu /></button>
             <div className="gl-title">
-              <h1>Mis objetivos</h1>
-              <p>Metas concretas para pagar menos intereses y subir tu score.</p>
+              <h1>Tu plan para salir de deudas</h1>
+              <p>Cuánto pagar cada mes, a qué tarjeta primero y cuándo quedas en cero.</p>
             </div>
             <button className="gl-avatar" onClick={() => navigate('/perfil')} aria-label="Mi perfil">
               {(user.nombre?.charAt(0) || '').toUpperCase()}{(user.apellido?.charAt(0) || '').toUpperCase()}
             </button>
           </header>
 
-          {/* ── SIGUIENTE PASO ── */}
-          <section className="gl-hero" aria-label="Tu siguiente paso">
-            <div className="gl-hero-msg">
-              <span className="gl-hero-tag">Tu siguiente paso</span>
-              <h2>{paso.titulo}</h2>
-              <p>{paso.texto}</p>
-              {paso.hecho ? (
-                <span className="gl-hero-done"><IcCheck /> Ya tienes una meta para esto</span>
-              ) : (puedeCrear || tarjetasActivas.length === 0) ? (
-                <button className="gl-btn gl-btn--peach" onClick={paso.accion}>{paso.boton} <IcArrow /></button>
-              ) : (
-                <span className="gl-hero-done">Ya tienes {MAX_ACTIVOS} metas activas: termina una para crear otra.</span>
-              )}
-            </div>
-            <div className="gl-hero-stats">
-              <div><strong>{goalsActivos.length}<small> de {MAX_ACTIVOS}</small></strong><span>Metas activas</span></div>
-              <div><strong>{completedGoals.length}</strong><span>Logradas</span></div>
-            </div>
-          </section>
+          {hero}
 
           {message && <div className={`gl-msg is-${message.type}`} role="status">{message.text}</div>}
 
-          {/* ── METAS EN CURSO ── */}
-          {goalsActivos.length > 0 && (
-            <section className="gl-sec" aria-labelledby="gl-activas-t">
+          {/* ── ESTE MES ── */}
+          {totalDeuda > 0 && r.primerMes.length > 0 && (
+            <section className="gl-sec" aria-labelledby="gl-mes-t">
               <div className="gl-sec-head">
                 <div>
-                  <span className="gl-tag">En curso</span>
-                  <h2 id="gl-activas-t">¿Cómo vas con tus metas?</h2>
-                  <p>Se actualizan solas con la deuda real de tus tarjetas.</p>
-                </div>
-                {puedeCrear && !showNewGoal && (
-                  <button className="gl-btn gl-btn--soft" onClick={() => { resetForm(); setShowNewGoal(true); }}>
-                    <IcPlus /> Nueva meta
-                  </button>
-                )}
-              </div>
-              <div className="gl-goals">{goalsActivos.map(renderGoal)}</div>
-            </section>
-          )}
-
-          {/* ── NUEVA META ── */}
-          {formVisible && (
-            <section className="gl-sec" id="nueva-meta" aria-labelledby="gl-nueva-t">
-              <div className="gl-sec-head">
-                <div>
-                  <span className="gl-tag">Nueva meta</span>
-                  <h2 id="gl-nueva-t">¿Qué quieres lograr?</h2>
-                  <p>Elige una. Te decimos por qué ayuda y medimos el avance por ti.</p>
+                  <span className="gl-tag">Este mes</span>
+                  <h2 id="gl-mes-t">¿Cuánto pagar a cada tarjeta?</h2>
+                  <p>{s} {fmt0(presupuesto)} repartidos así. Paga antes de la fecha de pago de cada una.</p>
                 </div>
               </div>
-
-              <div className="gl-form">
-                <div className="gl-types" role="radiogroup" aria-label="Tipo de meta">
-                  {GOAL_TYPES.map(type => (
-                    <button
-                      key={type.tipo}
-                      type="button"
-                      role="radio"
-                      aria-checked={selectedType === type.tipo}
-                      aria-label={`${type.titulo}: ${type.descripcion}`}
-                      className={`gl-type${selectedType === type.tipo ? ' is-on' : ''}`}
-                      onClick={() => { setSelectedType(type.tipo); setSelectedTarjeta(null); setMetaValor(''); setFechaLimite(''); }}
-                    >
-                      <span className={`gl-ico is-${type.color}`}>{type.icono}</span>
-                      <span className="gl-type-txt"><b>{type.titulo}</b><small>{type.descripcion}</small></span>
-                    </button>
-                  ))}
-                </div>
-
-                {config && (
-                  <div className="gl-config">
-                    <p className="gl-why"><b>Por qué ayuda:</b> {config.beneficio}</p>
-
-                    <fieldset className="gl-field">
-                      <legend>¿Para qué tarjeta?</legend>
-                      <div className="gl-cards">
-                        {tarjetasActivas.map(t => {
-                          const u = t.linea_credito > 0 ? Math.round((t.deuda_actual / t.linea_credito) * 100) : 0;
-                          return (
-                            <button
-                              key={t.id}
-                              type="button"
-                              className={`gl-card-opt${selectedTarjeta === t.id ? ' is-on' : ''}`}
-                              aria-pressed={selectedTarjeta === t.id}
-                              aria-label={`${nombreBanco(t)}, ${fmt0(t.deuda_actual)} de deuda, ${u}% de uso`}
-                              onClick={() => setSelectedTarjeta(t.id)}
-                            >
-                              <b>{nombreBanco(t)}</b>
-                              <small>{t.simbolo_moneda || 'S/'} {fmt0(t.deuda_actual)} · {u}% de uso</small>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </fieldset>
-
-                    {tarjetaSeleccionada && (
-                      <p className="gl-context">
-                        {selectedType === 'reducir_uso' && (usoTarjeta > 30
-                          ? <>Tu uso está en <b>{usoTarjeta}%</b>. Para llegar al 30%, paga <b>{simboloTarjeta} {fmt0(deudaTarjeta - lineaTarjeta * 0.3)}</b>.</>
-                          : <>Tu uso ya está en <b>{usoTarjeta}%</b>, dentro del rango ideal.</>)}
-                        {selectedType === 'reducir_deuda' && <>Hoy debes <b>{simboloTarjeta} {fmt0(deudaTarjeta)}</b>. ¿A cuánto quieres bajarla?</>}
-                        {selectedType === 'pago_total' && <>Te falta pagar <b>{simboloTarjeta} {fmt0(deudaTarjeta)}</b> para dejarla en cero.</>}
-                        {selectedType === 'mantener_uso' && <>Tu uso está en <b>{usoTarjeta}%</b>.{usoTarjeta > 30 ? ' Primero bájalo de 30%.' : ' Mantenlo así.'}</>}
-                        {selectedType === 'no_atrasar' && <>Durante 3 meses, paga siempre antes de la fecha límite.</>}
-                      </p>
-                    )}
-
-                    {tarjetaSeleccionada && (config.necesitaMeta || config.necesitaFecha) && (
-                      <div className="gl-inputs">
-                        {config.necesitaMeta && (
-                          <label className="gl-input" htmlFor="gl-meta">
-                            <span>{config.metaLabel}</span>
-                            <span className="gl-input-box">
-                              {config.metaSufijo !== '%' && <i>{simboloTarjeta}</i>}
-                              <input id="gl-meta" aria-label={config.metaLabel} type="number" inputMode="decimal" min="0" placeholder={config.metaPlaceholder} value={metaValor} onChange={e => setMetaValor(e.target.value)} />
-                              {config.metaSufijo === '%' && <i>%</i>}
-                            </span>
-                          </label>
-                        )}
-                        {config.necesitaFecha && (
-                          <label className="gl-input">
-                            <span>{selectedType === 'mantener_uso' ? '¿Hasta cuándo?' : 'Fecha límite (opcional)'}</span>
-                            <span className="gl-input-box">
-                              <input type="date" aria-label={selectedType === 'mantener_uso' ? 'Hasta cuándo' : 'Fecha límite'} value={fechaLimite} onChange={e => setFechaLimite(e.target.value)} min={new Date().toISOString().split('T')[0]} />
-                            </span>
-                          </label>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="gl-form-actions">
-                      {goalsActivos.length > 0 && (
-                        <button type="button" className="gl-btn gl-btn--ghost" onClick={() => { setShowNewGoal(false); resetForm(); }}>Cancelar</button>
-                      )}
-                      <button
-                        type="button"
-                        className="gl-btn gl-btn--green"
-                        onClick={handleCreateGoal}
-                        disabled={saving || !selectedTarjeta || (config.necesitaMeta && !metaValor) || (selectedType === 'mantener_uso' && !fechaLimite)}
-                      >
-                        {saving ? 'Guardando…' : <>Crear meta <IcCheck /></>}
-                      </button>
+              <ul className="gl-reparto">
+                {r.primerMes.filter(p => p.pago > 0.5).map(p => (
+                  <li key={p.id} className={p.prioridad ? 'is-prioridad' : ''}>
+                    <div className="gl-reparto-txt">
+                      <b>{p.nombre}</b>
+                      <small>
+                        {conDeuda.length === 1 ? 'Todo tu monto va aquí'
+                          : p.prioridad ? 'Primero esta: es la que más te cobra'
+                          : p.minimoEstimado ? 'Mínimo estimado (registra tu pago mínimo)' : 'El pago mínimo'}
+                        {r.terminaMes[p.id] && r.estado === 'ok' ? ` · queda en cero en ${mesFin(r.terminaMes[p.id])}` : ''}
+                      </small>
                     </div>
-                  </div>
-                )}
-              </div>
+                    <strong>{s} {fmt0(p.pago)}</strong>
+                  </li>
+                ))}
+              </ul>
+              <p className="gl-nota">
+                El plan es para la deuda de hoy. Si sigues usando tus tarjetas, paga esos consumos completos aparte; si no, el plan se alarga.
+              </p>
             </section>
           )}
 
-          {/* ── LOGRADAS ── */}
-          {completedGoals.length > 0 && (
-            <section className="gl-sec" aria-labelledby="gl-logradas-t">
+          {/* ── POR QUÉ ESTE ORDEN ── */}
+          {conDeuda.length > 1 && (
+            <section className="gl-sec" aria-labelledby="gl-orden-t">
               <div className="gl-sec-head">
                 <div>
-                  <span className="gl-tag">Logradas</span>
-                  <h2 id="gl-logradas-t">Lo que ya lograste</h2>
+                  <span className="gl-tag">Por qué</span>
+                  <h2 id="gl-orden-t">¿Por qué este orden?</h2>
                 </div>
               </div>
-              <ul className="gl-done">
-                {completedGoals.slice(0, 10).map(goal => {
-                  const c = getGoalConfig(goal.tipo);
-                  return (
-                    <li key={goal.id}>
-                      <span className={`gl-ico is-${c.color}`}>{c.icono}</span>
-                      <span className="gl-done-txt">
-                        <b>{goal.descripcion}</b>
-                        <small>{goal.tarjeta_nombre ? `${goal.tarjeta_nombre.split('—')[0].trim()} · ` : ''}{formatFecha(goal.fecha_completado)}</small>
-                      </span>
-                      <span className="gl-status is-done"><IcCheck /> Lograda</span>
-                      <button className="gl-icon-del" onClick={() => setGoalToDelete({ id: goal.id, done: true })} aria-label={`Quitar ${goal.descripcion} del historial`}>
-                        <IcTrash />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+              <div className="gl-porque">
+                <p>
+                  A todas les pagas al menos el mínimo para no caer en mora. Lo que sobra va a la tarjeta con la <b>TEA más alta</b>,
+                  porque cada sol que le bajas deja de generar el interés más caro. Cuando queda en cero, ese dinero pasa a la siguiente.
+                  Es la forma de pagar menos intereses en total.
+                </p>
+              </div>
             </section>
           )}
         </main>
