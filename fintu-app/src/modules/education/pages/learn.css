@@ -249,3 +249,11 @@
   .lr-bank-scale { display: none; }
   .lr-btn { align-self: stretch; }
 }
+
+/* Aviso: tasas de referencia con más de 6 meses */
+.lr-note--warn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(194, 70, 42, 0.08);
+  color: #8E3520;
+}

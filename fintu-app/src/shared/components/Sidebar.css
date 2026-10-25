@@ -12,6 +12,7 @@
 
 .sidebar {
   --app-gold:    #E8946A;
+  --app-cream:   #F3ECE3;
   --app-sidebar: #22150F;
 
   width: 260px; flex-shrink: 0;
@@ -25,14 +26,14 @@
 .sidebar::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(241, 182, 140,0.40), transparent);
+  background: rgba(255,255,255,0.05);
 }
 
 .sidebar-header {
   padding: 20px 18px 16px;
   display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
 }
-.sidebar-brand { align-items: flex-start; color: var(--app-gold); cursor: pointer; }
+.sidebar-brand { align-items: flex-start; color: var(--app-cream); cursor: pointer; }  /* solo la tilde va en durazno */
 .sidebar-brand-icon {
   width: 32px; height: 32px; border-radius: 8px;
   background: rgba(241, 182, 140,0.15); border: 1px solid rgba(241, 182, 140,0.25);
@@ -65,19 +66,19 @@
   transition: background 0.2s, border-color 0.2s;
 }
 .sidebar-user:hover {
-  background: rgba(241, 182, 140,0.08);
-  border-color: rgba(241, 182, 140,0.25);
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.16);
 }
 .sidebar-user:focus-visible { outline: 2px solid var(--app-gold); outline-offset: 2px; }
 .sidebar-user-avatar {
   width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
-  background: rgba(241, 182, 140,0.20); border: 1px solid rgba(241, 182, 140,0.28);
+  background: rgba(247, 243, 237,0.10); border: 1px solid rgba(247, 243, 237,0.16);
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800; color: var(--app-gold); letter-spacing: -0.3px;
+  font-size: 12px; font-weight: 800; color: var(--app-cream); letter-spacing: -0.3px;
 }
 .sidebar-user-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
 .sidebar-user-name  { font-size: 13px; font-weight: 700; color: #EFE8DF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-user-plan  { font-size: 9.5px; font-weight: 600; color: var(--app-gold); letter-spacing: 0.5px; }
+.sidebar-user-plan  { font-size: 9.5px; font-weight: 600; color: rgba(247, 243, 237,0.55); letter-spacing: 0.5px; }
 .sidebar-logout {
   width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
   background: transparent; border: 1px solid rgba(255,255,255,0.10);
@@ -102,11 +103,11 @@
   text-align: left; font-family: 'DM Sans', inherit; position: relative; overflow: hidden;
 }
 .nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
-.nav-item.active { background: rgba(241, 182, 140,0.12); color: #E8946A; }
+.nav-item.active { background: rgba(247, 243, 237,0.09); color: var(--app-cream); font-weight: 600; }
 .nav-item.active::before {
   content: ''; position: absolute; left: 0; top: 18%; bottom: 18%;
   width: 2.5px; border-radius: 999px;
-  background: #E8946A; box-shadow: 0 0 8px rgba(241, 182, 140,0.60);
+  background: var(--app-cream);
 }
 .nav-item--coming { opacity: 0.38; cursor: not-allowed; }
 .nav-item--coming:hover { background: transparent; color: rgba(255,255,255,0.38); }

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cardsApi } from '@/modules/cards/services/cardsApi';
+import { rangoMercado, textoRango } from '@/shared/utils/teaAprox';
 import ImproveCard from './ImproveCard';
 
 /**
  * "¿Tu tasa es cara?"
  *
- * Ubica la tasa de ESTA tarjeta dentro del rango de TEA de los bancos
- * peruanos (usa `tea_promedio` de getBancos) y, si el usuario paga por
- * encima de la más baja, estima cuánto le cuesta al año sobre su deuda.
+ * Compara la TEA que registró el usuario (exacta) con el mercado en RANGOS
+ * APROXIMADOS (teaAprox.js) y estima cuánto ahorraría al año con una tasa
+ * cercana a la más baja.
  */
 
 const fmt0 = (n) => Math.round(n).toLocaleString('es-PE');
@@ -70,20 +71,24 @@ function TeaMarketCard({ tea, deuda, simboloMoneda }) {
     );
   }
 
-  const min = Math.min(...teasMercado);
-  const max = Math.max(...teasMercado);
-  const promedio = teasMercado.reduce((s, t) => s + t, 0) / teasMercado.length;
-  const porDebajo = teaNum <= promedio;
+  // El mercado en bandas aproximadas: de la más baja a la más alta
+  const mercado = rangoMercado(teasMercado);
+  const min = mercado.baja.desde;
+  const max = mercado.alta.hasta;
+  const porDebajo = teaNum < mercado.promedio.desde;
+  const enPromedio = !porDebajo && teaNum < mercado.promedio.hasta;
 
   // Posición en la escala del mercado (0-100%)
   const rango = Math.max(1, max - min);
   const pos = Math.min(100, Math.max(0, ((teaNum - min) / rango) * 100));
 
-  // Ahorro al año con la TEA más baja del mercado (si mantuvieras la deuda un año)
-  const ahorroAnual = deudaNum > 0 ? deudaNum * (Math.max(0, teaNum - min) / 100) : 0;
+  // Ahorro al año con una TEA en la banda más baja (si mantuvieras la deuda un año)
+  const ahorro = (techo) => (deudaNum > 0 ? deudaNum * (Math.max(0, teaNum - techo) / 100) : 0);
+  const ahorroMin = ahorro(mercado.baja.hasta);
+  const ahorroMax = ahorro(mercado.baja.desde);
 
-  const paso = ahorroAnual >= 1
-    ? `Con la TEA más baja (${min.toFixed(0)}%) ahorrarías unos ${simbolo} ${fmt0(ahorroAnual)} al año sobre tu deuda actual.`
+  const paso = ahorroMax >= 1
+    ? `Con una TEA cercana a la más baja (${textoRango(mercado.baja)}) ahorrarías unos ${simbolo} ${fmt0(ahorroMin)}–${fmt0(ahorroMax)} al año sobre tu deuda actual.`
     : porDebajo
       ? 'Tu tasa está bien. Lo que más te ahorra es pagar el total cada mes.'
       : 'Revisa si otro banco te ofrece una TEA menor.';
@@ -92,18 +97,20 @@ function TeaMarketCard({ tea, deuda, simboloMoneda }) {
     <ImproveCard
       {...base}
       valor={`${teaNum}%`}
-      tono={porDebajo ? 'good' : 'warn'}
+      tono={porDebajo ? 'good' : enPromedio ? '' : 'warn'}
       detalle={porDebajo
-        ? `Menor al promedio (${promedio.toFixed(0)}%)`
-        : `Mayor al promedio (${promedio.toFixed(0)}%)`}
+        ? `Menor al promedio (${textoRango(mercado.promedio)})`
+        : enPromedio
+          ? `Cerca del promedio (${textoRango(mercado.promedio)})`
+          : `Mayor al promedio (${textoRango(mercado.promedio)})`}
       paso={paso}
     >
       <div className="mj-bar">
         <div className="mj-track mj-track--escala" />
         <div className="mj-dot" style={{ left: `${pos}%` }} title={`Tu TEA: ${teaNum}%`} />
         <div className="mj-ends">
-          <span><b>{min.toFixed(0)}%</b> la más baja</span>
-          <span><b>{max.toFixed(0)}%</b> la más alta</span>
+          <span>aprox. <b>{min}%</b> la más baja</span>
+          <span>aprox. <b>{max}%</b> la más alta</span>
         </div>
       </div>
     </ImproveCard>

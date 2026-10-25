@@ -156,9 +156,11 @@ const tablas = [
   eso evita usar marcas figurativas ajenas y hotlinkear a sus servidores.
 
   ⚠️ Las TEA son referenciales (fuente: SBS) y cambian con el tiempo.
-  Al actualizarlas, sincroniza TEA_ACTUALIZADO en Comparador.jsx.
+  La app las muestra como rangos aproximados (fintu-app/src/shared/utils/teaAprox.js).
+  Al revisarlas, actualiza REFERENCIA_TEA.revisado allí. El upsert hace que los
+  cambios aquí lleguen también a una base que ya existe.
 */
-const seedBancos = `INSERT IGNORE INTO bancos
+const seedBancos = `INSERT INTO bancos
     (id, nombre, tea_minima, tea_maxima, tea_promedio) VALUES
     (1,'BCP',76.90,107.00,91.45),
     (2,'Interbank',70.00,191.71,85.00),
@@ -169,7 +171,10 @@ const seedBancos = `INSERT IGNORE INTO bancos
     (7,'Banco Falabella',34.20,95.99,65.10),
     (8,'Diners Club',12.00,79.00,45.50),
     (9,'Tarjeta Cencosud',34.90,116.00,75.45),
-    (10,'Financiera Oh!',54.92,109.83,82.38)`;
+    (10,'Financiera Oh!',54.92,109.83,82.38)
+  ON DUPLICATE KEY UPDATE
+    nombre = VALUES(nombre), tea_minima = VALUES(tea_minima),
+    tea_maxima = VALUES(tea_maxima), tea_promedio = VALUES(tea_promedio)`;
 
 async function initDatabase() {
   /* 1. La base de datos existe (la crea si falta) */

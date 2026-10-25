@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Toast from '@/shared/components/Toast';
 import { cardsApi } from '@/modules/cards/services/cardsApi';
+import { rangoTea, textoRango } from '@/shared/utils/teaAprox';
 import './AddCardModal.css';
 
 const MONEDAS_PRESET = [
@@ -119,7 +120,7 @@ function AddCardModal({ isOpen, onClose, userId, slotNumero, onCardAdded }) {
         banco_id: banco.id,
         banco_nombre_custom: '',
         tea_custom: '',
-        tasa_interes: banco.tea_promedio || ''
+        tasa_interes: ''   // la pide el formulario; si queda vacía se usa el aproximado del banco
       }));
       setSearchBanco(banco.nombre);
     }
@@ -213,7 +214,9 @@ function AddCardModal({ isOpen, onClose, userId, slotNumero, onCardAdded }) {
         dia_pago: parseInt(formData.dia_pago),
         tasa_interes: formData.banco_id === 'CUSTOM'
           ? parseFloat(formData.tea_custom)
-          : parseFloat(formData.tasa_interes),
+          : (parseFloat(formData.tasa_interes) > 0
+              ? parseFloat(formData.tasa_interes)
+              : rangoTea(bancoSeleccionado?.tea_promedio)?.centro ?? null),
         comision_mantenimiento: parseFloat(formData.comision_mantenimiento),
         categoria_principal: formData.categoria_principal,
         notificar_dias_antes_cierre: parseInt(formData.notificar_dias_antes_cierre),
@@ -385,7 +388,7 @@ function AddCardModal({ isOpen, onClose, userId, slotNumero, onCardAdded }) {
                           >
                             <div className="banco-info">
                               <span className="banco-nombre">{banco.nombre}</span>
-                              <span className="banco-tea">TEA promedio: {banco.tea_promedio}%</span>
+                              <span className="banco-tea">TEA {textoRango(rangoTea(banco.tea_promedio))}</span>
                             </div>
                           </div>
                         ))}
@@ -408,7 +411,7 @@ function AddCardModal({ isOpen, onClose, userId, slotNumero, onCardAdded }) {
                           <div className="banco-selected-text">
                             <span className="banco-selected-nombre">{bancoSeleccionado.nombre}</span>
                             {formData.banco_id !== 'CUSTOM' && bancoSeleccionado.tea_promedio && (
-                              <span className="banco-selected-tea">TEA: {bancoSeleccionado.tea_promedio}%</span>
+                              <span className="banco-selected-tea">TEA {textoRango(rangoTea(bancoSeleccionado.tea_promedio))}</span>
                             )}
                           </div>
                         </div>
@@ -461,6 +464,26 @@ function AddCardModal({ isOpen, onClose, userId, slotNumero, onCardAdded }) {
                       />
                       {errors.tea_custom && <span className="acm-error">{errors.tea_custom}</span>}
                     </div>
+                  </div>
+                )}
+
+                {/* TEA de su tarjeta (banco de la lista): la exacta es la del estado de cuenta */}
+                {bancoSeleccionado && formData.banco_id !== 'CUSTOM' && (
+                  <div className="acm-form-group">
+                    <label>TEA de tu tarjeta (%)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      name="tasa_interes"
+                      className="acm-input"
+                      value={formData.tasa_interes}
+                      onChange={handleChange}
+                      placeholder={rangoTea(bancoSeleccionado.tea_promedio) ? String(rangoTea(bancoSeleccionado.tea_promedio).centro) : '85'}
+                    />
+                    <span className="acm-field-hint">
+                      Está en tu estado de cuenta.{rangoTea(bancoSeleccionado.tea_promedio) && ` Si la dejas vacía, usamos un aproximado de ${bancoSeleccionado.nombre} (${rangoTea(bancoSeleccionado.tea_promedio).centro}%).`}
+                    </span>
                   </div>
                 )}
 
