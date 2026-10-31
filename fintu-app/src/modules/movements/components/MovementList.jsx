@@ -82,14 +82,12 @@ function MovementList({ tarjetaId, simboloMoneda, refreshTrigger }) {
     return g;
   };
 
+  /* Los movimientos se registran por día (sin hora real): se muestra la fecha */
   const fmtFecha = (iso) => {
     const d = new Date(iso);
-    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    return d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '');
   };
-  const fmtHora = (iso) => {
-    const d = new Date(iso);
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-  };
+  const fmtHora = null;
 
   const resumen = () => {
     const gastos = movimientos.filter(m => m.tipo === 'gasto');
@@ -215,7 +213,6 @@ function MovementList({ tarjetaId, simboloMoneda, refreshTrigger }) {
           mov={selected}
           simbolo={simbolo}
           fmtFecha={fmtFecha}
-          fmtHora={fmtHora}
           onClose={() => setShowModal(false)}
         />,
         document.body
@@ -261,7 +258,7 @@ function MovItem({ mov, simbolo, fmtHora, fmtFecha, index, onClick }) {
 /* ═══════════════════════════════════════
    Modal de detalle
 ═══════════════════════════════════════ */
-function DetailModal({ mov, simbolo, fmtFecha, fmtHora, onClose }) {
+function DetailModal({ mov, simbolo, fmtFecha, onClose }) {
   const esGasto = mov.tipo === 'gasto';
   return (
     <div className="ml-modal-overlay" onClick={onClose}>
@@ -274,7 +271,7 @@ function DetailModal({ mov, simbolo, fmtFecha, fmtHora, onClose }) {
             </div>
             <div>
               <h3>{esGasto ? 'Gasto' : 'Pago'}</h3>
-              <p>{fmtFecha(mov.fecha_movimiento)} · {fmtHora(mov.fecha_movimiento)}</p>
+              <p>{fmtFecha(mov.fecha_movimiento)}</p>
             </div>
           </div>
           <button className="ml-modal-close" onClick={onClose}><IconClose /></button>
@@ -294,10 +291,6 @@ function DetailModal({ mov, simbolo, fmtFecha, fmtHora, onClose }) {
             <div className="ml-modal-row">
               <span>Fecha</span>
               <span>{fmtFecha(mov.fecha_movimiento)}</span>
-            </div>
-            <div className="ml-modal-row">
-              <span>Hora</span>
-              <span>{fmtHora(mov.fecha_movimiento)}</span>
             </div>
             <div className="ml-modal-row">
               <span>Tipo</span>

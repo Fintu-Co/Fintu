@@ -59,6 +59,14 @@ function AuthLayout({ aside, children }) {
             <IcBack /> Volver al inicio
           </button>
         </div>
+        {/* En celular el panel chocolate no cabe: su mensaje va en una franja arriba */}
+        <div className="au-band" aria-hidden="true">
+          <BrandSymbol />
+          <div>
+            <strong>{aside.title}</strong>
+            <span>{aside.text}</span>
+          </div>
+        </div>
         <div className="au-box">{children}</div>
       </main>
     </div>

@@ -18,6 +18,11 @@ class MailService {
   async sendRenewalReminder({ email, nombre, venceEl, precio, enlace }) {
     throw new Error('MailService.sendRenewalReminder no implementado');
   }
+
+  /** Confirmación de "Avísame cuando salga", con enlace para darse de baja. */
+  async sendWaitlistWelcome({ email, enlaceBaja }) {
+    throw new Error('MailService.sendWaitlistWelcome no implementado');
+  }
 }
 
 module.exports = MailService;

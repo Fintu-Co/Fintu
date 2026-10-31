@@ -105,6 +105,52 @@ class NodemailerMailService extends MailService {
 
     return 'email';
   }
+
+  async sendWaitlistWelcome({ email, enlaceBaja }) {
+    if (!process.env.SMTP_HOST) {
+      console.log(`\n📧 [DEV] Confirmación de lista para ${email}. Baja: ${enlaceBaja}\n`);
+      return 'console';
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Fintú & Co." <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Te avisaremos cuando abramos',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="utf-8"></head>
+        <body style="margin:0;padding:0;background:#E9E3DA;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+          <div style="max-width:480px;margin:40px auto;padding:0 20px;">
+            <div style="background:#FBF8F3;border-radius:20px;overflow:hidden;box-shadow:0 10px 40px rgba(43,27,23,0.12);">
+              <div style="padding:28px 32px;background:#2B1B17;">
+                <p style="margin:0;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F1B68C;">Fintú &amp; Co.</p>
+                <h1 style="margin:10px 0 0;font-size:24px;font-weight:600;color:#F7F3ED;">Listo, estás en la lista</h1>
+              </div>
+              <div style="padding:28px 32px;">
+                <p style="margin:0 0 14px;font-size:15px;color:#6B5148;line-height:1.6;">Te escribiremos una sola vez, cuando abramos, para contarte cuántos cupos de fundador quedan: <strong style="color:#2B1B17;">$5 una vez y acceso de por vida</strong>, solo para los primeros 100.</p>
+                <p style="margin:0;font-size:15px;color:#6B5148;line-height:1.6;">Mientras tanto, puedes ver cómo funciona en la demo de nuestra página.</p>
+                <p style="margin:22px 0 0;font-size:12.5px;color:#8A746A;">¿Te anotaste por error? <a href="${enlaceBaja}" style="color:#A5562F;">Sácame de la lista</a> y borramos tu correo.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+
+    return 'email';
+  }
 }
 
 module.exports = NodemailerMailService;

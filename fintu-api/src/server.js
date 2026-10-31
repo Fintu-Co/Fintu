@@ -22,9 +22,12 @@ const cardRoutes = require('./modules/cards/interfaces/cardRoutes');
 const movementRoutes = require('./modules/movements/interfaces/movementRoutes');
 const analyticsRoutes = require('./modules/analytics/interfaces/analyticsRoutes');
 const goalRoutes = require('./modules/goals/interfaces/goalRoutes');
+const waitlistRoutes = require('./modules/waitlist/interfaces/waitlistRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+// Detrás del proxy de Railway: IP real para el rate limit y https en los enlaces que arma el API
+app.set('trust proxy', 1);
 
 // Middlewares
 // FRONTEND_URL admite varios orígenes separados por coma (ej. app + otro puerto local).
@@ -51,6 +54,7 @@ app.use('/api/cards', apiLimiter, cardRoutes);
 app.use('/api/movements', apiLimiter, movementRoutes);
 app.use('/api/analytics', apiLimiter, analyticsRoutes);
 app.use('/api/goals', apiLimiter, goalRoutes);
+app.use('/api/lista', waitlistRoutes);
 
 // Iniciar servidor — primero asegura que las tablas existan
 initDatabase()

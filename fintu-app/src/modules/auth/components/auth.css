@@ -389,12 +389,25 @@
 }
 @keyframes au-spin { to { transform: rotate(360deg); } }
 
+/* Franja de marca: solo en celular y tablet (ver Responsive) */
+.au-band { display: none; }
+
 /* ── Responsive ── */
 @media (max-width: 960px) {
   .au { grid-template-columns: minmax(0, 1fr); }
   .au-aside { display: none; }
   .au-top { justify-content: space-between; }
   .au-top-logo { display: inline-flex; }
+  .au-band {
+    display: flex; align-items: center; gap: 14px;
+    margin: 8px 0 4px; padding: 18px 20px; border-radius: 22px;
+    background: linear-gradient(150deg, #4A2F28 0%, #3A2420 55%, #2B1B17 100%);
+    color: #F7F3ED; --brand-accent: #F1B68C;
+  }
+  .au-band .brand-symbol { width: 40px; height: 40px; flex-shrink: 0; color: #F7F3ED; }
+  .au-band div { display: flex; flex-direction: column; gap: 3px; }
+  .au-band strong { font-family: 'Fraunces', Georgia, serif; font-weight: 400; font-size: 20px; line-height: 1.2; }
+  .au-band span { font-size: 13.5px; line-height: 1.45; color: rgba(247, 243, 237, 0.72); }
 }
 @media (max-width: 520px) {
   .au-main { padding: 16px 16px 32px; }

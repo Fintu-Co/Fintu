@@ -42,6 +42,17 @@ async function ensureDatabase() {
 
 /* Orden respetando las foreign keys: primero las tablas sin dependencias. */
 const tablas = [
+  /* "Avísame cuando salga": solo correo, fecha y token para darse de baja */
+  `CREATE TABLE IF NOT EXISTS interesados (
+    id INT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(100) NOT NULL,
+    token_baja CHAR(40) NOT NULL,
+    fecha_registro TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY email (email),
+    UNIQUE KEY token_baja (token_baja)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`,
+
   `CREATE TABLE IF NOT EXISTS usuarios (
     id INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,

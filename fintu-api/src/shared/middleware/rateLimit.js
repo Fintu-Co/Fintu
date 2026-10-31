@@ -36,4 +36,16 @@ const authLimiter = rateLimit({
   },
 });
 
-module.exports = { apiLimiter, authLimiter };
+/* Formulario público "Avísame": pocos envíos por IP para que no llenen la lista de basura */
+const waitlistLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,   // 15 minutos
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Ya recibimos varios correos desde aquí. Intenta más tarde.',
+  },
+});
+
+module.exports = { apiLimiter, authLimiter, waitlistLimiter };

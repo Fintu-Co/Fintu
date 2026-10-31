@@ -235,7 +235,15 @@ function CardDashboard() {
                 <p>Cubre lo que gastaste hasta el corte del {fechaCorta(hero.corte)} y no pagas intereses. {cuandoVence}</p>
               </>
             )}
-            {hero.tipo === 'acumula' && (
+            {/* Sin historial aún no se sabe cuánto vence: mejor esperar que mostrar un monto que cambia */}
+            {hero.tipo === 'acumula' && historial === null && (
+              <>
+                <span className="cdx-hero-tag">Tu próximo pago</span>
+                <h2>Revisando tu ciclo…</h2>
+                <p>Calculamos cuánto vence y cuándo, con tus movimientos.</p>
+              </>
+            )}
+            {hero.tipo === 'acumula' && historial !== null && (
               <>
                 <span className="cdx-hero-tag">Este ciclo</span>
                 <h2>Llevas <em>{simbolo} {fmt(hero.monto)}</em> gastados.</h2>

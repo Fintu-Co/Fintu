@@ -50,7 +50,7 @@
   flex-shrink: 0;
 }
 .mtb-ic svg { width: 18px; height: 18px; }
-.mtb-ic.buy { background: rgba(94, 131, 146,0.12); color: #5E8392; }
+.mtb-ic.buy { background: rgba(232, 148, 106,0.14); color: #A5562F; }
 .mtb-ic.pay { background: rgba(47, 74, 62,0.12); color: #2F4A3E; }
 .mtb-desc { min-width: 0; }
 
@@ -169,3 +169,34 @@
 }
 .mtb-empty-btn svg { width: 15px; height: 15px; }
 .mtb-empty-btn:hover { background: #4A2F28; }
+
+/* ── Celular: cada movimiento es una fila de dos líneas, sin scroll horizontal ──
+   [ícono] Concepto ............ + S/ 520.00  [⋮]
+           21 oct 2026 · CONSUMO                    */
+@media (max-width: 640px) {
+  .mtb-scroll { overflow-x: visible; }
+  .mtb-table { min-width: 0; }
+  .mtb-table thead { display: none; }
+  .mtb-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "concepto monto menu"
+      "fecha    tipo  menu";
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 2px;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(74, 47, 40, 0.08);
+  }
+  .mtb-table tbody tr:last-child { border-bottom: none; }
+  .mtb-table tbody td { padding: 0; border-bottom: none; background: none !important; }
+  .mtb-table tbody td:nth-child(1) { grid-area: concepto; min-width: 0; }
+  .mtb-table tbody td:nth-child(2) { grid-area: fecha; padding-left: 46px; font-size: 12.5px; font-weight: 500; }
+  .mtb-table tbody td:nth-child(3) { grid-area: monto; font-size: 14.5px; white-space: nowrap; }
+  .mtb-table tbody td:nth-child(4) { grid-area: tipo; justify-self: end; }
+  .mtb-table tbody td:nth-child(5) { grid-area: menu; }
+  .mtb-concept { gap: 10px; }
+  .mtb-ic { width: 36px; height: 36px; }
+  .mtb-desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
