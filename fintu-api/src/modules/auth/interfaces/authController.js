@@ -15,6 +15,7 @@ function buildAuthController({
   getProfile,
   updateProfile,
   changePassword,
+  getOffer,
 }) {
   return {
     async register(req, res) {
@@ -63,8 +64,13 @@ function buildAuthController({
           case 'PAYMENT_REQUIRED':
             return res.status(403).json({
               success: false,
-              message: 'Debes completar el pago de $5 para acceder',
+              message: result.motivo === 'RENOVAR'
+                ? 'Tu plan anual venció. Renuévalo para seguir usando Fintú.'
+                : 'Completa tu pago para acceder.',
               requiresPayment: true,
+              motivo: result.motivo,
+              precio: result.precio,
+              accesoHasta: result.acceso_hasta,
               userId: result.userId,
             });
           default:
@@ -101,10 +107,13 @@ function buildAuthController({
         if (result.status === 'NOT_UPDATED') {
           return res.status(400).json({ success: false, message: 'No se pudo actualizar el estado del pago' });
         }
+        if (result.status === 'ALREADY_ACTIVE') {
+          return res.status(409).json({ success: false, message: 'Tu cuenta ya tiene acceso de por vida. No hace falta pagar.' });
+        }
 
         res.json({
           success: true,
-          message: 'Pago confirmado. Bienvenido a Fintú & Co.',
+          message: result.renovacion ? 'Listo, renovaste tu plan por un año más.' : 'Pago confirmado. Bienvenido a Fintú & Co.',
           token: result.token,
           user: result.user,
         });
@@ -226,6 +235,17 @@ function buildAuthController({
       } catch (error) {
         console.error('Error en resetPassword:', error);
         res.status(500).json({ success: false, message: 'Error al restablecer la contraseña' });
+      }
+    },
+
+    /* Oferta vigente: fundador con cupos restantes, o plan anual. Pública. */
+    async getOffer(req, res) {
+      try {
+        const oferta = await getOffer.execute();
+        res.json({ success: true, oferta });
+      } catch (error) {
+        console.error('Error en getOffer:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener la oferta' });
       }
     },
 

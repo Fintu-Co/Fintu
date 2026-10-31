@@ -24,6 +24,7 @@ const ResetPassword = require('../application/ResetPassword');
 const GetProfile = require('../application/GetProfile');
 const UpdateProfile = require('../application/UpdateProfile');
 const ChangePassword = require('../application/ChangePassword');
+const GetOffer = require('../application/GetOffer');
 
 // Interfaz HTTP
 const buildAuthController = require('./authController');
@@ -47,6 +48,7 @@ const controller = buildAuthController({
   getProfile: new GetProfile({ userRepository }),
   updateProfile: new UpdateProfile({ userRepository }),
   changePassword: new ChangePassword({ userRepository, passwordHasher }),
+  getOffer: new GetOffer({ userRepository }),
 });
 
 // ── Rutas ──
@@ -58,6 +60,7 @@ router.post('/login', controller.login);
 router.post('/confirm-payment', controller.confirmPayment);
 router.post('/register-with-payment', controller.registerWithPayment);
 router.post('/forgot-password', controller.forgotPassword);
+router.get('/oferta', controller.getOffer);
 router.post('/reset-password', controller.resetPassword);
 
 // Rutas protegidas (requieren token)

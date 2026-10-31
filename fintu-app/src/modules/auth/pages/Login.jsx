@@ -59,7 +59,10 @@ function Login() {
         showMessage('Acceso exitoso. Redirigiendo…', 'success');
         setTimeout(() => navigate('/dashboard'), 1000);
       } else {
-        if (data.requiresPayment) showMessage('Debes completar el pago de $5 para acceder.', 'warning');
+        if (data.requiresPayment) {
+          // Plan anual vencido o pago pendiente: a la pantalla de pago
+          navigate('/pagar', { state: { userId: data.userId, motivo: data.motivo, precio: data.precio, accesoHasta: data.accesoHasta, email: formData.email } });
+        }
         else showMessage(data.message || 'Email o contraseña incorrectos.', 'error');
       }
     } catch {

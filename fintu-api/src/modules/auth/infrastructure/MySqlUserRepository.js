@@ -15,8 +15,8 @@ class MySqlUserRepository extends UserRepository {
 
       // 1. Crear usuario
       const userQuery = `
-        INSERT INTO usuarios (nombre, apellido, email, password, ha_pagado, paypal_payment_id, monto_pagado, fecha_pago)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO usuarios (nombre, apellido, email, password, ha_pagado, paypal_payment_id, monto_pagado, fecha_pago, plan, acceso_hasta)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const [userResult] = await connection.execute(userQuery, [
@@ -28,6 +28,8 @@ class MySqlUserRepository extends UserRepository {
         userData.paypal_payment_id || null,
         userData.monto_pagado || null,
         userData.fecha_pago || null,
+        userData.plan || null,
+        userData.acceso_hasta || null,
       ]);
 
       const userId = userResult.insertId;
@@ -60,7 +62,7 @@ class MySqlUserRepository extends UserRepository {
 
   async findById(id) {
     const [rows] = await db.execute(
-      'SELECT id, nombre, apellido, email, ha_pagado, fecha_registro, fecha_pago FROM usuarios WHERE id = ?',
+      'SELECT id, nombre, apellido, email, ha_pagado, fecha_registro, fecha_pago, plan, acceso_hasta FROM usuarios WHERE id = ?',
       [id]
     );
     return rows[0];
@@ -74,16 +76,34 @@ class MySqlUserRepository extends UserRepository {
     return rows[0];
   }
 
-  async updatePaymentStatus(userId, paymentId) {
+  async updatePaymentStatus(userId, paymentId, pago = {}) {
     const [result] = await db.execute(
       `UPDATE usuarios
        SET ha_pagado = TRUE,
            paypal_payment_id = ?,
-           fecha_pago = NOW()
+           fecha_pago = NOW(),
+           plan = COALESCE(?, plan),
+           acceso_hasta = ?,
+           monto_pagado = COALESCE(?, monto_pagado)
        WHERE id = ?`,
-      [paymentId, userId]
+      [paymentId, pago.plan || null, pago.acceso_hasta || null, pago.monto_pagado ?? null, userId]
     );
     return result.affectedRows > 0;
+  }
+
+  async countFundadoresPagados() {
+    const [rows] = await db.execute(
+      "SELECT COUNT(*) AS total FROM usuarios WHERE ha_pagado = TRUE AND (plan = 'fundador' OR plan IS NULL)"
+    );
+    return Number(rows[0].total);
+  }
+
+  async findAnualesQueVencen(fecha) {
+    const [rows] = await db.execute(
+      "SELECT id, nombre, email, acceso_hasta FROM usuarios WHERE ha_pagado = TRUE AND plan = 'anual' AND acceso_hasta = ?",
+      [fecha]
+    );
+    return rows;
   }
 
   async updateSentinelConsulta(userId) {
@@ -124,7 +144,7 @@ class MySqlUserRepository extends UserRepository {
 
   async getProfile(userId) {
     const [rows] = await db.execute(
-      `SELECT id, nombre, apellido, email, ha_pagado, fecha_registro, fecha_pago, paypal_payment_id, monto_pagado
+      `SELECT id, nombre, apellido, email, ha_pagado, fecha_registro, fecha_pago, paypal_payment_id, monto_pagado, plan, acceso_hasta
        FROM usuarios WHERE id = ?`,
       [userId]
     );

@@ -11,6 +11,8 @@ import {
   PointElement,
   LineElement,
   BarElement,
+  BarController,
+  LineController,
   Title,
   Tooltip,
   Legend,
@@ -20,12 +22,17 @@ import {
 import { Chart } from 'react-chartjs-2';
 import './HistoryChart.css';
 
+/* El gráfico mezcla barras y línea con <Chart>, que no registra controladores
+   por su cuenta: sin BarController/LineController el build de producción
+   falla con '"bar" is not a registered controller' y la página queda en blanco. */
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
   BarElement,
+  BarController,
+  LineController,
   Title,
   Tooltip,
   Legend,

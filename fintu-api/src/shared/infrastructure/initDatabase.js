@@ -56,6 +56,8 @@ const tablas = [
     ultima_consulta_sentinel DATETIME DEFAULT NULL,
     reset_token VARCHAR(10) DEFAULT NULL,
     reset_token_expiry DATETIME DEFAULT NULL,
+    plan VARCHAR(20) DEFAULT NULL COMMENT 'fundador | anual (NULL = pagó antes de los planes: fundador)',
+    acceso_hasta DATE DEFAULT NULL COMMENT 'Vencimiento del plan anual; NULL = de por vida',
     PRIMARY KEY (id),
     UNIQUE KEY email (email)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`,
@@ -176,6 +178,25 @@ const seedBancos = `INSERT INTO bancos
     nombre = VALUES(nombre), tea_minima = VALUES(tea_minima),
     tea_maxima = VALUES(tea_maxima), tea_promedio = VALUES(tea_promedio)`;
 
+/*
+  Columnas agregadas después de crear la tabla. MySQL no tiene
+  ADD COLUMN IF NOT EXISTS: se consulta information_schema primero.
+*/
+const columnasNuevas = [
+  ['usuarios', 'plan', "VARCHAR(20) DEFAULT NULL COMMENT 'fundador | anual (NULL = pagó antes de los planes: fundador)'"],
+  ['usuarios', 'acceso_hasta', "DATE DEFAULT NULL COMMENT 'Vencimiento del plan anual; NULL = de por vida'"],
+];
+
+async function asegurarColumnas(pool) {
+  for (const [tabla, columna, definicion] of columnasNuevas) {
+    const [rows] = await pool.query(
+      'SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+      [tabla, columna]
+    );
+    if (!rows.length) await pool.query(`ALTER TABLE ${tabla} ADD COLUMN ${columna} ${definicion}`);
+  }
+}
+
 async function initDatabase() {
   /* 1. La base de datos existe (la crea si falta) */
   await ensureDatabase();
@@ -188,6 +209,7 @@ async function initDatabase() {
   for (const sql of tablas) {
     await pool.query(sql);
   }
+  await asegurarColumnas(pool);
   await pool.query(seedBancos);
   console.log('✅ Base de datos verificada (base, tablas y bancos listos)');
 }

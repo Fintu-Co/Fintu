@@ -59,6 +59,52 @@ class NodemailerMailService extends MailService {
 
     return 'email';
   }
+
+  async sendRenewalReminder({ email, nombre, venceEl, precio, enlace }) {
+    if (!process.env.SMTP_HOST) {
+      console.log(`\n📧 [DEV] Recordatorio de renovación para ${email}: vence el ${venceEl}\n`);
+      return 'console';
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Fintú & Co." <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      to: email,
+      subject: `Tu plan de Fintú vence el ${venceEl}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="utf-8"></head>
+        <body style="margin:0;padding:0;background:#E9E3DA;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+          <div style="max-width:480px;margin:40px auto;padding:0 20px;">
+            <div style="background:#FBF8F3;border-radius:20px;overflow:hidden;box-shadow:0 10px 40px rgba(43,27,23,0.12);">
+              <div style="padding:28px 32px;background:#2B1B17;">
+                <p style="margin:0;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F1B68C;">Fintú &amp; Co.</p>
+                <h1 style="margin:10px 0 0;font-size:24px;font-weight:600;color:#F7F3ED;">Tu plan vence el ${venceEl}</h1>
+              </div>
+              <div style="padding:28px 32px;">
+                <p style="margin:0 0 18px;font-size:15px;color:#6B5148;line-height:1.6;">Hola ${nombre}, tu plan anual de Fintú vence en 7 días. Renuévalo por <strong style="color:#2B1B17;">$${Number(precio).toFixed(2)} USD</strong> y sigue sabiendo cuánto y cuándo pagar tus tarjetas.</p>
+                <a href="${enlace}" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#2F4A3E;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;">Renovar mi plan</a>
+                <p style="margin:22px 0 0;font-size:13px;color:#8A746A;">No hay cobros automáticos: solo se renueva si tú lo pagas. Tus datos se guardan aunque el plan venza.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+
+    return 'email';
+  }
 }
 
 module.exports = NodemailerMailService;

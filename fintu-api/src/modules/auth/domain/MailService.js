@@ -13,6 +13,11 @@ class MailService {
   async sendPasswordResetCode({ email, nombre, code }) {
     throw new Error('MailService.sendPasswordResetCode no implementado');
   }
+
+  /** Aviso de que el plan anual vence pronto. Mismo retorno que el anterior. */
+  async sendRenewalReminder({ email, nombre, venceEl, precio, enlace }) {
+    throw new Error('MailService.sendRenewalReminder no implementado');
+  }
 }
 
 module.exports = MailService;

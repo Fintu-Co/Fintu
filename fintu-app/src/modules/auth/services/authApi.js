@@ -9,6 +9,7 @@ export const authApi = {
   forgotPassword:  (body)   => request('/api/auth/forgot-password',  { method: 'POST', body: JSON.stringify(body) }),
   resetPassword:   (body)   => request('/api/auth/reset-password',   { method: 'POST', body: JSON.stringify(body) }),
   getProfile:      (userId) => request(`/api/auth/profile/${userId}`),
+  getOffer:        ()       => request('/api/auth/oferta'),
   updateProfile:   (body)   => request('/api/auth/profile',          { method: 'PUT',  body: JSON.stringify(body) }),
   changePassword:  (body)   => request('/api/auth/change-password',  { method: 'PUT',  body: JSON.stringify(body) }),
 };

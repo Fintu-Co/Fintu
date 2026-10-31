@@ -13,6 +13,9 @@
  */
 const CleanupOldMovements = require('../../modules/movements/application/CleanupOldMovements');
 const MySqlMovementRepository = require('../../modules/movements/infrastructure/MySqlMovementRepository');
+const SendRenewalReminders = require('../../modules/auth/application/SendRenewalReminders');
+const MySqlUserRepository = require('../../modules/auth/infrastructure/MySqlUserRepository');
+const NodemailerMailService = require('../../modules/auth/infrastructure/NodemailerMailService');
 
 const UN_DIA_MS = 24 * 60 * 60 * 1000;
 const RETRASO_INICIAL_MS = 60 * 1000; // 1 min tras arrancar, para no competir con el boot
@@ -32,6 +35,20 @@ async function limpiarMovimientosAntiguos() {
   }
 }
 
+/* Recordatorio por correo 7 días antes de que venza un plan anual */
+async function recordarRenovaciones() {
+  try {
+    const job = new SendRenewalReminders({
+      userRepository: new MySqlUserRepository(),
+      mailService: new NodemailerMailService(),
+    });
+    const enviados = await job.execute();
+    if (enviados > 0) console.log(`📧 Recordatorios de renovación enviados: ${enviados}`);
+  } catch (error) {
+    console.error('⚠️  Fallaron los recordatorios de renovación:', error.message);
+  }
+}
+
 function startScheduler() {
   if (process.env.RUN_JOBS === 'false') {
     console.log('⏭️  Tareas programadas desactivadas (RUN_JOBS=false)');
@@ -40,8 +57,10 @@ function startScheduler() {
 
   setTimeout(limpiarMovimientosAntiguos, RETRASO_INICIAL_MS);
   setInterval(limpiarMovimientosAntiguos, UN_DIA_MS);
+  setTimeout(recordarRenovaciones, RETRASO_INICIAL_MS);
+  setInterval(recordarRenovaciones, UN_DIA_MS);
 
-  console.log('⏰ Tareas programadas activas (limpieza de movimientos: cada 24 h)');
+  console.log('⏰ Tareas programadas activas (limpieza de movimientos y recordatorios de renovación: cada 24 h)');
 }
 
 module.exports = { startScheduler };

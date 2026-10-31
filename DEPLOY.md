@@ -58,7 +58,11 @@ SMTP_FROM=
 PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
 PAYPAL_API_BASE=https://api-m.paypal.com    # producción (sandbox: api-m.sandbox.paypal.com)
-PAYPAL_EXPECTED_USD=5.00
+# Planes: los primeros FUNDADORES_LIMITE pagan PRECIO_FUNDADOR_USD una vez (de por vida);
+# despues, PRECIO_ANUAL_USD por cada ano. El backend decide la oferta y verifica el monto.
+FUNDADORES_LIMITE=100
+PRECIO_FUNDADOR_USD=5.00
+PRECIO_ANUAL_USD=10.00
 ```
 
 No definas `PORT`: Railway la inyecta y `server.js` ya la lee.
@@ -106,6 +110,7 @@ Variables de entorno:
 
 ```
 VITE_APP_URL=https://fintu-app.pages.dev           # a dónde llevan "Iniciar sesión" y "Comenzar"
+VITE_API_URL=https://<tu-backend>.up.railway.app   # para mostrar "Quedan N de 100 cupos de fundador"
 ```
 
 > Las variables `VITE_*` se inyectan **en build**, no en runtime. Si cambias una,
@@ -115,11 +120,12 @@ VITE_APP_URL=https://fintu-app.pages.dev           # a dónde llevan "Iniciar se
 
 ## 3. Cerrar el círculo (CORS)
 
-Vuelve a Railway y pon `FRONTEND_URL` con el dominio exacto de la **app**
-(el landing no llama al API):
+Vuelve a Railway y pon `FRONTEND_URL` con los dominios de la **app** y del **landing**
+(el landing consulta `/api/auth/oferta` para el contador de cupos). La app va primero:
+se usa también para el enlace de los correos de renovación.
 
 ```
-FRONTEND_URL=https://fintu-app.pages.dev
+FRONTEND_URL=https://fintu-app.pages.dev,https://fintu-co.pages.dev
 ```
 
 Exacto quiere decir: **con `https://` y sin barra final**. `server.js` lo pasa

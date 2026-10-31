@@ -7,12 +7,22 @@ import '@/modules/cards/pages/Dashboard.css';
 import './DemoMode.css';
 
 /*
-  En la demo solo se abren el inicio y el detalle de tarjeta: muestran cómo
-  funciona Fintú con tus tarjetas. Las secciones con más valor (el plan, la
-  educación financiera, el comparador) se ven en el menú, pero su contenido
-  es para quien crea su cuenta. Aquí se cuenta qué incluyen.
+  En la demo solo se abre el inicio: muestra cómo se ven tus tarjetas y tus
+  pagos. Lo demás (el detalle de cada tarjeta, el plan, la educación
+  financiera, el comparador) se ve en el menú, pero su contenido es para
+  quien crea su cuenta. Aquí se cuenta qué incluye.
 */
 const SECCIONES = {
+  tarjeta: {
+    titulo: 'El detalle de cada tarjeta',
+    texto: 'Todo lo de una tarjeta en una sola pantalla, con tus números reales.',
+    incluye: [
+      'Cuánto pagar este ciclo: total, uso saludable o mínimo, y lo que cuesta cada uno',
+      'En qué se fue tu dinero y si tu deuda sube o baja',
+      'Si pagas a tiempo y cuánto te cobran de intereses',
+      'Calculadora: en cuánto terminas según lo que pagues',
+    ],
+  },
   objetivos: {
     titulo: 'Tu plan para salir de deudas',
     texto: 'Con lo que puedes pagar al mes, te dice cuándo quedas en cero con todas tus tarjetas.',
@@ -65,7 +75,7 @@ function DemoLocked({ seccion }) {
 
   return (
     <div className="dashboard-dark">
-      <Sidebar active={seccion} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar active={seccion === 'tarjeta' ? 'dashboard' : seccion} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="dashboard-layout">
         <main className="dl">
           <button className="dl-menu" onClick={() => setSidebarOpen(true)} aria-label="Abrir menú"><IcMenu /></button>

@@ -2,12 +2,15 @@
  * CASO DE USO: Registro + pago PayPal en un solo paso.
  * El pago se verifica server-side contra la API de PayPal
  * antes de crear la cuenta — nunca se confía en el cliente.
+ *
+ * El plan lo decide el servidor con la oferta vigente al confirmar:
+ * fundador ($5, de por vida) mientras queden cupos; si no, anual.
+ * Así nadie puede pagar el precio de fundador cuando ya se acabaron.
  */
 const User = require('../domain/User');
+const Plan = require('../domain/Plan');
 
 class RegisterWithPayment {
-  static MONTO_DEFAULT = 4.0;
-
   constructor({ userRepository, passwordHasher, tokenService, paymentVerifier }) {
     this.userRepository = userRepository;
     this.passwordHasher = passwordHasher;
@@ -28,8 +31,11 @@ class RegisterWithPayment {
       return { status: 'EMAIL_TAKEN' };
     }
 
+    /* Oferta vigente: define el plan y el monto que debe tener el pago */
+    const oferta = Plan.ofertaVigente(await this.userRepository.countFundadoresPagados());
+
     /* Verificación real del pago contra PayPal */
-    const pago = await this.paymentVerifier.verifyOrder(paymentId);
+    const pago = await this.paymentVerifier.verifyOrder(paymentId, oferta.precio);
     if (!pago.valid) {
       return { status: 'PAYMENT_INVALID', reason: pago.reason };
     }
@@ -43,6 +49,7 @@ class RegisterWithPayment {
     }
 
     const hashedPassword = await this.passwordHasher.hash(password);
+    const accesoHasta = Plan.accesoHasta(oferta.plan);
 
     const userId = await this.userRepository.create({
       nombre,
@@ -51,16 +58,19 @@ class RegisterWithPayment {
       password: hashedPassword,
       ha_pagado: true,
       paypal_payment_id: paymentId,
-      monto_pagado: pago.amount || RegisterWithPayment.MONTO_DEFAULT,
+      monto_pagado: pago.amount || oferta.precio,
       fecha_pago: new Date(),
+      plan: oferta.plan,
+      acceso_hasta: Plan.aISO(accesoHasta),
     });
 
-    const token = this.tokenService.sign({ userId, email });
+    const resumen = Plan.resumen({ plan: oferta.plan, acceso_hasta: accesoHasta });
+    const token = this.tokenService.sign({ userId, email }, { hasta: resumen.acceso_hasta });
 
     return {
       status: 'OK',
       token,
-      user: { id: userId, nombre, apellido, email },
+      user: { id: userId, nombre, apellido, email, ...resumen },
     };
   }
 }

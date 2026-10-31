@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { useToast } from '@/shared/context/ToastContext';
 import AuthLayout from '@/modules/auth/components/AuthLayout';
+import { useOferta } from '@/modules/auth/hooks/useOferta';
 
 const initialOptions = {
   clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
@@ -10,15 +11,13 @@ const initialOptions = {
   intent: 'capture',
 };
 
-const ASIDE = {
-  title: 'Un pago. Para siempre.',
-  text: 'Crea tu cuenta y empieza a pagar tus tarjetas a tiempo.',
-  points: [
+const PUNTOS = [
     'Ciclos y fechas calculados solos',
     'El interés, antes de que llegue',
     'Hasta 4 tarjetas de cualquier banco',
-  ],
-};
+];
+
+const usd = (n) => `$${Number(n).toFixed(Number.isInteger(Number(n)) ? 0 : 2)} USD`;
 
 const IcShield = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -49,6 +48,14 @@ function Register() {
   const [errors, setErrors]     = useState({});
   const [loading, setLoading]   = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const { oferta, esFundador } = useOferta();
+  const precio = Number(oferta.precio).toFixed(2);
+
+  const aside = {
+    title: esFundador ? 'Un pago. De por vida.' : 'Un año completo.',
+    text: 'Crea tu cuenta y empieza a pagar tus tarjetas a tiempo.',
+    points: PUNTOS,
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -89,7 +96,7 @@ function Register() {
         body: JSON.stringify({
           nombre: formData.nombre, apellido: formData.apellido,
           email: formData.email,   password: formData.password,
-          paymentId: order.id,     montoPagado: 5.00
+          paymentId: order.id,     montoPagado: Number(precio)
         })
       });
       const result = await response.json();
@@ -112,10 +119,17 @@ function Register() {
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-      <AuthLayout aside={ASIDE}>
+      <AuthLayout aside={aside}>
         <div className="au-head">
           <h1>Crea tu cuenta</h1>
-          <p>Tus datos y un pago único de <strong>$5 USD</strong>: precio de fundador, de por vida. Nada más.</p>
+          {esFundador ? (
+            <p>
+              Tus datos y un pago único de <strong>{usd(oferta.precio)}</strong>: precio de fundador, de por vida.
+              {oferta.quedan != null && <> Quedan <strong>{oferta.quedan} de {oferta.limite}</strong> cupos.</>}
+            </p>
+          ) : (
+            <p>Tus datos y <strong>{usd(oferta.precio)} al año</strong>. Sin cobros automáticos: renuevas solo si quieres.</p>
+          )}
         </div>
 
         <form className="au-form" onSubmit={handleOpenPayment} noValidate>
@@ -141,10 +155,10 @@ function Register() {
 
           <div className="au-pay">
             <div>
-              <strong>$5 USD</strong>
-              <span>Pago único · acceso de por vida</span>
+              <strong>{usd(oferta.precio)}</strong>
+              <span>{esFundador ? 'Pago único · acceso de por vida' : 'Al año · renovación manual'}</span>
             </div>
-            <span className="au-pay-tag">Precio de fundador</span>
+            <span className="au-pay-tag">{esFundador ? 'Precio de fundador' : 'Plan anual'}</span>
           </div>
 
           <button type="submit" className="au-btn">
@@ -176,8 +190,8 @@ function Register() {
             </div>
 
             <div className="au-modal-sum">
-              <span>Fintú &amp; Co. · acceso de por vida</span>
-              <b>$5.00</b>
+              <span>Fintú &amp; Co. · {esFundador ? 'acceso de por vida' : 'un año de acceso'}</span>
+              <b>${precio}</b>
             </div>
 
             <PayPalButtons
@@ -185,7 +199,7 @@ function Register() {
               createOrder={(data, actions) =>
                 actions.order.create({
                   purchase_units: [{
-                    amount: { value: '5.00', currency_code: 'USD' },
+                    amount: { value: precio, currency_code: 'USD' },
                     description: `Fintú & Co. PE - ${formData.email}`
                   }]
                 })

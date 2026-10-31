@@ -10,7 +10,8 @@
  *   PAYPAL_CLIENT_SECRET  – secret de la app (solo backend, jamás en frontend)
  *   PAYPAL_API_BASE       – https://api-m.sandbox.paypal.com (default)
  *                           https://api-m.paypal.com (producción)
- *   PAYPAL_EXPECTED_USD   – monto esperado del pago único (default 5.00, precio de fundador)
+ *   PAYPAL_EXPECTED_USD   – precio de fundador por defecto (5.00); el monto real de cada
+ *                           pago lo indica el caso de uso según el plan (ver domain/Plan.js)
  */
 class PayPalPaymentVerifier {
   constructor() {
@@ -55,9 +56,10 @@ class PayPalPaymentVerifier {
   /**
    * Verifica una orden de PayPal.
    * @param {string} orderId – id de la orden capturada en el checkout
+   * @param {number} [montoEsperado] – precio del plan que se está pagando (fundador o anual)
    * @returns {{ valid: boolean, reason?: string, amount?: number, currency?: string }}
    */
-  async verifyOrder(orderId) {
+  async verifyOrder(orderId, montoEsperado = this.expectedAmount) {
     // Fail-closed: sin credenciales no se aprueba ningún pago.
     if (!this.clientId || !this.clientSecret) {
       return { valid: false, reason: 'PAYPAL_NOT_CONFIGURED' };
@@ -92,7 +94,7 @@ class PayPalPaymentVerifier {
       if (currency !== 'USD') {
         return { valid: false, reason: `WRONG_CURRENCY_${currency}` };
       }
-      if (amount + 0.001 < this.expectedAmount) {
+      if (amount + 0.001 < montoEsperado) {
         return { valid: false, reason: `AMOUNT_TOO_LOW_${amount}` };
       }
 

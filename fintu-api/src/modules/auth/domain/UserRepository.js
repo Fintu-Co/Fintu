@@ -17,8 +17,19 @@ class UserRepository {
     throw new Error('UserRepository.findById no implementado');
   }
 
-  async updatePaymentStatus(userId, paymentId) {
+  /** Marca el pago y aplica el plan: { plan, acceso_hasta, monto_pagado }. */
+  async updatePaymentStatus(userId, paymentId, pago) {
     throw new Error('UserRepository.updatePaymentStatus no implementado');
+  }
+
+  /** Fundadores que ya pagaron (incluye a quienes pagaron antes de los planes). */
+  async countFundadoresPagados() {
+    throw new Error('UserRepository.countFundadoresPagados no implementado');
+  }
+
+  /** Usuarios con plan anual cuyo acceso vence en esa fecha (YYYY-MM-DD). */
+  async findAnualesQueVencen(fecha) {
+    throw new Error('UserRepository.findAnualesQueVencen no implementado');
   }
 
   async updateSentinelConsulta(userId) {

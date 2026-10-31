@@ -16,6 +16,7 @@ import './App.css';
 const Register       = lazy(() => import('@/modules/auth/pages/Register'));
 const Login          = lazy(() => import('@/modules/auth/pages/Login'));
 const ForgotPassword = lazy(() => import('@/modules/auth/pages/ForgotPassword'));
+const Pay            = lazy(() => import('@/modules/auth/pages/Pay'));
 const Profile        = lazy(() => import('@/modules/auth/pages/Profile'));
 const Dashboard      = lazy(() => import('@/modules/cards/pages/Dashboard'));
 const CardDashboard  = lazy(() => import('@/modules/cards/pages/CardDashboard'));
@@ -52,9 +53,10 @@ function App() {
               <Route path="/registro" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/recuperar" element={<ForgotPassword />} />
+              <Route path="/pagar" element={<Pay />} />
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/tarjeta/:slotNumero" element={<ProtectedRoute><CardDashboard /></ProtectedRoute>} />
+              <Route path="/tarjeta/:slotNumero" element={<ProtectedRoute><DemoGate seccion="tarjeta"><CardDashboard /></DemoGate></ProtectedRoute>} />
               <Route path="/objetivos" element={<ProtectedRoute><DemoGate seccion="objetivos"><Goals /></DemoGate></ProtectedRoute>} />
               <Route path="/educacion" element={<ProtectedRoute><DemoGate seccion="educacion"><Educacion /></DemoGate></ProtectedRoute>} />
               <Route path="/comparador" element={<ProtectedRoute><DemoGate seccion="comparador"><Comparador /></DemoGate></ProtectedRoute>} />

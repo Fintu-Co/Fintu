@@ -4,6 +4,7 @@ import { useAuth } from '@/modules/auth/context/AuthContext';
 import { authApi } from '@/modules/auth/services/authApi';
 import { useToast } from '@/shared/context/ToastContext';
 import Sidebar from '@/shared/components/Sidebar';
+import { parseISODate } from '@/shared/utils/fecha';
 /* Armazón compartido (layout + sidebar) — ver nota en Comparador.jsx. */
 import '@/modules/cards/pages/Dashboard.css';
 import './Profile.css';
@@ -15,7 +16,7 @@ const IcMail  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor
 const IcCopy  = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>);
 
 const formatDate = (dateStr) => (dateStr
-  ? new Date(dateStr).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })
+  ? parseISODate(dateStr).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })
   : '—');
 
 function Profile() {
@@ -25,6 +26,7 @@ function Profile() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState(null);
+  const esAnual = profile?.plan === 'anual';
   const [loadingProfile, setLoadingProfile] = useState(true);
 
   const [nombre, setNombre] = useState('');
@@ -190,11 +192,23 @@ function Profile() {
                     <span className="pf-tag">Pago</span>
                     <h2 id="pf-plan-t">Tu plan</h2>
                     <dl className="pf-facts">
-                      <div><dt>Plan</dt><dd className="pf-good">Acceso de por vida</dd></div>
-                      <div><dt>Pagaste</dt><dd>{profile?.monto_pagado ? `$${parseFloat(profile.monto_pagado).toFixed(2)} USD` : '—'}</dd></div>
+                      <div><dt>Plan</dt><dd className="pf-good">{esAnual ? 'Anual' : 'Fundador · de por vida'}</dd></div>
+                      <div><dt>{esAnual ? 'Último pago' : 'Pagaste'}</dt><dd>{profile?.monto_pagado ? `$${parseFloat(profile.monto_pagado).toFixed(2)} USD` : '—'}</dd></div>
                       <div><dt>Fecha de pago</dt><dd>{formatDate(profile?.fecha_pago)}</dd></div>
-                      <div><dt>Renovación</dt><dd>Ninguna, es un pago único</dd></div>
+                      <div><dt>{esAnual ? 'Vence' : 'Renovación'}</dt><dd>{esAnual ? formatDate(profile?.acceso_hasta) : 'Ninguna, es un pago único'}</dd></div>
                     </dl>
+                    {esAnual && (
+                      <button
+                        type="button"
+                        className="pf-btn pf-btn--green"
+                        onClick={() => navigate('/pagar', { state: {
+                          userId: user.id, motivo: 'RENOVAR', precio: profile.precio_renovacion,
+                          accesoHasta: profile.acceso_hasta, email: profile.email,
+                        } })}
+                      >
+                        Renovar un año por ${Number(profile.precio_renovacion || 10).toFixed(0)}
+                      </button>
+                    )}
                     {profile?.paypal_payment_id && (
                       <div className="pf-payid">
                         <div>
