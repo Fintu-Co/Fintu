@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/modules/auth/context/AuthContext';
 import { ToastProvider } from '@/shared/context/ToastContext';
+import { DemoEntry, DemoBanner } from '@/shared/demo/DemoMode';
 
 import './App.css';
 
@@ -50,6 +51,7 @@ function App() {
               <Route path="/registro" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/recuperar" element={<ForgotPassword />} />
+              <Route path="/demo" element={<DemoEntry />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/tarjeta/:slotNumero" element={<ProtectedRoute><CardDashboard /></ProtectedRoute>} />
               <Route path="/objetivos" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
@@ -59,6 +61,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          <DemoBanner />
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>

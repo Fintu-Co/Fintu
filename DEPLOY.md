@@ -58,7 +58,7 @@ SMTP_FROM=
 PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
 PAYPAL_API_BASE=https://api-m.paypal.com    # producción (sandbox: api-m.sandbox.paypal.com)
-PAYPAL_EXPECTED_USD=4.00
+PAYPAL_EXPECTED_USD=5.00
 ```
 
 No definas `PORT`: Railway la inyecta y `server.js` ya la lee.

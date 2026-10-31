@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback((tokenValue, userData) => {
+    // Una sesión real termina cualquier demo que hubiera quedado abierta
+    if (tokenValue !== 'demo') localStorage.removeItem('fintu_demo');
     localStorage.setItem('token', tokenValue);
     localStorage.setItem('user', JSON.stringify(userData));
     setToken(tokenValue);
@@ -28,6 +30,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem('fintu_demo');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);

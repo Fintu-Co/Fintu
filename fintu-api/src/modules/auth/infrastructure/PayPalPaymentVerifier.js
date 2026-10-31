@@ -10,14 +10,14 @@
  *   PAYPAL_CLIENT_SECRET  – secret de la app (solo backend, jamás en frontend)
  *   PAYPAL_API_BASE       – https://api-m.sandbox.paypal.com (default)
  *                           https://api-m.paypal.com (producción)
- *   PAYPAL_EXPECTED_USD   – monto esperado del pago único (default 4.00)
+ *   PAYPAL_EXPECTED_USD   – monto esperado del pago único (default 5.00, precio de fundador)
  */
 class PayPalPaymentVerifier {
   constructor() {
     this.clientId = process.env.PAYPAL_CLIENT_ID;
     this.clientSecret = process.env.PAYPAL_CLIENT_SECRET;
     this.apiBase = process.env.PAYPAL_API_BASE || 'https://api-m.sandbox.paypal.com';
-    this.expectedAmount = parseFloat(process.env.PAYPAL_EXPECTED_USD || '4.00');
+    this.expectedAmount = parseFloat(process.env.PAYPAL_EXPECTED_USD || '5.00');
 
     if (!this.clientId || !this.clientSecret) {
       console.warn(

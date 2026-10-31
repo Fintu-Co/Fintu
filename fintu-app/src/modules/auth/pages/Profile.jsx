@@ -211,7 +211,7 @@ function Profile() {
                   <section className="pf-card pf-card--help" aria-labelledby="pf-ayuda-t">
                     <h2 id="pf-ayuda-t">¿Necesitas ayuda?</h2>
                     <p>Escríbenos y te respondemos lo antes posible.</p>
-                    <a className="pf-btn pf-btn--outline" href="mailto:soporte@fintu.pe"><IcMail /> soporte@fintu.pe</a>
+                    <a className="pf-btn pf-btn--outline" href="mailto:soporte.fintu@gmail.com"><IcMail /> soporte.fintu@gmail.com</a>
                   </section>
                 </div>
               </div>

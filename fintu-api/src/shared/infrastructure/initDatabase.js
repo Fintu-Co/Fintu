@@ -52,7 +52,7 @@ const tablas = [
     fecha_registro TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_pago TIMESTAMP NULL DEFAULT NULL,
     paypal_payment_id VARCHAR(100) DEFAULT NULL COMMENT 'ID de transacción PayPal',
-    monto_pagado DECIMAL(10,2) DEFAULT 4.00 COMMENT 'Monto pagado en USD',
+    monto_pagado DECIMAL(10,2) DEFAULT 5.00 COMMENT 'Monto pagado en USD',
     ultima_consulta_sentinel DATETIME DEFAULT NULL,
     reset_token VARCHAR(10) DEFAULT NULL,
     reset_token_expiry DATETIME DEFAULT NULL,

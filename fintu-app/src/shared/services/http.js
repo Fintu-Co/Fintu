@@ -1,3 +1,5 @@
+import { demoActiva, demoRequest } from '@/shared/demo/demoApi';
+
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function getToken() {
@@ -14,6 +16,9 @@ function authHeaders(extra = {}) {
 }
 
 export async function request(path, options = {}) {
+  // Modo demo: responde el simulador en memoria, sin tocar el backend
+  if (demoActiva()) return demoRequest(path, options);
+
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers: authHeaders(options.headers),

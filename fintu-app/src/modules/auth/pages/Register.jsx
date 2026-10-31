@@ -89,7 +89,7 @@ function Register() {
         body: JSON.stringify({
           nombre: formData.nombre, apellido: formData.apellido,
           email: formData.email,   password: formData.password,
-          paymentId: order.id,     montoPagado: 4.00
+          paymentId: order.id,     montoPagado: 5.00
         })
       });
       const result = await response.json();
@@ -115,7 +115,7 @@ function Register() {
       <AuthLayout aside={ASIDE}>
         <div className="au-head">
           <h1>Crea tu cuenta</h1>
-          <p>Tus datos y un pago único de <strong>$4 USD</strong>. Nada más.</p>
+          <p>Tus datos y un pago único de <strong>$5 USD</strong>: precio de fundador, de por vida. Nada más.</p>
         </div>
 
         <form className="au-form" onSubmit={handleOpenPayment} noValidate>
@@ -141,10 +141,10 @@ function Register() {
 
           <div className="au-pay">
             <div>
-              <strong>$4 USD</strong>
+              <strong>$5 USD</strong>
               <span>Pago único · acceso de por vida</span>
             </div>
-            <span className="au-pay-tag">Sin renovaciones</span>
+            <span className="au-pay-tag">Precio de fundador</span>
           </div>
 
           <button type="submit" className="au-btn">
@@ -177,7 +177,7 @@ function Register() {
 
             <div className="au-modal-sum">
               <span>Fintú &amp; Co. · acceso de por vida</span>
-              <b>$4.00</b>
+              <b>$5.00</b>
             </div>
 
             <PayPalButtons
@@ -185,7 +185,7 @@ function Register() {
               createOrder={(data, actions) =>
                 actions.order.create({
                   purchase_units: [{
-                    amount: { value: '4.00', currency_code: 'USD' },
+                    amount: { value: '5.00', currency_code: 'USD' },
                     description: `Fintú & Co. PE - ${formData.email}`
                   }]
                 })

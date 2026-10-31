@@ -59,7 +59,7 @@ function Login() {
         showMessage('Acceso exitoso. Redirigiendo…', 'success');
         setTimeout(() => navigate('/dashboard'), 1000);
       } else {
-        if (data.requiresPayment) showMessage('Debes completar el pago de $4 para acceder.', 'warning');
+        if (data.requiresPayment) showMessage('Debes completar el pago de $5 para acceder.', 'warning');
         else showMessage(data.message || 'Email o contraseña incorrectos.', 'error');
       }
     } catch {
@@ -131,7 +131,7 @@ function Login() {
       </form>
 
       <p className="au-alt">
-        ¿No tienes cuenta? <Link to="/registro">Regístrate por $4</Link>
+        ¿No tienes cuenta? <Link to="/registro">Regístrate por $5</Link>
       </p>
     </AuthLayout>
   );

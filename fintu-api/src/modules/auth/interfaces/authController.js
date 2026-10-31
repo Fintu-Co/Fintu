@@ -63,7 +63,7 @@ function buildAuthController({
           case 'PAYMENT_REQUIRED':
             return res.status(403).json({
               success: false,
-              message: 'Debes completar el pago de $4 para acceder',
+              message: 'Debes completar el pago de $5 para acceder',
               requiresPayment: true,
               userId: result.userId,
             });
