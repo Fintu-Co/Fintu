@@ -47,3 +47,61 @@
   .demo-bar { font-size: 12.5px; gap: 6px; padding-left: 12px; }
   .demo-bar-extra { display: none; }
 }
+
+/* ── Sección bloqueada en la demo ── */
+.dl {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 16px 96px;
+  background: #E9E3DA;
+  position: relative;
+}
+.dl-menu {
+  display: none;
+  position: absolute; top: 16px; left: 16px;
+  width: 42px; height: 42px; align-items: center; justify-content: center;
+  border: 1px solid rgba(74, 47, 40, 0.12); border-radius: 12px; background: #FBF8F3; color: #2B1B17; cursor: pointer;
+}
+.dl-menu svg { width: 18px; height: 18px; }
+@media (max-width: 1023px) { .dl-menu { display: inline-flex; } }
+
+.dl-card {
+  width: min(560px, 100%);
+  display: flex; flex-direction: column; gap: 14px;
+  padding: clamp(24px, 4vw, 40px);
+  border-radius: 28px;
+  background: linear-gradient(150deg, #4A2F28 0%, #3A2420 55%, #2B1B17 100%);
+  color: #F7F3ED;
+  box-shadow: 0 30px 60px -36px rgba(43, 27, 23, 0.6);
+}
+.dl-lock {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 8px;
+  background: rgba(247, 243, 237, 0.1); color: #F3ECE3;
+  font-size: 12px; font-weight: 700;
+}
+.dl-lock svg { width: 13px; height: 13px; }
+.dl-card h1 { margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 38px); line-height: 1.12; }
+.dl-card > p { margin: 0; font-size: 15.5px; line-height: 1.55; color: rgba(247, 243, 237, 0.75); }
+.dl-card ul { margin: 6px 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.dl-card li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; line-height: 1.45; }
+.dl-card li span {
+  flex-shrink: 0; width: 22px; height: 22px; margin-top: 1px; border-radius: 50%;
+  display: grid; place-items: center; background: rgba(47, 74, 62, 0.55); color: #CFE3D6;
+}
+.dl-card li svg { width: 12px; height: 12px; }
+.dl-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.dl-btn {
+  min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid transparent;
+  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+}
+.dl-btn--green { background: #2F4A3E; color: #ffffff; }
+.dl-btn--green:hover { background: #375747; }
+.dl-btn--soft { background: transparent; color: #F7F3ED; border-color: rgba(247, 243, 237, 0.25); }
+.dl-btn--soft:hover { background: rgba(247, 243, 237, 0.08); }
+.dl-card small { font-size: 12.5px; color: rgba(247, 243, 237, 0.55); }
+@media (max-width: 560px) { .dl-btn { flex: 1 1 auto; } }

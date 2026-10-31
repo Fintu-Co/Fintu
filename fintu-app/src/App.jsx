@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/modules/auth/context/AuthContext';
 import { ToastProvider } from '@/shared/context/ToastContext';
 import { DemoEntry, DemoBanner } from '@/shared/demo/DemoMode';
+import { DemoGate } from '@/shared/demo/DemoLocked';
 
 import './App.css';
 
@@ -54,10 +55,10 @@ function App() {
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/tarjeta/:slotNumero" element={<ProtectedRoute><CardDashboard /></ProtectedRoute>} />
-              <Route path="/objetivos" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
-              <Route path="/educacion" element={<ProtectedRoute><Educacion /></ProtectedRoute>} />
-              <Route path="/comparador" element={<ProtectedRoute><Comparador /></ProtectedRoute>} />
-              <Route path="/perfil"    element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/objetivos" element={<ProtectedRoute><DemoGate seccion="objetivos"><Goals /></DemoGate></ProtectedRoute>} />
+              <Route path="/educacion" element={<ProtectedRoute><DemoGate seccion="educacion"><Educacion /></DemoGate></ProtectedRoute>} />
+              <Route path="/comparador" element={<ProtectedRoute><DemoGate seccion="comparador"><Comparador /></DemoGate></ProtectedRoute>} />
+              <Route path="/perfil"    element={<ProtectedRoute><DemoGate seccion="perfil"><Profile /></DemoGate></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

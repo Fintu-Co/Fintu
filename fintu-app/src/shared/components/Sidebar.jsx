@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/context/AuthContext';
 import BrandLogo from '@/shared/components/BrandLogo';
+import { demoActiva } from '@/shared/demo/demoApi';
 import './Sidebar.css';
 
 /*
@@ -12,6 +13,9 @@ function Sidebar({ active, open, onClose }) {
   const { user, logout } = useAuth();
 
   const go = (path) => { navigate(path); onClose?.(); };
+  // En la demo, lo que se abre con cuenta lleva una etiqueta
+  const demo = demoActiva();
+  const conCuenta = demo && <span className="nav-lock">Con cuenta</span>;
 
   if (!user) return null;
 
@@ -47,6 +51,7 @@ function Sidebar({ active, open, onClose }) {
               <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
             </svg>
             <span className="nav-label">Mi plan</span>
+            {conCuenta}
           </button>
 
           {/* ── Herramientas ── */}
@@ -57,6 +62,7 @@ function Sidebar({ active, open, onClose }) {
               <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
             </svg>
             <span className="nav-label">Educación Financiera</span>
+            {conCuenta}
           </button>
 
           <button className={`nav-item${active === 'comparador' ? ' active' : ''}`} onClick={() => go('/comparador')}>
@@ -65,6 +71,7 @@ function Sidebar({ active, open, onClose }) {
               <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
             </svg>
             <span className="nav-label">Comparador de Bancos</span>
+            {conCuenta}
           </button>
 
           {/* ── Cuenta ── */}
@@ -75,6 +82,7 @@ function Sidebar({ active, open, onClose }) {
               <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
             </svg>
             <span className="nav-label">Mi Perfil</span>
+            {conCuenta}
           </button>
 
         </nav>
@@ -87,7 +95,7 @@ function Sidebar({ active, open, onClose }) {
             </div>
             <div className="sidebar-user-info">
               <span className="sidebar-user-name">{user.nombre} {user.apellido}</span>
-              <span className="sidebar-user-plan">Acceso completo</span>
+              <span className="sidebar-user-plan">{demo ? 'Modo demo' : 'Acceso completo'}</span>
             </div>
             <button
               className="sidebar-logout"
