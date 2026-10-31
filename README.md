@@ -2,7 +2,7 @@
 
 # FINTÚ & CO.
 
-[![CI](https://github.com/Fintu-Co/Fintu/actions/workflows/ci.yml/badge.svg)](https://github.com/Fintu-Co/Fintu/actions/workflows/ci.yml)
+<img src="https://github.com/Fintu-Co/Fintu/blob/master/.github/workflows/docs/landing.png">
 
 **No pagues intereses de más.**
 Gestiona la deuda, los ciclos de facturación y los pagos de tus tarjetas de crédito, sin conectar tu banco.
@@ -21,7 +21,6 @@ Gestiona la deuda, los ciclos de facturación y los pagos de tus tarjetas de cr�
 
 <br/><br/>
 
-<img src="./docs/landing.png" width="100%" alt="Landing de Fintú & Co."/>
 
 </div>
 
